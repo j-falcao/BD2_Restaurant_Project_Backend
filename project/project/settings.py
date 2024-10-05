@@ -74,11 +74,33 @@ WSGI_APPLICATION = 'project.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    'mongo': {
+        'ENGINE': 'djongo',
+        'NAME': 'BD2',
+        'CLIENT': {
+            'host': 'mongodb://localhost:27017',
+            # MongoDB has its own connection pooling
+        },
+    },
+    'postgres': {
+        'ENGINE': 'django_db_pool.db.backends.postgresql_psycopg2',
+        'NAME': 'BD2',
+        'USER': 'postgres',
+        'PASSWORD': 'JoaoFalcao123',
+        'HOST': 'localhost',
+        'PORT': '5432',
+        'POOL_OPTIONS': {
+            'POOL_SIZE': 10,
+            'MAX_OVERFLOW': 5,
+            'RECYCLE': 3600,
+            'TIMEOUT': 30,
+            'PRE_PING': True,
+            'CLEANER': 'time',
+            'CLEANER_INTERVAL': 60,
+        },
     }
 }
+
 
 
 # Password validation

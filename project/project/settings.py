@@ -37,6 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'cozinha',
+    'garcom',
+    'produtos',
+    'inventario',
+    'estatisticas',
 ]
 
 MIDDLEWARE = [
@@ -84,21 +89,15 @@ DATABASES = {
         },
     },
     'postgres': {
-        'ENGINE': 'django_db_pool.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'BD2',
         'USER': 'postgres',
         'PASSWORD': 'JoaoFalcao123',
         'HOST': 'localhost',
         'PORT': '5432',
-        'POOL_OPTIONS': {
-            'POOL_SIZE': 10,
-            'MAX_OVERFLOW': 5,
-            'RECYCLE': 3600,
-            'TIMEOUT': 30,
-            'PRE_PING': True,
-            'CLEANER': 'time',
-            'CLEANER_INTERVAL': 60,
-        },
+        'OPTIONS': {
+            'pool': True
+        }
     }
 }
 

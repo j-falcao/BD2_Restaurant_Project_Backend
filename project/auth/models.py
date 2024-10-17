@@ -66,3 +66,9 @@ class Administrador(models.Model):
 
     def __str__(self):
         return f"Administrador - {self.utilizador.primeiro_nome} {self.utilizador.ultimo_nome}"
+    
+class Cliente(models.Model):
+    utilizador = models.OneToOneField(Utilizador, on_delete=models.CASCADE, primary_key=True)
+
+    def __str__(self):
+        return f"Cliente - {self.utilizador.primeiro_nome} {self.utilizador.ultimo_nome}"

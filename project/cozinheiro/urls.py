@@ -1,6 +1,6 @@
-from django.urls import path
+from django.urls import path, include
 
 urlpatterns = [
-    path('pedidos/', ),
+    path('pedidos/', include('pedidos.urls')),
     # ...
 ]

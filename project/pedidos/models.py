@@ -24,15 +24,16 @@ class Reserva(models.Model):
 
 
 class EstadoMesa(models.Model):
-    id_estado = models.AutoField(primary_key=True)
+    id_estadoMesa = models.AutoField(primary_key=True)
     estado = models.CharField(max_length=20)
 
     class Meta:
         db_table = 'estados_mesas'
 
 class Pedido(models.Model):
+    id_pedido = models.AutoField(primary_key=True)
     garcom = models.ForeignKey('auth.Garcom', on_delete=models.CASCADE)
-    cliente = models.ForeignKey('auth.Utilizador', on_delete=models.CASCADE)
+    cliente = models.ForeignKey('auth.Cliente', on_delete=models.CASCADE)
     data_hora = models.DateTimeField(auto_now_add=True)
     online = models.BooleanField(default=False)
     mesa = models.ForeignKey(Mesa, on_delete=models.CASCADE)
@@ -41,15 +42,27 @@ class Pedido(models.Model):
         db_table = 'pedidos'
 
     def __str__(self):
-        return f"Pedido {self.id} - {self.data_hora}"
+        return f"Pedido {self.id_pedido} - {self.data_hora}"
 
 class PedidoProduto(models.Model):
+    id_pedidoProduto = models.AutoField(primary_key=True)
     pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE)
-    id_produto = models.IntegerField()
-    id_utilizador = models.IntegerField()
+    produto = models.ForeignKey('produtos.Produto', on_delete=models.CASCADE)
     
     class Meta:
         db_table = 'pedidos_produtos'
 
     def __str__(self):
-        return f"Produto {self.id_produto} no Pedido {self.pedido.id}"
+        return f"Produto {self.produto} no Pedido {self.pedido}"
+
+
+class PedidoProduto_OpcaoItem(models.Model):
+    id_pedidoProduto_opcaoItem = models.AutoField(primary_key=True)
+    opcaoItem = models.ForeignKey('produtos.OpcaoItem', on_delete=models.CASCADE)
+    PedidoProduto = models.ForeignKey(PedidoProduto, on_delete=models.CASCADE)
+    
+    class Meta:
+        db_table = 'pedidos_produtos_opcoes'
+
+    def __str__(self):
+        return f"Opcao {self.opcaoItem} no Pedido {self.PedidoProduto}"

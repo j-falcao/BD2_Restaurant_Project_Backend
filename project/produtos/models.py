@@ -99,7 +99,7 @@ class Opcao(models.Model):
         return self.nome
 
 
-class OpcoesItem(models.Model):
+class OpcaoItem(models.Model):
     id_opcaoItem = models.AutoField(primary_key=True)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     opcao = models.ForeignKey(Opcao, on_delete=models.CASCADE)

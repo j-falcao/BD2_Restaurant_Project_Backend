@@ -37,7 +37,7 @@ class Ingrediente(models.Model):
     
 
 class IngredienteValidade(models.Model):
-    id_ingrediente_validade = models.AutoField(primary_key=True)
+    id_ingredienteValidade = models.AutoField(primary_key=True)
     ingrediente = models.ForeignKey(Ingrediente, on_delete=models.CASCADE)
     data_validade = models.DateField()
 
@@ -46,7 +46,7 @@ class IngredienteValidade(models.Model):
     
     
 class IngredienteAdministrador(models.Model):
-    id_ingrediente_administrador = models.AutoField(primary_key=True)
+    id_ingredienteAdministrador = models.AutoField(primary_key=True)
     ingrediente = models.ForeignKey(Ingrediente, on_delete=models.CASCADE)
     administrador = models.ForeignKey('auth.Administrador', on_delete=models.CASCADE)
     carrinho = models.ForeignKey(Carrinho, on_delete=models.CASCADE)
@@ -70,7 +70,7 @@ class Utensilio(models.Model):
     
 
 class UtensilioAdministrador(models.Model):
-    id_utensilio_administrador = models.AutoField(primary_key=True)
+    id_utensilioAdministrador = models.AutoField(primary_key=True)
     utensilio = models.ForeignKey(Utensilio, on_delete=models.CASCADE)
     administrador = models.ForeignKey('auth.Administrador', on_delete=models.CASCADE)
     carrinho = models.ForeignKey(Carrinho, on_delete=models.CASCADE)
@@ -78,3 +78,40 @@ class UtensilioAdministrador(models.Model):
 
     def __str__(self):
         return f"{self.utensilio.nome} - {self.quantidade}"
+
+
+class Receita(models.Model):
+    id_receita = models.AutoField(primary_key=True)
+    nome = models.CharField(max_length=100)
+    estimativaTempo = models.TimeField()
+
+    def __str__(self):
+        return self.nome
+
+
+class UtensilioReceita(models.Model):
+    id_utensilioReceita = models.AutoField(primary_key=True)
+    utensilio = models.ForeignKey(Utensilio, on_delete=models.CASCADE)
+    receita = models.ForeignKey(Receita, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.utensilio.nome} - {self.receita.nome}"
+
+
+class IngredienteAdministrador(models.Model):
+    id_ingredienteReceita = models.AutoField(primary_key=True)
+    ingrediente = models.ForeignKey(Ingrediente, on_delete=models.CASCADE)
+    receita = models.ForeignKey(Receita, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.ingrediente.nome} - {self.receita.nome}"
+    
+
+class Instucao(models.Model):
+    id_instucao = models.AutoField(primary_key=True)
+    receita = models.ForeignKey(Receita, on_delete=models.CASCADE)
+    numeroSequencia = models.IntegerField()
+    descricao = models.TextField()
+
+    def __str__(self):
+        return f"{self.receitaNome} - Passo {self.numeroSequencia}"

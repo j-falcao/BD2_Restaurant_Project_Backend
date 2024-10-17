@@ -8,24 +8,28 @@ class Utilizador(models.Model):
     genero = models.CharField(max_length=100)
     data_nascimento = models.DateField()
     data_registo = models.DateField(auto_now_add=True)
-    tipo_utilizador = models.ForeignKey('tipo_utilizador', on_delete=models.CASCADE, related_name='utilizador')
-    db_table = 'utilizador'
+    tipo_utilizador = models.ForeignKey('TipoUtilizador', on_delete=models.CASCADE, related_name='utilizadores')
+
+    class Meta:
+        db_table = 'utilizador'
 
     def __str__(self):
         return self.nome
 
-class tipo_utilizador(models.Model):
-    id = models.IntegerField(primary_key=True)
+class TipoUtilizador(models.Model):
     descricao = models.CharField(max_length=100)
-    db_table = 'tipo_utilizador'
+
+    class Meta:
+        db_table = 'tipo_utilizador'
 
     def __str__(self):
-        return self.nome
-    
-class turno(models.Model):
-    id = models.IntegerField(primary_key=True)
+        return self.descricao
+
+class Turno(models.Model):
     descricao = models.CharField(max_length=100)
-    db_table = 'turno'
+
+    class Meta:
+        db_table = 'turno'
 
     def __str__(self):
-        return self.nome
+        return self.descricao

@@ -1,4 +1,5 @@
 from django.db import models
+from auth.models import Administrador
 
 class Carrinho(models.Model):
     id_carrinho = models.AutoField(primary_key=True)
@@ -48,7 +49,7 @@ class IngredienteValidade(models.Model):
 class IngredienteAdministrador(models.Model):
     id_ingredienteAdministrador = models.AutoField(primary_key=True)
     ingrediente = models.ForeignKey(Ingrediente, on_delete=models.CASCADE)
-    administrador = models.ForeignKey('auth.Administrador', on_delete=models.CASCADE)
+    administrador = models.ForeignKey(Administrador, on_delete=models.CASCADE)
     carrinho = models.ForeignKey(Carrinho, on_delete=models.CASCADE)
     quantidade = models.IntegerField()
 
@@ -72,7 +73,7 @@ class Utensilio(models.Model):
 class UtensilioAdministrador(models.Model):
     id_utensilioAdministrador = models.AutoField(primary_key=True)
     utensilio = models.ForeignKey(Utensilio, on_delete=models.CASCADE)
-    administrador = models.ForeignKey('auth.Administrador', on_delete=models.CASCADE)
+    administrador = models.ForeignKey(Administrador, on_delete=models.CASCADE)
     carrinho = models.ForeignKey(Carrinho, on_delete=models.CASCADE)
     quantidade = models.IntegerField()
 

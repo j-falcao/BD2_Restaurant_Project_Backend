@@ -39,7 +39,7 @@ class MenuItem(models.Model):
     
 
 class DiaSemana(models.Model):
-    id_diaSemana = models.AutoField(primary_key=True, min=1, max=7)
+    id_diaSemana = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=50)
 
     def __str__(self):

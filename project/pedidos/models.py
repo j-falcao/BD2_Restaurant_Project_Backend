@@ -5,6 +5,7 @@ class Mesa(models.Model):
     numero = models.IntegerField()
 
     class Meta:
+        managed = False
         db_table = 'mesas'
 
     def __str__(self):
@@ -17,6 +18,7 @@ class Reserva(models.Model):
     data_hora_fim = models.DateTimeField(auto_now_add=True)
 
     class Meta:
+        managed = False
         db_table = 'reservas'
 
     def __str__(self):
@@ -28,6 +30,7 @@ class EstadoMesa(models.Model):
     estado = models.CharField(max_length=20)
 
     class Meta:
+        managed = False
         db_table = 'estados_mesas'
 
 class Pedido(models.Model):
@@ -39,6 +42,7 @@ class Pedido(models.Model):
     mesa = models.ForeignKey(Mesa, on_delete=models.CASCADE)
     
     class Meta:
+        managed = False
         db_table = 'pedidos'
 
     def __str__(self):
@@ -50,6 +54,7 @@ class PedidoProduto(models.Model):
     produto = models.ForeignKey('produtos.Produto', on_delete=models.CASCADE)
     
     class Meta:
+        managed = False
         db_table = 'pedidos_produtos'
 
     def __str__(self):
@@ -62,6 +67,7 @@ class PedidoProduto_OpcaoItem(models.Model):
     PedidoProduto = models.ForeignKey(PedidoProduto, on_delete=models.CASCADE)
     
     class Meta:
+        managed = False
         db_table = 'pedidos_produtos_opcoes'
 
     def __str__(self):

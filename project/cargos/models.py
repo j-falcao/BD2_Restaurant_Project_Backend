@@ -5,6 +5,9 @@ class TipoUtilizador(models.Model):
     id_tipo_utilizador = models.AutoField(primary_key=True)
     descricao = models.CharField(max_length=255)
 
+    class Meta:
+        managed = False
+
     def __str__(self):
         return self.descricao
 
@@ -14,6 +17,9 @@ class Turno(models.Model):
     nome = models.CharField(max_length=100)
     hora_inicio = models.TimeField()
     hora_fim = models.TimeField()
+
+    class Meta:
+        managed = False
 
     def __str__(self):
         return self.nome
@@ -31,6 +37,9 @@ class Utilizador(AbstractUser):
     data_nascimento = models.DateField()
     genero = models.CharField(max_length=10)
     data_registo = models.DateField(auto_now_add=True)
+
+    class Meta:
+        managed = False
 
     # Correção: Os campos groups e user_permissions precisam estar dentro da classe
     groups = models.ManyToManyField(
@@ -57,6 +66,9 @@ class Utilizador(AbstractUser):
 class Garcom(models.Model):
     utilizador = models.OneToOneField(Utilizador, on_delete=models.CASCADE, primary_key=True, related_name="garcom")
 
+    class Meta:
+        managed = False
+
     def __str__(self):
         return f"Garçom - {self.utilizador.primeiro_nome} {self.utilizador.ultimo_nome}"
     
@@ -66,6 +78,9 @@ class GarcomIdioma(models.Model):
     garcom = models.ForeignKey(Garcom, on_delete=models.CASCADE, related_name="idiomas")
     idioma = models.CharField(max_length=50)
 
+    class Meta:
+        managed = False
+
     def __str__(self):
         return f"{self.garcom.utilizador.primeiro_nome} {self.garcom.utilizador.ultimo_nome} - {self.idioma}"
 
@@ -73,6 +88,9 @@ class GarcomIdioma(models.Model):
 class Cozinheiro(models.Model):
     utilizador = models.OneToOneField(Utilizador, on_delete=models.CASCADE, primary_key=True, related_name="cozinheiro")
     especialidades = models.CharField(max_length=255)
+
+    class Meta:
+        managed = False
 
     def __str__(self):
         return f"Cozinheiro - {self.utilizador.primeiro_nome} {self.utilizador.ultimo_nome}"
@@ -82,12 +100,18 @@ class Administrador(models.Model):
     utilizador = models.OneToOneField(Utilizador, on_delete=models.CASCADE, primary_key=True, related_name="administrador")
     fornecedor = models.ForeignKey('inventario.Fornecedor', on_delete=models.DO_NOTHING, related_name="administradores")
 
+    class Meta:
+        managed = False
+
     def __str__(self):
         return f"Administrador - {self.utilizador.primeiro_nome} {self.utilizador.ultimo_nome}"
     
 
 class Cliente(models.Model):
     utilizador = models.OneToOneField(Utilizador, on_delete=models.CASCADE, primary_key=True, related_name="cliente")
+
+    class Meta:
+        managed = False
 
     def __str__(self):
         return f"Cliente - {self.utilizador.primeiro_nome} {self.utilizador.ultimo_nome}"

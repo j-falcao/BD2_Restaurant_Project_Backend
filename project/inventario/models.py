@@ -6,6 +6,9 @@ class Carrinho(models.Model):
     preco_total = models.DecimalField(max_digits=10, decimal_places=2)
     data_compra = models.DateTimeField()
 
+    class Meta:
+        managed = False
+
     def __str__(self):
         return f"Carrinho - {self.data_compra}"
     
@@ -18,6 +21,9 @@ class Fornecedor(models.Model):
     morada = models.CharField(max_length=255)
     email = models.EmailField()
     telefone = models.CharField(max_length=20)
+
+    class Meta:
+        managed = False
 
     def __str__(self):
         return self.nome
@@ -33,6 +39,9 @@ class Ingrediente(models.Model):
     preco = models.DecimalField(max_digits=10, decimal_places=2)
     fornecedor = models.ForeignKey(Fornecedor, on_delete=models.CASCADE)
 
+    class Meta:
+        managed = False
+
     def __str__(self):
         return self.nome
     
@@ -41,6 +50,9 @@ class IngredienteValidade(models.Model):
     id_ingredienteValidade = models.AutoField(primary_key=True)
     ingrediente = models.ForeignKey(Ingrediente, on_delete=models.CASCADE)
     data_validade = models.DateField()
+
+    class Meta:
+        managed = False
 
     def __str__(self):
         return f"{self.ingrediente.nome} - {self.data_validade}"
@@ -52,6 +64,9 @@ class IngredienteAdministrador(models.Model):
     administrador = models.ForeignKey(Administrador, on_delete=models.CASCADE)
     carrinho = models.ForeignKey(Carrinho, on_delete=models.CASCADE)
     quantidade = models.IntegerField()
+
+    class Meta:
+        managed = False
 
     def __str__(self):
         return f"{self.ingrediente.nome} - {self.quantidade}"
@@ -66,6 +81,9 @@ class Utensilio(models.Model):
     preco = models.DecimalField(max_digits=10, decimal_places=2)
     fornecedor = models.ForeignKey(Fornecedor, on_delete=models.CASCADE)
 
+    class Meta:
+        managed = False
+
     def __str__(self):
         return self.nome
     
@@ -77,6 +95,9 @@ class UtensilioAdministrador(models.Model):
     carrinho = models.ForeignKey(Carrinho, on_delete=models.CASCADE)
     quantidade = models.IntegerField()
 
+    class Meta:
+        managed = False
+
     def __str__(self):
         return f"{self.utensilio.nome} - {self.quantidade}"
 
@@ -86,6 +107,9 @@ class Receita(models.Model):
     nome = models.CharField(max_length=100)
     estimativaTempo = models.TimeField()
 
+    class Meta:
+        managed = False
+
     def __str__(self):
         return self.nome
 
@@ -94,6 +118,9 @@ class UtensilioReceita(models.Model):
     id_utensilioReceita = models.AutoField(primary_key=True)
     utensilio = models.ForeignKey(Utensilio, on_delete=models.CASCADE)
     receita = models.ForeignKey(Receita, on_delete=models.CASCADE)
+
+    class Meta:
+        managed = False
 
     def __str__(self):
         return f"{self.utensilio.nome} - {self.receita.nome}"
@@ -105,6 +132,9 @@ class Instucao(models.Model):
     receita = models.ForeignKey(Receita, on_delete=models.CASCADE)
     numeroSequencia = models.IntegerField()
     descricao = models.TextField()
+
+    class Meta:
+        managed = False
 
     def __str__(self):
         return f"{self.receitaNome} - Passo {self.numeroSequencia}"

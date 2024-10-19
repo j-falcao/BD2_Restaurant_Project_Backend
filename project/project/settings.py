@@ -1,7 +1,7 @@
 
 import os
 from pathlib import Path
-from dotenv import load_dotenv
+from dotenv import load_dotenv # type: ignore
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,6 +20,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework_simplejwt',
+    'corsheaders',
     'cargos',
     'estatisticas',
     'inventario',
@@ -28,6 +31,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -35,7 +39,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'project.middleware.DynamicDatabaseUserMiddleware',
+]
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173/',
+    'http://127.0.0.1:5173/',
 ]
 
 ROOT_URLCONF = 'project.urls'
@@ -59,24 +67,39 @@ TEMPLATES = [
 WSGI_APPLICATION = 'project.wsgi.application'
 
 
-# Database
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+}
+
+""" 'mongo': {
+    'ENGINE': 'django.db.backends.XXX',
+    'NAME': os.getenv('MONGO_DB_NAME'),
+    'HOST': os.getenv('MONGO_HOST'),
+    'PORT': os.getenv('MONGO_PORT'),
+    'USERNAME': os.getenv('MONGO_USER'),
+    'PASSWORD': os.getenv('MONGO_PASS'),
+    
+}, """
+
+from datetime import timedelta
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+}
+
 DATABASES = {
-    'mongo': {
-        'ENGINE': 'djongo',
-        'NAME': os.getenv('MONGO_DB_NAME'),
-        'HOST': os.getenv('MONGO_HOST'),
-        'PORT': os.getenv('MONGO_PORT'),
-        'USERNAME': os.getenv('MONGO_USER'),
-        'PASSWORD': os.getenv('MONGO_PASS'),
-        
-    },
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('DB_NAME'),
         'HOST': os.getenv('DB_HOST'),
         'PORT': os.getenv('DB_PORT'),
-        'USER': os.getenv('USER_CLIENTE'),
-        'PASSWORD': os.getenv('PASS_CLIENTE')
+        'USER': os.getenv('USER_DEV'),
+        'PASSWORD': os.getenv('PASS_DEV')
     },
     'admin': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -103,7 +126,6 @@ DATABASES = {
         'PASSWORD': os.getenv('PASS_GARCOM')
     },
 }
-
 
 
 # Password validation

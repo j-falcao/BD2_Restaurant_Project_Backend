@@ -32,8 +32,8 @@ class EstadoMesa(models.Model):
 
 class Pedido(models.Model):
     id_pedido = models.AutoField(primary_key=True)
-    garcom = models.ForeignKey('auth.Garcom', on_delete=models.CASCADE)
-    cliente = models.ForeignKey('auth.Cliente', on_delete=models.CASCADE)
+    garcom = models.ForeignKey('cargos.Garcom', on_delete=models.CASCADE)
+    cliente = models.ForeignKey('cargos.Cliente', on_delete=models.CASCADE)
     data_hora = models.DateTimeField(auto_now_add=True)
     online = models.BooleanField(default=False)
     mesa = models.ForeignKey(Mesa, on_delete=models.CASCADE)

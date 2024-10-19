@@ -37,10 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'produtos',
-    'pedidos',
-    'inventario',
+    'cargos',
     'estatisticas',
+    'inventario',
+    'pedidos',
+    'produtos',
 ]
 
 MIDDLEWARE = [
@@ -79,17 +80,9 @@ WSGI_APPLICATION = 'project.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    'mongo': {
-        'ENGINE': 'djongo',
-        'NAME': 'BD2',
-        'CLIENT': {
-            'host': 'mongodb://localhost:27017',
-            # MongoDB has its own connection pooling
-        },
-    },
-    'postgres': {
+    'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'BD2',
+        'NAME': 'BD2_Project',
         'USER': 'postgres',
         'PASSWORD': 'R0dr3g02oo4',
         'HOST': 'localhost',
@@ -97,6 +90,13 @@ DATABASES = {
         'OPTIONS': {
             'pool': True
         }
+    },
+    'mongo': {
+        'ENGINE': 'djongo',
+        'NAME': 'BD2',
+        'CLIENT': {
+            'host': 'mongodb://localhost:27017',
+        },
     }
 }
 

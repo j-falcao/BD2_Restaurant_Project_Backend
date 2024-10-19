@@ -48,7 +48,7 @@ class IngredienteValidade(models.Model):
 class IngredienteAdministrador(models.Model):
     id_ingredienteAdministrador = models.AutoField(primary_key=True)
     ingrediente = models.ForeignKey(Ingrediente, on_delete=models.CASCADE)
-    administrador = models.ForeignKey('auth.Administrador', on_delete=models.CASCADE)
+    administrador = models.ForeignKey('cargos.Administrador', on_delete=models.CASCADE)
     carrinho = models.ForeignKey(Carrinho, on_delete=models.CASCADE)
     quantidade = models.IntegerField()
 
@@ -72,7 +72,7 @@ class Utensilio(models.Model):
 class UtensilioAdministrador(models.Model):
     id_utensilioAdministrador = models.AutoField(primary_key=True)
     utensilio = models.ForeignKey(Utensilio, on_delete=models.CASCADE)
-    administrador = models.ForeignKey('auth.Administrador', on_delete=models.CASCADE)
+    administrador = models.ForeignKey('cargos.Administrador', on_delete=models.CASCADE)
     carrinho = models.ForeignKey(Carrinho, on_delete=models.CASCADE)
     quantidade = models.IntegerField()
 
@@ -98,14 +98,6 @@ class UtensilioReceita(models.Model):
         return f"{self.utensilio.nome} - {self.receita.nome}"
 
 
-class IngredienteAdministrador(models.Model):
-    id_ingredienteReceita = models.AutoField(primary_key=True)
-    ingrediente = models.ForeignKey(Ingrediente, on_delete=models.CASCADE)
-    receita = models.ForeignKey(Receita, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f"{self.ingrediente.nome} - {self.receita.nome}"
-    
 
 class Instucao(models.Model):
     id_instucao = models.AutoField(primary_key=True)

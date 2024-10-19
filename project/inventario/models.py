@@ -99,14 +99,6 @@ class UtensilioReceita(models.Model):
         return f"{self.utensilio.nome} - {self.receita.nome}"
 
 
-class IngredienteAdministrador(models.Model):
-    id_ingredienteReceita = models.AutoField(primary_key=True)
-    ingrediente = models.ForeignKey(Ingrediente, on_delete=models.CASCADE)
-    receita = models.ForeignKey(Receita, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f"{self.ingrediente.nome} - {self.receita.nome}"
-    
 
 class Instucao(models.Model):
     id_instucao = models.AutoField(primary_key=True)

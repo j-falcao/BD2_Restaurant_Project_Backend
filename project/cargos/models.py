@@ -21,8 +21,8 @@ class Turno(models.Model):
 
 class Utilizador(AbstractUser):
     id_utilizador = models.AutoField(primary_key=True)
-    tipo_utilizador = models.ForeignKey(TipoUtilizador, on_delete=models.CASCADE)
-    turno = models.ForeignKey(Turno, on_delete=models.CASCADE)
+    tipo_utilizador = models.ForeignKey(TipoUtilizador, on_delete=models.CASCADE, related_name="utilizadores")
+    turno = models.ForeignKey(Turno, on_delete=models.CASCADE, related_name="utilizadores")
     primeiro_nome = models.CharField(max_length=255)
     ultimo_nome = models.CharField(max_length=255)
     morada = models.CharField(max_length=255)
@@ -32,12 +32,30 @@ class Utilizador(AbstractUser):
     genero = models.CharField(max_length=10)
     data_registo = models.DateField(auto_now_add=True)
 
+    # Correção: Os campos groups e user_permissions precisam estar dentro da classe
+    groups = models.ManyToManyField(
+        'auth.Group',
+        related_name='cargos_utilizador_groups',  # Adiciona related_name
+        blank=True,
+        help_text=('The groups this user belongs to. A user will get all permissions '
+                   'granted to each of their groups.'),
+        verbose_name=('groups'),
+    )
+
+    user_permissions = models.ManyToManyField(
+        'auth.Permission',
+        related_name='cargos_utilizador_user_permissions',  # Adiciona related_name
+        blank=True,
+        help_text=('Specific permissions for this user.'),
+        verbose_name=('user permissions'),
+    )
+
     def __str__(self):
-        return self.nome
-    
+        return f"{self.primeiro_nome} {self.ultimo_nome}"
+
 
 class Garcom(models.Model):
-    utilizador = models.OneToOneField(Utilizador, on_delete=models.CASCADE, primary_key=True)
+    utilizador = models.OneToOneField(Utilizador, on_delete=models.CASCADE, primary_key=True, related_name="garcom")
 
     def __str__(self):
         return f"Garçom - {self.utilizador.primeiro_nome} {self.utilizador.ultimo_nome}"
@@ -45,7 +63,7 @@ class Garcom(models.Model):
 
 class GarcomIdioma(models.Model):
     id_garcom_idioma = models.AutoField(primary_key=True)
-    garcom = models.ForeignKey(Garcom, on_delete=models.CASCADE)
+    garcom = models.ForeignKey(Garcom, on_delete=models.CASCADE, related_name="idiomas")
     idioma = models.CharField(max_length=50)
 
     def __str__(self):
@@ -53,7 +71,7 @@ class GarcomIdioma(models.Model):
 
 
 class Cozinheiro(models.Model):
-    utilizador = models.OneToOneField(Utilizador, on_delete=models.CASCADE, primary_key=True)
+    utilizador = models.OneToOneField(Utilizador, on_delete=models.CASCADE, primary_key=True, related_name="cozinheiro")
     especialidades = models.CharField(max_length=255)
 
     def __str__(self):
@@ -61,14 +79,15 @@ class Cozinheiro(models.Model):
 
 
 class Administrador(models.Model):
-    utilizador = models.OneToOneField(Utilizador, on_delete=models.CASCADE, primary_key=True)
-    fornecedor = models.ForeignKey('inventario.Fornecedor', on_delete=models.DO_NOTHING)
+    utilizador = models.OneToOneField(Utilizador, on_delete=models.CASCADE, primary_key=True, related_name="administrador")
+    fornecedor = models.ForeignKey('inventario.Fornecedor', on_delete=models.DO_NOTHING, related_name="administradores")
 
     def __str__(self):
         return f"Administrador - {self.utilizador.primeiro_nome} {self.utilizador.ultimo_nome}"
     
+
 class Cliente(models.Model):
-    utilizador = models.OneToOneField(Utilizador, on_delete=models.CASCADE, primary_key=True)
+    utilizador = models.OneToOneField(Utilizador, on_delete=models.CASCADE, primary_key=True, related_name="cliente")
 
     def __str__(self):
         return f"Cliente - {self.utilizador.primeiro_nome} {self.utilizador.ultimo_nome}"

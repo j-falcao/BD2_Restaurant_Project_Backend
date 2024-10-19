@@ -8,22 +8,19 @@ class Produto(models.Model):
     url_imagem = models.URLField(blank=True, null=True)
     preco = models.DecimalField(max_digits=10, decimal_places=2)
 
-    class Meta:
-        abstract = True
-
     def __str__(self):
         return self.nome
 
 
-class Menu(models.Model):
-    produto = models.OneToOneField(Produto, on_delete=models.CASCADE, primary_key=True)
+class Item(models.Model):
+    produto = models.OneToOneField(Produto, on_delete=models.CASCADE, primary_key=True, related_name='produto_item')  # Adiciona related_name
 
     def __str__(self):
         return self.produto.nome
 
 
-class Item(models.Model):
-    produto = models.OneToOneField(Produto, on_delete=models.CASCADE, primary_key=True)
+class Menu(models.Model):
+    produto = models.OneToOneField(Produto, on_delete=models.CASCADE, primary_key=True, related_name='produto_menu')  # Adiciona related_name
 
     def __str__(self):
         return self.produto.nome
@@ -44,6 +41,7 @@ class DiaSemana(models.Model):
 
     def __str__(self):
         return self.nome
+
 
 
 class MenuDiaSemana(models.Model):

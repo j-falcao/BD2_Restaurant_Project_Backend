@@ -10,26 +10,104 @@ class Produto(models.Model):
 
     class Meta:
         managed = False
+        db_table = 'produto'
 
     def __str__(self):
         return self.nome
 
 
 class Item(models.Model):
-    produto = models.OneToOneField(Produto, on_delete=models.CASCADE, primary_key=True, related_name='produto_item')  # Adiciona related_name
+    produto = models.OneToOneField(Produto, on_delete=models.CASCADE, primary_key=True, related_name='produto_item')
+
+    class Meta:
+        managed = False
+        db_table = 'item'
+
+    def __str__(self):
+        return self.produto.nome
+    
+
+class Tipo(models.Model):
+    id_tipo = models.AutoField(primary_key=True)
+    nome = models.CharField(max_length=100)
+    itens = models.ManyToManyField(Item, related_name='tipos', through='ItemTipo')
+
+    class Meta:
+        managed = False
+        db_table = 'tipo'
+
+    def __str__(self):
+        return self.descricao
+
+class ItemTipo(models.Model):
+    id_itemTipo = models.AutoField(primary_key=True)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    tipo = models.ForeignKey(Tipo, on_delete=models.CASCADE)
 
     class Meta:
         managed = False
 
     def __str__(self):
-        return self.produto.nome
+        return f"{self.item} - {self.tipo}"
 
 
-class Menu(models.Model):
-    produto = models.OneToOneField(Produto, on_delete=models.CASCADE, primary_key=True, related_name='produto_menu')  # Adiciona related_name
+class Categoria(models.Model):
+    id_categoria = models.AutoField(primary_key=True)
+    nome = models.CharField(max_length=100)
+    itens = models.ManyToManyField(Item, related_name='categorias', through='ItemCategoria')
 
     class Meta:
         managed = False
+        db_table = 'categoria'
+
+    def __str__(self):
+        return self.descricao
+
+
+class ItemCategoria(models.Model):
+    id_itemCategoria = models.AutoField(primary_key=True)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
+
+    class Meta:
+        managed = False
+
+    def __str__(self):
+        return f'{self.item} - {self.categoria}'
+
+
+class Opcao(models.Model):
+    id_opcao = models.AutoField(primary_key=True)
+    nome = models.CharField(max_length=255)
+    itens = models.ManyToManyField(Item, related_name='opcoes', through='OpcaoItem')
+
+    class Meta:
+        managed = False
+        db_table = 'opcao'
+
+    def __str__(self):
+        return self.nome
+
+
+class OpcaoItem(models.Model):
+    id_opcaoItem = models.AutoField(primary_key=True)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    opcao = models.ForeignKey(Opcao, on_delete=models.CASCADE)
+
+    class Meta:
+        managed = False
+
+    def __str__(self):
+        return f"{self.item} - {self.opcao}"
+
+
+class Menu(models.Model):
+    produto = models.OneToOneField(Produto, on_delete=models.CASCADE, primary_key=True, related_name='produto_menu')
+    itens = models.ManyToManyField(Item, related_name='menus', through='MenuItem')
+
+    class Meta:
+        managed = False
+        db_table = 'menu'
 
     def __str__(self):
         return self.produto.nome
@@ -50,13 +128,14 @@ class MenuItem(models.Model):
 class DiaSemana(models.Model):
     id_diaSemana = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=50)
+    menus = models.ManyToManyField(Menu, related_name='dias', through='MenuDiaSemana')
 
     class Meta:
         managed = False
+        db_table = 'diasemana'
 
     def __str__(self):
         return self.nome
-
 
 
 class MenuDiaSemana(models.Model):
@@ -71,72 +150,3 @@ class MenuDiaSemana(models.Model):
 
     def __str__(self):
         return f'{self.menu} - {self.diaSemana} - Almoço: {self.almoco} - Jantar: {self.jantar}'
-
-
-class Tipo(models.Model):
-    id_tipo = models.AutoField(primary_key=True)
-    nome = models.CharField(max_length=100)
-
-    class Meta:
-        managed = False
-
-    def __str__(self):
-        return self.descricao
-
-
-class Categoria(models.Model):
-    id_categoria = models.AutoField(primary_key=True)
-    nome = models.CharField(max_length=100)
-
-    class Meta:
-        managed = False
-
-    def __str__(self):
-        return self.descricao
-
-
-class ItemTipo(models.Model):
-    id_itemTipo = models.AutoField(primary_key=True)
-    item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    tipo = models.ForeignKey(Tipo, on_delete=models.CASCADE)
-
-    class Meta:
-        managed = False
-
-    def __str__(self):
-        return f"{self.item} - {self.tipo}"
-
-
-class ItemCategoria(models.Model):
-    id_itemCategoria = models.AutoField(primary_key=True)
-    item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
-
-    class Meta:
-        managed = False
-
-    def __str__(self):
-        return f'{self.item} - {self.categoria}'
-
-
-class Opcao(models.Model):
-    id_opcao = models.AutoField(primary_key=True)
-    nome = models.CharField(max_length=255)
-
-    class Meta:
-        managed = False
-
-    def __str__(self):
-        return self.nome
-
-
-class OpcaoItem(models.Model):
-    id_opcaoItem = models.AutoField(primary_key=True)
-    item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    opcao = models.ForeignKey(Opcao, on_delete=models.CASCADE)
-
-    class Meta:
-        managed = False
-
-    def __str__(self):
-        return f"{self.item} - {self.opcao}"

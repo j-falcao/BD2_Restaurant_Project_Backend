@@ -99,7 +99,7 @@ DATABASES = {
         'HOST': os.getenv('DB_HOST'),
         'PORT': os.getenv('DB_PORT'),
         'USER': os.getenv('USER_DEV'),
-        'PASSWORD': os.getenv('PASS_DEV')
+        'PASSWORD': os.getenv('PASSWORD_DEV')
     },
     'admin': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -107,7 +107,7 @@ DATABASES = {
         'HOST': os.getenv('DB_HOST'),
         'PORT': os.getenv('DB_PORT'),
         'USER': os.getenv('USER_ADMIN'),
-        'PASSWORD': os.getenv('PASS_ADMIN')
+        'PASSWORD': os.getenv('PASSWORD_ADMIN')
     },
     'cozinheiro': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -115,7 +115,7 @@ DATABASES = {
         'HOST': os.getenv('DB_HOST'),
         'PORT': os.getenv('DB_PORT'),
         'USER': os.getenv('USER_COZINHEIRO'),
-        'PASSWORD': os.getenv('PASS_COZINHEIRO')
+        'PASSWORD': os.getenv('PASSWORD_COZINHEIRO')
     },
     'garcom': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -123,7 +123,7 @@ DATABASES = {
         'HOST': os.getenv('DB_HOST'),
         'PORT': os.getenv('DB_PORT'),
         'USER': os.getenv('USER_GARCOM'),
-        'PASSWORD': os.getenv('PASS_GARCOM')
+        'PASSWORD': os.getenv('PASSWORD_GARCOM')
     },
 }
 

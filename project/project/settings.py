@@ -1,7 +1,7 @@
 
 import os
 from pathlib import Path
-from dotenv import load_dotenv # type: ignore
+from dotenv import load_dotenv
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -91,6 +91,7 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
 }
+
 
 DATABASES = {
     'default': {

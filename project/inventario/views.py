@@ -1,11 +1,6 @@
-from django.shortcuts import render
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
 
-# Create your views here.
-""" def ingredientes_view(request):
-    return render(request, 'inventario/ingredientes.html')
-
-def utensilios_view(request):
-    return render(request, 'inventario/utensilios.html')
-
-def carrinho_view(request):
-    return render(request, 'inventario/carrinho.html') """
+@api_view(['GET'])
+def ingredientes_view(request):
+    return Response({'name': 'João', 'idade': 22})

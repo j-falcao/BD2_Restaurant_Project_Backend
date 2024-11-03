@@ -1,4 +1,21 @@
 from django.db import models
+from cargos.models import Utilizador
+
+
+class EstadoMesa(models.Model):
+    """
+    Define o estado atual de uma mesa, como 'Disponível', 'Ocupada', etc...
+    """
+    id_estado_mesa = models.AutoField(primary_key=True)
+    estado = models.CharField(max_length=20)
+
+    class Meta:
+        managed = False
+        db_table = 'estadomesa'
+
+    def __str__(self):
+        return self.estado
+    
 
 class Mesa(models.Model):
     """
@@ -16,14 +33,35 @@ class Mesa(models.Model):
         return f"Mesa {self.numero}"
 
 
+class Servico(models.Model):
+    """
+    Representa um trabalho uma visita. desde a ocupacao da mesa, para o encerramento da mesma, inlcuindo o garçom e o preco total.
+    """
+    id_servico = models.AutoField(primary_key=True)
+    online = models.BooleanField(default=False)
+    mesa = models.ForeignKey(Mesa, on_delete=models.CASCADE, null=True, blank=True, related_name="servicos")
+    cliente = models.ForeignKey(Utilizador, on_delete=models.CASCADE, null=True, blank=True, related_name="servicos")
+    garcom = models.ForeignKey(Utilizador, on_delete=models.CASCADE, null=True, blank=True, related_name="servicos")
+    data_hora_inicio = models.DateTimeField(auto_now_add=True)
+    data_hora_fim = models.DateTimeField(null=True, blank=True)
+    preco_total = models.DecimalField(max_digits=10, decimal_places=2)
+
+    class Meta:
+        managed = False
+        db_table = 'servico'
+
+    def __str__(self):
+        return f"Servico {self.id_servico} na Mesa {self.mesa}"
+
+
 class Reserva(models.Model):
     """
-    Representa uma reserva para uma mesa, com data e hora de início e fim.
+    Representa uma reserva para uma mesa, com data e hora e o serviço associado.
     """
     id_reserva = models.AutoField(primary_key=True)
     mesa = models.ForeignKey(Mesa, on_delete=models.CASCADE)
-    data_hora_inicio = models.DateTimeField(auto_now_add=True)
-    data_hora_fim = models.DateTimeField(auto_now_add=True)
+    data_hora = models.DateTimeField(auto_now_add=True)
+    servico = models.ForeignKey(Servico, on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
         managed = False
@@ -33,40 +71,30 @@ class Reserva(models.Model):
         return f"Reserva {self.id_reserva} na Mesa {self.mesa}"
 
 
-class EstadoMesa(models.Model):
-    """
-    Define o estado atual de uma mesa, como 'Disponível', 'Ocupada', etc.
-    """
-    id_estado_mesa = models.AutoField(primary_key=True)
-    estado = models.CharField(max_length=20)
-
-    class Meta:
-        managed = False
-        db_table = 'estadomesa'
-
-    def __str__(self):
-        return self.estado
-
-
 class Pedido(models.Model):
     """
-    Representa um pedido feito por um cliente, incluindo a mesa, o garçom e se foi feito online.
+    Representa um pedido feito por um cliente.
     """
     id_pedido = models.AutoField(primary_key=True)
-    garcom = models.ForeignKey('cargos.Garcom', on_delete=models.CASCADE)
-    cliente = models.ForeignKey('cargos.Cliente', on_delete=models.CASCADE)
     data_hora = models.DateTimeField(auto_now_add=True)
-    online = models.BooleanField(default=False)
-    mesa = models.ForeignKey(Mesa, on_delete=models.CASCADE)
-
+    servico = models.ForeignKey(Servico, on_delete=models.CASCADE, null=True, blank=True, related_name="pedidos")
     produtos = models.ManyToManyField('produtos.Produto', through='PedidoProduto', related_name='pedidos')
+
+    # Validation - Copiar para triggers:
+    def data_hora_valida(self):
+        if self.data_hora < self.servico.data_hora_inicio:
+            return False
+        elif self.servico.data_hora_fim is not None and self.data_hora > self.servico.data_hora_fim:
+            return False
+        return True
+
 
     class Meta:
         managed = False
         db_table = 'pedido'
 
     def __str__(self):
-        return f"Pedido {self.id_pedido} - Mesa {self.mesa.numero} - {self.data_hora}"
+        return f"Serviço {self.servico} - Pedido {self.id_pedido} - {self.data_hora}"
 
 
 class PedidoProduto(models.Model):

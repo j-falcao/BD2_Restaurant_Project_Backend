@@ -1,5 +1,5 @@
 from django.db import models
-from cargos.models import Administrador
+from cargos.models import Utilizador
 
 class Carrinho(models.Model):
     """
@@ -79,7 +79,7 @@ class IngredienteAdministrador(models.Model):
     """
     id_ingrediente_administrador = models.AutoField(primary_key=True)
     ingrediente = models.ForeignKey(Ingrediente, on_delete=models.CASCADE)
-    administrador = models.ForeignKey(Administrador, on_delete=models.CASCADE)
+    administrador = models.ForeignKey(Utilizador, on_delete=models.CASCADE)
     carrinho = models.ForeignKey(Carrinho, on_delete=models.CASCADE)
     quantidade = models.IntegerField()
 
@@ -116,7 +116,7 @@ class UtensilioAdministrador(models.Model):
     """
     id_utensilio_administrador = models.AutoField(primary_key=True)
     utensilio = models.ForeignKey(Utensilio, on_delete=models.CASCADE)
-    administrador = models.ForeignKey(Administrador, on_delete=models.CASCADE)
+    administrador = models.ForeignKey(Utilizador, on_delete=models.CASCADE)
     carrinho = models.ForeignKey(Carrinho, on_delete=models.CASCADE)
     quantidade = models.IntegerField()
 

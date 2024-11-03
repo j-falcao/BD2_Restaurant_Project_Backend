@@ -1,25 +1,11 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-class TipoUtilizador(models.Model):
-    """
-    Representa o tipo de utilizador (e.g., garçom, cozinheiro, administrador).
-    """
-    id_tipo_utilizador = models.AutoField(primary_key=True)
-    descricao = models.CharField(max_length=255)
-
-    class Meta:
-        managed = False
-        db_table = 'tipoutilizador'
-
-    def __str__(self):
-        return self.descricao
-
-
 class Turno(models.Model):
-    """
-    Representa um turno de trabalho com nome, hora de início e fim.
-    """
+    
+    #Representa um turno de trabalho com nome, hora de início e fim.
+    
     id_turno = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=100)
     hora_inicio = models.TimeField()
@@ -34,11 +20,10 @@ class Turno(models.Model):
 
 
 class Utilizador(AbstractUser):
-    """
-    Classe de utilizador estendida com informações adicionais como tipo, turno e dados pessoais.
-    """
-    id_utilizador = models.AutoField(primary_key=True)
-    tipo_utilizador = models.ForeignKey(TipoUtilizador, on_delete=models.CASCADE, related_name="utilizadores")
+    
+    #Classe de utilizador estendida com informações adicionais como tipo, turno e dados pessoais.
+    
+    id = models.AutoField(primary_key=True)
     turno = models.ForeignKey(Turno, on_delete=models.CASCADE, related_name="utilizadores")
     primeiro_nome = models.CharField(max_length=255)
     ultimo_nome = models.CharField(max_length=255)
@@ -50,34 +35,51 @@ class Utilizador(AbstractUser):
     data_registo = models.DateField(auto_now_add=True)
 
     class Meta:
-        managed = False
         db_table = 'utilizador'
 
-    groups = models.ManyToManyField(
+    cargo = models.ManyToManyField(
         'auth.Group',
-        related_name='cargos_utilizador_groups',  # Adiciona related_name
+        related_name='utilizadores',
         blank=True,
-        help_text=('Os grupos aos quais este usuário pertence. O usuário receberá todas as permissões '
+        help_text=('Os grupos aos quais este utilizador pertence. O utilizador receberá todas as permissões '
                    'concedidas a cada grupo ao qual pertence.'),
-        verbose_name=('groups'),
+        verbose_name=('grupos'),
     )
 
-    user_permissions = models.ManyToManyField(
+    permissoes = models.ManyToManyField(
         'auth.Permission',
-        related_name='cargos_utilizador_user_permissions',  # Adiciona related_name
+        related_name='utilizadores',
         blank=True,
-        help_text=('Permissões específicas para este usuário.'),
-        verbose_name=('user permissions'),
+        help_text=('Permissões específicas para este utilizador.'),
+        verbose_name=('permissoes'),
     )
+    
+    def clean(self):
+        super().clean()
+        # Verifica se o utilizador está associado a mais de um grupo
+        if self.groups.count() > 1:
+            raise ValidationError("Um utilizador pode pertencer a apenas um grupo/cargo.")
+
+    def save(self, *args, **kwargs):
+        # Chama o método clean antes de salvar o utilizador
+        self.clean()
+        super().save(*args, **kwargs)
+
 
     def __str__(self):
         return f"{self.primeiro_nome} {self.ultimo_nome}"
 
 
-class Garcom(models.Model):
-    """
-    Representa um garçom associado a um utilizador específico.
-    """
+
+
+
+
+
+
+""" class Garcom(models.Model):
+    
+    #Representa um garçom associado a um utilizador específico.
+    
     utilizador = models.OneToOneField(Utilizador, on_delete=models.CASCADE, primary_key=True, related_name="garcom")
 
     class Meta:
@@ -88,28 +90,11 @@ class Garcom(models.Model):
         return f"Garçom - {self.utilizador.primeiro_nome} {self.utilizador.ultimo_nome}"
 
 
-class GarcomIdioma(models.Model):
-    """
-    Representa os idiomas falados por um garçom específico.
-    """
-    id_garcom_idioma = models.AutoField(primary_key=True)
-    garcom = models.ForeignKey(Garcom, on_delete=models.CASCADE, related_name="idiomas")
-    idioma = models.CharField(max_length=50)
-
-    class Meta:
-        managed = False
-        db_table = 'garcomidioma'
-
-    def __str__(self):
-        return f"{self.garcom.utilizador.primeiro_nome} {self.garcom.utilizador.ultimo_nome} - {self.idioma}"
-
-
 class Cozinheiro(models.Model):
-    """
-    Representa um cozinheiro com especialidades específicas.
-    """
+    
+    #Representa um cozinheiro com especialidades específicas.
+    
     utilizador = models.OneToOneField(Utilizador, on_delete=models.CASCADE, primary_key=True, related_name="cozinheiro")
-    especialidades = models.CharField(max_length=255)
 
     class Meta:
         managed = False
@@ -120,11 +105,10 @@ class Cozinheiro(models.Model):
 
 
 class Administrador(models.Model):
-    """
-    Representa um administrador associado a um fornecedor específico.
-    """
+
+    #Representa um administrador associado a um fornecedor específico.
+    
     utilizador = models.OneToOneField(Utilizador, on_delete=models.CASCADE, primary_key=True, related_name="administrador")
-    fornecedor = models.ForeignKey('inventario.Fornecedor', on_delete=models.DO_NOTHING, related_name="administradores")
 
     class Meta:
         managed = False
@@ -135,9 +119,9 @@ class Administrador(models.Model):
 
 
 class Cliente(models.Model):
-    """
-    Representa um cliente associado a um utilizador específico.
-    """
+    
+    #Representa um cliente associado a um utilizador específico.
+
     utilizador = models.OneToOneField(Utilizador, on_delete=models.CASCADE, primary_key=True, related_name="cliente")
 
     class Meta:
@@ -146,3 +130,4 @@ class Cliente(models.Model):
 
     def __str__(self):
         return f"Cliente - {self.utilizador.primeiro_nome} {self.utilizador.ultimo_nome}"
+ """

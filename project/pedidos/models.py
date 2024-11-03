@@ -40,7 +40,6 @@ class Servico(models.Model):
     id_servico = models.AutoField(primary_key=True)
     online = models.BooleanField(default=False)
     mesa = models.ForeignKey(Mesa, on_delete=models.CASCADE, null=True, blank=True, related_name="servicos")
-    cliente = models.ForeignKey(Utilizador, on_delete=models.CASCADE, null=True, blank=True, related_name="servicos")
     garcom = models.ForeignKey(Utilizador, on_delete=models.CASCADE, null=True, blank=True, related_name="servicos")
     data_hora_inicio = models.DateTimeField(auto_now_add=True)
     data_hora_fim = models.DateTimeField(null=True, blank=True)

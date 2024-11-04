@@ -14,7 +14,7 @@ def run():
             "turno": Turno.objects.get(nome="Manhã")
         },
         {
-            "username": "mariag",
+            "username": "maria",
             "primeiro_nome": "Maria",
             "ultimo_nome": "Gomes",
             "morada": "Avenida Secundária 456",

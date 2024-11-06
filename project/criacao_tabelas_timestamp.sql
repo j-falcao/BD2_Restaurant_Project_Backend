@@ -5,6 +5,7 @@ CREATE TABLE CargoUtilizador (
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+++
 CREATE TABLE Turno (
     id_turno SERIAL PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,

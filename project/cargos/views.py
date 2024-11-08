@@ -3,7 +3,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import api_view
 from django.contrib.auth import authenticate
 
-@api_view(['GET', 'POST'])
+@api_view(['POST'])
 def login_view(request):
     username = request.data.get("username")
     password = request.data.get("password")
@@ -22,8 +22,8 @@ def login_view(request):
             "access_token",
             access_token,
             httponly=True,
-            secure=True,       # Defina como True em produção com HTTPS
-            samesite="Strict"   # Opção para evitar ataques CSRF
+            secure=True,
+            samesite="Strict"
         )
         return response
     else:

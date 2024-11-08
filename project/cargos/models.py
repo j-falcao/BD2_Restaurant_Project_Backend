@@ -2,48 +2,26 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-class Turno(models.Model):
-    
-    #Representa um turno de trabalho com nome, hora de início e fim.
-    
-    id_turno = models.AutoField(primary_key=True)
-    nome = models.CharField(max_length=100)
-    hora_inicio = models.TimeField()
-    hora_fim = models.TimeField()
-
-    class Meta:
-        managed = False
-        db_table = 'turno'
-
-    def __str__(self):
-        return self.nome
-
-
 class Utilizador(AbstractUser):
-    
-    #Classe de utilizador estendida com informações adicionais como tipo, turno e dados pessoais.
-    
     id = models.AutoField(primary_key=True)
-    turno = models.ForeignKey(Turno, on_delete=models.CASCADE, related_name="utilizadores")
+    turno_almoco = models.BooleanField(default=False)
+    turno_jantar = models.BooleanField(default=False)
     primeiro_nome = models.CharField(max_length=255)
     ultimo_nome = models.CharField(max_length=255)
-    morada = models.CharField(max_length=255)
-    telefone = models.CharField(max_length=20)
-    email = models.EmailField()
-    data_nascimento = models.DateField()
+    morada = models.CharField(max_length=255, null=True, blank=True)
+    telefone = models.CharField(max_length=20, null=True, blank=True)
+    email = models.EmailField(null=True, blank=True)
+    data_nascimento = models.DateField(null=True, blank=True)
     genero = models.CharField(max_length=10)
     data_registo = models.DateField(auto_now_add=True)
 
-    class Meta:
-        db_table = 'utilizador'
-
-    cargo = models.ManyToManyField(
+    cargos = models.ManyToManyField(
         'auth.Group',
         related_name='utilizadores',
         blank=True,
         help_text=('Os grupos aos quais este utilizador pertence. O utilizador receberá todas as permissões '
                    'concedidas a cada grupo ao qual pertence.'),
-        verbose_name=('grupos'),
+        verbose_name=('cargos'),
     )
 
     permissoes = models.ManyToManyField(
@@ -54,17 +32,8 @@ class Utilizador(AbstractUser):
         verbose_name=('permissoes'),
     )
     
-    def clean(self):
-        super().clean()
-        # Verifica se o utilizador está associado a mais de um grupo
-        if self.groups.count() > 1:
-            raise ValidationError("Um utilizador pode pertencer a apenas um grupo/cargo.")
-
-    def save(self, *args, **kwargs):
-        # Chama o método clean antes de salvar o utilizador
-        self.clean()
-        super().save(*args, **kwargs)
-
+    class Meta:
+        db_table = 'utilizador'
 
     def __str__(self):
         return f"{self.primeiro_nome} {self.ultimo_nome}"
@@ -72,11 +41,8 @@ class Utilizador(AbstractUser):
 
 
 
-
-
-
-
-""" class Garcom(models.Model):
+""" 
+class Garcom(models.Model):
     
     #Representa um garçom associado a um utilizador específico.
     
@@ -130,4 +96,4 @@ class Cliente(models.Model):
 
     def __str__(self):
         return f"Cliente - {self.utilizador.primeiro_nome} {self.utilizador.ultimo_nome}"
- """
+"""

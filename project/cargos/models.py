@@ -6,14 +6,11 @@ class Utilizador(AbstractUser):
     id = models.AutoField(primary_key=True)
     turno_almoco = models.BooleanField(default=False)
     turno_jantar = models.BooleanField(default=False)
-    primeiro_nome = models.CharField(max_length=255)
-    ultimo_nome = models.CharField(max_length=255)
-    morada = models.CharField(max_length=255, null=True, blank=True)
-    telefone = models.CharField(max_length=20, null=True, blank=True)
-    email = models.EmailField(null=True, blank=True)
     data_nascimento = models.DateField(null=True, blank=True)
-    genero = models.CharField(max_length=10)
-    data_registo = models.DateField(auto_now_add=True)
+    genero = models.CharField(max_length=10, null=True, blank=True)
+    email = models.EmailField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now_add=True, null=True)
 
     cargos = models.ManyToManyField(
         'auth.Group',

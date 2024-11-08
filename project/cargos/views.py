@@ -1,10 +1,31 @@
-from django.shortcuts import render
+from django.http import JsonResponse
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.decorators import api_view
+from django.contrib.auth import authenticate
 
-""" def login_view(request):
-    return render(request, 'auth/login.html')
+@api_view(['GET', 'POST'])
+def login_view(request):
+    username = request.data.get("username")
+    password = request.data.get("password")
+    
+    # Autenticar o usuário
+    user = authenticate(request, username=username, password=password)
+    
+    if user is not None:
+        # Gerar o token
+        refresh = RefreshToken.for_user(user)
+        access_token = str(refresh.access_token)
 
-def logout_view(request):
-    return render(request, 'auth/logout.html')
-
-def signup_view(request):
-    return render(request, 'auth/signup.html') """
+        # Configurar o cookie com o token de acesso
+        response = JsonResponse({"message": "Login bem-sucedido"})
+        response.set_cookie(
+            "access_token",
+            access_token,
+            httponly=True,
+            secure=True,       # Defina como True em produção com HTTPS
+            samesite="Strict"   # Opção para evitar ataques CSRF
+        )
+        return response
+    else:
+        return JsonResponse({"error": "Credenciais inválidas"}, status=401)
+    

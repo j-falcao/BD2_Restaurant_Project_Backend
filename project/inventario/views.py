@@ -3,4 +3,4 @@ from rest_framework.decorators import api_view
 
 @api_view(['GET'])
 def ingredientes_view(request):
-    return Response({'name': 'João', 'idade': 22})
+    return Response([{'name': 'João', 'idade': 22}])

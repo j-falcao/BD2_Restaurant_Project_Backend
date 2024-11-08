@@ -1,7 +1,3 @@
-INSERT INTO Turno(designacao, hora_inicio, hora_fim) VALUES 
-    ('Almoço', '10:00:00', '16:00:00'),
-    ('Jantar', '18:00:00', '24:00:00');
-
 INSERT INTO EstadoMesa(designacao) VALUES
     ('Aberta'),
     ('Ocupada'),

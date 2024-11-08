@@ -5,18 +5,17 @@ CREATE TABLE EstadoMesa (
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-/*
-CREATE TABLE Utilizador (
+
+/* CREATE TABLE Utilizador (
     id SERIAL PRIMARY KEY,
     turno_almoco BOOLEAN NOT NULL,
     turno_jantar BOOLEAN NOT NULL,
-    primeiro_nome VARCHAR(255) NOT NULL,
-    ultimo_nome VARCHAR(255) NOT NULL,
     data_nascimento DATE,
+    genero VARCHAR(10) NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-*/
+ */
 
 CREATE TABLE Fornecedor (
     id_fornecedor SERIAL PRIMARY KEY,

@@ -4,8 +4,8 @@ INSERT INTO EstadoMesa(designacao) VALUES
     ('Reservada'),
     ('Fechada');
 
--- Insert INTO Utilizador(id_turno, primeiro_nome, ultimo_nome, data_nascimento)
-
+/* Insert INTO Utilizador(is_superuser, is_staff, is_active, username, password, turno_almoco, turno_jantar, data_nascimento) VALUES
+	(TRUE, TRUE, TRUE, 'dev', 'dev', CURRENT_TIMESTAMP); */
 
 INSERT INTO Fornecedor(nome, ingredientes, utensilios, morada, email, telefone) VALUES
     ('Fornecedor 1', true, false, 'Morada 1', 'E2GwU@example.com', '123456789'),

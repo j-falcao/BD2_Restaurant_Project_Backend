@@ -1,20 +1,3 @@
-CREATE TABLE CargoUtilizador (
-    id_cargo_utilizador SERIAL PRIMARY KEY,
-    designacao VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
-
-++
-CREATE TABLE Turno (
-    id_turno SERIAL PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL,
-    hora_inicio TIME NOT NULL,
-    hora_fim TIME NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
-
 CREATE TABLE EstadoMesa (
     id_estado_mesa SERIAL PRIMARY KEY,
     designacao VARCHAR(20) NOT NULL,
@@ -22,25 +5,26 @@ CREATE TABLE EstadoMesa (
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE Utilizador (
+
+/* CREATE TABLE Utilizador (
     id SERIAL PRIMARY KEY,
-    id_cargo_utilizador INT REFERENCES CargoUtilizador(id_cargo_utilizador) ON DELETE CASCADE,
-    id_turno INT REFERENCES Turno(id_turno) ON DELETE CASCADE,
-    primeiro_nome VARCHAR(255) NOT NULL,
-    ultimo_nome VARCHAR(255) NOT NULL,
+    turno_almoco BOOLEAN NOT NULL,
+    turno_jantar BOOLEAN NOT NULL,
     data_nascimento DATE,
+    genero VARCHAR(10) NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+ */
 
 CREATE TABLE Fornecedor (
     id_fornecedor SERIAL PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
-    ingredientes BOOLEAN DEFAULT FALSE,
-    utensilios BOOLEAN DEFAULT FALSE,
-    morada VARCHAR(255),
-    email VARCHAR(254),
-    telefone VARCHAR(20),
+    ingredientes BOOLEAN DEFAULT FALSE NOT NULL,
+    utensilios BOOLEAN DEFAULT FALSE NOT NULL,
+    morada VARCHAR(255) NOT NULL,
+    email VARCHAR(254) NOT NULL,
+    telefone VARCHAR(20) NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -102,7 +86,7 @@ CREATE TABLE UtensilioCarrinho (
 CREATE TABLE Receita (
     id_receita SERIAL PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
-    duracao TIMESTAMP NOT NULL,
+    duracao INTERVAL NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -137,6 +121,7 @@ CREATE TABLE Mesa (
     id_estado_mesa INT REFERENCES EstadoMesa(id_estado_mesa) ON DELETE CASCADE,
     numero INT NOT NULL,
 	capacidade_maxima INT NOT NULL,
+	quantidade_clientes INT NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -208,7 +193,6 @@ CREATE TABLE ItemOpcao (
 
 CREATE TABLE Menu (
     id_menu INT PRIMARY KEY REFERENCES Produto(id_produto) ON DELETE CASCADE,
-	designacao VARCHAR(255) NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -253,7 +237,6 @@ CREATE TABLE Servico (
 CREATE TABLE Pedido (
     id_pedido SERIAL PRIMARY KEY,
 	id_servico INT REFERENCES Servico(id_servico) ON DELETE CASCADE,
-    data_hora TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

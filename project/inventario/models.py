@@ -2,9 +2,8 @@ from django.db import models
 from cargos.models import Utilizador
 
 class Carrinho(models.Model):
-    """
-    Representa um carrinho de compras, com o preço total e data da compra.
-    """
+    # Representa um carrinho de compras, com o preço total e data da compra.
+    
     id_carrinho = models.AutoField(primary_key=True)
     preco_total = models.DecimalField(max_digits=10, decimal_places=2)
     data_compra = models.DateTimeField()
@@ -18,9 +17,7 @@ class Carrinho(models.Model):
 
 
 class Fornecedor(models.Model):
-    """
-    Representa um fornecedor de ingredientes e/ou utensílios para o restaurante.
-    """
+    # Representa um fornecedor de ingredientes e/ou utensílios para o restaurante.
     id_fornecedor = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=255)
     ingredientes = models.BooleanField(default=False)
@@ -38,9 +35,8 @@ class Fornecedor(models.Model):
 
 
 class Ingrediente(models.Model):
-    """
-    Representa um ingrediente disponível no estoque, com limite e quantidade atual.
-    """
+    # Representa um ingrediente disponível no estoque, com limite e quantidade atual.
+    
     id_ingrediente = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=255)
     url_imagem = models.URLField(blank=True, null=True)
@@ -59,9 +55,8 @@ class Ingrediente(models.Model):
 
 
 class IngredienteValidade(models.Model):
-    """
-    Representa a data de validade de um ingrediente específico.
-    """
+    # Representa a data de validade de um ingrediente específico.
+    
     id_ingrediente_validade = models.AutoField(primary_key=True)
     ingrediente = models.ForeignKey(Ingrediente, on_delete=models.CASCADE)
     data_validade = models.DateField()
@@ -74,9 +69,8 @@ class IngredienteValidade(models.Model):
 
 
 class IngredienteAdministrador(models.Model):
-    """
-    Tabela intermediária para associar ingredientes com administradores e carrinhos.
-    """
+    # Tabela intermediária para associar ingredientes com administradores e carrinhos.
+    
     id_ingrediente_administrador = models.AutoField(primary_key=True)
     ingrediente = models.ForeignKey(Ingrediente, on_delete=models.CASCADE)
     administrador = models.ForeignKey(Utilizador, on_delete=models.CASCADE)
@@ -91,9 +85,8 @@ class IngredienteAdministrador(models.Model):
 
 
 class Utensilio(models.Model):
-    """
-    Representa um utensílio disponível no estoque.
-    """
+    # Representa um utensílio disponível no estoque.
+    
     id_utensilio = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=255)
     url_imagem = models.URLField(blank=True, null=True)
@@ -111,9 +104,8 @@ class Utensilio(models.Model):
 
 
 class UtensilioAdministrador(models.Model):
-    """
-    Tabela intermediária para associar utensílios com administradores e carrinhos.
-    """
+    # Tabela intermediária para associar utensílios com administradores e carrinhos.
+    
     id_utensilio_administrador = models.AutoField(primary_key=True)
     utensilio = models.ForeignKey(Utensilio, on_delete=models.CASCADE)
     administrador = models.ForeignKey(Utilizador, on_delete=models.CASCADE)
@@ -128,9 +120,8 @@ class UtensilioAdministrador(models.Model):
 
 
 class Receita(models.Model):
-    """
-    Representa uma receita, com nome e tempo estimado de preparo.
-    """
+    # Representa uma receita, com nome e tempo estimado de preparo.
+    
     id_receita = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=100)
     estimativa_tempo = models.TimeField()
@@ -144,9 +135,8 @@ class Receita(models.Model):
 
 
 class UtensilioReceita(models.Model):
-    """
-    Tabela intermediária para associar utensílios necessários para uma receita.
-    """
+    # Tabela intermediária para associar utensílios necessários para uma receita.
+    
     id_utensilio_receita = models.AutoField(primary_key=True)
     utensilio = models.ForeignKey(Utensilio, on_delete=models.CASCADE)
     receita = models.ForeignKey(Receita, on_delete=models.CASCADE)
@@ -159,9 +149,8 @@ class UtensilioReceita(models.Model):
 
 
 class Instrucao(models.Model):
-    """
-    Representa uma instrução de uma receita específica, com um número sequencial.
-    """
+    # Representa uma instrução de uma receita específica, com um número sequencial.
+    
     id_instrucao = models.AutoField(primary_key=True)
     receita = models.ForeignKey(Receita, on_delete=models.CASCADE)
     numero_sequencia = models.IntegerField()

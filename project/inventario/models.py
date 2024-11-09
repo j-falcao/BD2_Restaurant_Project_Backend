@@ -54,8 +54,8 @@ class Ingrediente(models.Model):
         return self.nome
 
 
-class IngredienteAdministrador(models.Model):
-    # Tabela intermediária para associar ingredientes com administradores e carrinhos.
+class IngredienteCarrinho(models.Model):
+    # Tabela intermediária para associar ingredientes com carrinhos.
     
     id_ingrediente_administrador = models.AutoField(primary_key=True)
     ingrediente = models.ForeignKey(Ingrediente, on_delete=models.CASCADE)
@@ -65,6 +65,7 @@ class IngredienteAdministrador(models.Model):
 
     class Meta:
         managed = False
+        db_table = 'ingredientecarrinho'
 
     def __str__(self):
         return f"{self.ingrediente.nome} - {self.quantidade}"
@@ -89,10 +90,10 @@ class Utensilio(models.Model):
         return self.nome
 
 
-class UtensilioAdministrador(models.Model):
+class UtensilioCarrinho(models.Model):
     # Tabela intermediária para associar utensílios com administradores e carrinhos.
     
-    id_utensilio_administrador = models.AutoField(primary_key=True)
+    id_utensilio_carrinho = models.AutoField(primary_key=True)
     utensilio = models.ForeignKey(Utensilio, on_delete=models.CASCADE)
     administrador = models.ForeignKey(Utilizador, on_delete=models.CASCADE)
     carrinho = models.ForeignKey(Carrinho, on_delete=models.CASCADE)
@@ -100,6 +101,7 @@ class UtensilioAdministrador(models.Model):
 
     class Meta:
         managed = False
+        db_table = 'utensiliocarrinho'
 
     def __str__(self):
         return f"{self.utensilio.nome} - {self.quantidade}"

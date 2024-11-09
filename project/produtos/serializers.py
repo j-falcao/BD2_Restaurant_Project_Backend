@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import (
     Produto, Item, Tipo, ItemTipo, Categoria, ItemCategoria, 
-    Opcao, OpcaoItem, Menu, MenuItem, DiaSemana, MenuDiaSemana
+    Opcao, ItemOpcao, Menu, ItemMenu, DiaSemana, MenuDiaSemana
 )
 
 class ProdutoSerializer(serializers.ModelSerializer):
@@ -46,9 +46,9 @@ class OpcaoSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class OpcaoItemSerializer(serializers.ModelSerializer):
+class ItemOpcaoSerializer(serializers.ModelSerializer):
     class Meta:
-        model = OpcaoItem
+        model = ItemOpcao
         fields = '__all__'
 
 
@@ -60,7 +60,7 @@ class MenuSerializer(serializers.ModelSerializer):
 
 class MenuItemSerializer(serializers.ModelSerializer):
     class Meta:
-        model = MenuItem
+        model = ItemMenu
         fields = '__all__'
 
 

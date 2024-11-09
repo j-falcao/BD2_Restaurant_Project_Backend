@@ -106,7 +106,7 @@ class OpcaoItem(models.Model):
 
 
 class Menu(models.Model):
-    id_produto = models.OneToOneField(Produto, on_delete=models.CASCADE, primary_key=True, related_name='produto_menu')
+    id_menu = models.OneToOneField(Produto, on_delete=models.CASCADE, primary_key=True, related_name='produto_menu', db_column='id_menu')
     itens = models.ManyToManyField(Item, related_name='menus', through='MenuItem')
 
     class Meta:

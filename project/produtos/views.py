@@ -1,7 +1,7 @@
 from rest_framework.decorators import api_view
 from django.http import JsonResponse
 from .serializers import *
-from . import db_produtos as db
+from . import db
 
 @api_view(['GET'])
 def get_produtos(request):

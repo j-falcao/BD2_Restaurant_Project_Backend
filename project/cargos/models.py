@@ -33,7 +33,7 @@ class Utilizador(AbstractUser):
         db_table = 'utilizador'
 
     def __str__(self):
-        return f"{self.primeiro_nome} {self.ultimo_nome}"
+        return f"{self.first_name} {self.first_name}"
 
 
 

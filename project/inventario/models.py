@@ -2,8 +2,6 @@ from django.db import models
 from cargos.models import Utilizador
 
 class Carrinho(models.Model):
-    # Representa um carrinho de compras, com o preço total e data da compra.
-    
     id_carrinho = models.AutoField(primary_key=True)
     preco_total = models.DecimalField(max_digits=10, decimal_places=2)
     data_compra = models.DateTimeField()
@@ -17,7 +15,6 @@ class Carrinho(models.Model):
 
 
 class Fornecedor(models.Model):
-    # Representa um fornecedor de ingredientes e/ou utensílios para o restaurante.
     id_fornecedor = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=255)
     ingredientes = models.BooleanField(default=False)
@@ -35,8 +32,6 @@ class Fornecedor(models.Model):
 
 
 class Ingrediente(models.Model):
-    # Representa um ingrediente disponível no estoque, com limite e quantidade atual.
-    
     id_ingrediente = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=255)
     url_imagem = models.URLField(blank=True, null=True)
@@ -44,7 +39,7 @@ class Ingrediente(models.Model):
     unidade_medida = models.CharField(max_length=50)
     limite_stock = models.IntegerField()
     preco = models.DecimalField(max_digits=10, decimal_places=2)
-    fornecedor = models.ForeignKey(Fornecedor, on_delete=models.CASCADE)
+    id_fornecedor = models.ForeignKey(Fornecedor, on_delete=models.CASCADE, db_column='id_fornecedor')
 
     class Meta:
         managed = False
@@ -55,12 +50,10 @@ class Ingrediente(models.Model):
 
 
 class IngredienteCarrinho(models.Model):
-    # Tabela intermediária para associar ingredientes com carrinhos.
-    
     id_ingrediente_administrador = models.AutoField(primary_key=True)
-    ingrediente = models.ForeignKey(Ingrediente, on_delete=models.CASCADE)
-    administrador = models.ForeignKey(Utilizador, on_delete=models.CASCADE)
-    carrinho = models.ForeignKey(Carrinho, on_delete=models.CASCADE)
+    id_ingrediente = models.ForeignKey(Ingrediente, on_delete=models.CASCADE, db_column='id_ingrediente')
+    id_administrador = models.ForeignKey(Utilizador, on_delete=models.CASCADE, db_column='id_administrador')
+    id_carrinho = models.ForeignKey(Carrinho, on_delete=models.CASCADE, db_column='id_carrinho')
     quantidade = models.IntegerField()
 
     class Meta:
@@ -68,19 +61,17 @@ class IngredienteCarrinho(models.Model):
         db_table = 'ingredientecarrinho'
 
     def __str__(self):
-        return f"{self.ingrediente.nome} - {self.quantidade}"
+        return f"{self.id_ingrediente.nome} - {self.quantidade}"
 
 
 class Utensilio(models.Model):
-    # Representa um utensílio disponível no estoque.
-    
     id_utensilio = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=255)
     url_imagem = models.URLField(blank=True, null=True)
     quantidade_stock = models.IntegerField()
     limite_stock = models.IntegerField()
     preco = models.DecimalField(max_digits=10, decimal_places=2)
-    fornecedor = models.ForeignKey(Fornecedor, on_delete=models.CASCADE)
+    id_fornecedor = models.ForeignKey(Fornecedor, on_delete=models.CASCADE, db_column='id_fornecedor')
 
     class Meta:
         managed = False
@@ -91,12 +82,10 @@ class Utensilio(models.Model):
 
 
 class UtensilioCarrinho(models.Model):
-    # Tabela intermediária para associar utensílios com administradores e carrinhos.
-    
     id_utensilio_carrinho = models.AutoField(primary_key=True)
-    utensilio = models.ForeignKey(Utensilio, on_delete=models.CASCADE)
-    administrador = models.ForeignKey(Utilizador, on_delete=models.CASCADE)
-    carrinho = models.ForeignKey(Carrinho, on_delete=models.CASCADE)
+    id_utensilio = models.ForeignKey(Utensilio, on_delete=models.CASCADE, db_column='id_utensilio')
+    id_administrador = models.ForeignKey(Utilizador, on_delete=models.CASCADE, db_column='id_administrador')
+    id_carrinho = models.ForeignKey(Carrinho, on_delete=models.CASCADE, db_column='id_carrinho')
     quantidade = models.IntegerField()
 
     class Meta:
@@ -104,12 +93,10 @@ class UtensilioCarrinho(models.Model):
         db_table = 'utensiliocarrinho'
 
     def __str__(self):
-        return f"{self.utensilio.nome} - {self.quantidade}"
+        return f"{self.id_utensilio.nome} - {self.quantidade}"
 
 
 class Receita(models.Model):
-    # Representa uma receita, com nome e tempo estimado de preparo.
-    
     id_receita = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=100)
     estimativa_tempo = models.TimeField()
@@ -123,24 +110,21 @@ class Receita(models.Model):
 
 
 class UtensilioReceita(models.Model):
-    # Tabela intermediária para associar utensílios necessários para uma receita.
-    
     id_utensilio_receita = models.AutoField(primary_key=True)
-    utensilio = models.ForeignKey(Utensilio, on_delete=models.CASCADE)
-    receita = models.ForeignKey(Receita, on_delete=models.CASCADE)
+    id_utensilio = models.ForeignKey(Utensilio, on_delete=models.CASCADE, db_column='id_utensilio')
+    id_receita = models.ForeignKey(Receita, on_delete=models.CASCADE, db_column='id_receita')
 
     class Meta:
         managed = False
+        db_table = 'utensilioreceita'
 
     def __str__(self):
-        return f"{self.utensilio.nome} - {self.receita.nome}"
+        return f"{self.id_utensilio.nome} - {self.id_receita.nome}"
 
 
 class Instrucao(models.Model):
-    # Representa uma instrução de uma receita específica, com um número sequencial.
-    
     id_instrucao = models.AutoField(primary_key=True)
-    receita = models.ForeignKey(Receita, on_delete=models.CASCADE)
+    id_receita = models.ForeignKey(Receita, on_delete=models.CASCADE, db_column='id_receita')
     numero_sequencia = models.IntegerField()
     descricao = models.TextField()
 
@@ -149,4 +133,4 @@ class Instrucao(models.Model):
         db_table = 'instrucao'
 
     def __str__(self):
-        return f"{self.receita.nome} - Passo {self.numero_sequencia}"
+        return f"{self.id_receita.nome} - Passo {self.numero_sequencia}"

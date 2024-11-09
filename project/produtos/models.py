@@ -2,8 +2,8 @@ from django.db import models
 
 class Produto(models.Model):
     id_produto = models.AutoField(primary_key=True)
-    item = models.BooleanField()
-    menu = models.BooleanField()
+    is_item = models.BooleanField()
+    is_menu = models.BooleanField()
     nome = models.CharField(max_length=100)
     url_imagem = models.URLField(blank=True, null=True)
     preco = models.DecimalField(max_digits=10, decimal_places=2)
@@ -17,7 +17,7 @@ class Produto(models.Model):
 
 
 class Item(models.Model):
-    id_produto = models.OneToOneField(Produto, on_delete=models.CASCADE, primary_key=True, related_name='produto_item')
+    id_item = models.OneToOneField(Produto, on_delete=models.CASCADE, primary_key=True, related_name='item', db_column='id_item')
 
     class Meta:
         managed = False
@@ -42,15 +42,15 @@ class Tipo(models.Model):
 
 class ItemTipo(models.Model):
     id_item_tipo = models.AutoField(primary_key=True)
-    id_item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    id_tipo = models.ForeignKey(Tipo, on_delete=models.CASCADE)
+    id_item = models.ForeignKey(Item, on_delete=models.CASCADE, db_column='id_item')
+    id_tipo = models.ForeignKey(Tipo, on_delete=models.CASCADE, db_column='id_tipo')
 
     class Meta:
         managed = False
         db_table = 'itemtipo'
 
     def __str__(self):
-        return f"{self.id_item} - {self.id_tipo}"
+        return f"Item: {self.id_item} - Tipo: {self.id_tipo}"
 
 
 class Categoria(models.Model):
@@ -68,8 +68,8 @@ class Categoria(models.Model):
 
 class ItemCategoria(models.Model):
     id_item_categoria = models.AutoField(primary_key=True)
-    id_item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    id_categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
+    id_item = models.ForeignKey(Item, on_delete=models.CASCADE, db_column='id_item')
+    id_categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, db_column='id_categoria')
 
     class Meta:
         managed = False
@@ -99,7 +99,7 @@ class OpcaoItem(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'opcaoitem'
+        db_table = 'itemopcao'
 
     def __str__(self):
         return f"{self.id_item} - {self.id_opcao}"
@@ -119,15 +119,15 @@ class Menu(models.Model):
 
 class MenuItem(models.Model):
     id_menu_item = models.AutoField(primary_key=True)
-    id_menu = models.ForeignKey(Menu, on_delete=models.CASCADE)
-    id_item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    id_menu = models.ForeignKey(Menu, on_delete=models.CASCADE, db_column='id_menu')
+    id_item = models.ForeignKey(Item, on_delete=models.CASCADE, db_column='id_item')
 
     class Meta:
         managed = False
         db_table = 'menuitem'
 
     def __str__(self):
-        return f'{self.id_menu} - {self.id_item}'
+        return f'Menu: {self.id_menu} - Item: {self.id_item}'
 
 
 class DiaSemana(models.Model):
@@ -145,8 +145,8 @@ class DiaSemana(models.Model):
 
 class MenuDiaSemana(models.Model):
     id_menu_dia_semana = models.AutoField(primary_key=True)
-    id_menu = models.ForeignKey(Menu, on_delete=models.CASCADE)
-    id_dia_semana = models.ForeignKey(DiaSemana, on_delete=models.CASCADE)
+    id_menu = models.ForeignKey(Menu, on_delete=models.CASCADE, db_column='id_menu')
+    id_dia_semana = models.ForeignKey(DiaSemana, on_delete=models.CASCADE, db_column='id_dia_semana')
     almoco = models.BooleanField()
     jantar = models.BooleanField()
 
@@ -155,4 +155,4 @@ class MenuDiaSemana(models.Model):
         db_table = 'menudiasemana'
 
     def __str__(self):
-        return f'{self.id_menu} - {self.id_dia_semana} - Almoço: {self.almoco} - Jantar: {self.jantar}'
+        return f'Menu: {self.id_menu} - Dia: {self.id_dia_semana} - Almoço: {self.almoco} - Jantar: {self.jantar}'

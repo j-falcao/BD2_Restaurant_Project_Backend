@@ -7,6 +7,8 @@ class Produto(models.Model):
     nome = models.CharField(max_length=100)
     url_imagem = models.URLField(blank=True, null=True)
     preco = models.DecimalField(max_digits=10, decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now_add=True, null=True)
 
     class Meta:
         managed = False
@@ -18,6 +20,8 @@ class Produto(models.Model):
 
 class Item(models.Model):
     id_item = models.OneToOneField(Produto, on_delete=models.CASCADE, primary_key=True, related_name='item', db_column='id_item')
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now_add=True, null=True)
 
     class Meta:
         managed = False
@@ -31,6 +35,8 @@ class Tipo(models.Model):
     id_tipo = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=100)
     itens = models.ManyToManyField(Item, related_name='tipos', through='ItemTipo')
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now_add=True, null=True)
 
     class Meta:
         managed = False
@@ -44,6 +50,8 @@ class ItemTipo(models.Model):
     id_item_tipo = models.AutoField(primary_key=True)
     id_item = models.ForeignKey(Item, on_delete=models.CASCADE, db_column='id_item')
     id_tipo = models.ForeignKey(Tipo, on_delete=models.CASCADE, db_column='id_tipo')
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now_add=True, null=True)
 
     class Meta:
         managed = False
@@ -57,6 +65,8 @@ class Categoria(models.Model):
     id_categoria = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=100)
     itens = models.ManyToManyField(Item, related_name='categorias', through='ItemCategoria')
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now_add=True, null=True)
 
     class Meta:
         managed = False
@@ -70,6 +80,8 @@ class ItemCategoria(models.Model):
     id_item_categoria = models.AutoField(primary_key=True)
     id_item = models.ForeignKey(Item, on_delete=models.CASCADE, db_column='id_item')
     id_categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, db_column='id_categoria')
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now_add=True, null=True)
 
     class Meta:
         managed = False
@@ -83,6 +95,8 @@ class Opcao(models.Model):
     id_opcao = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=255)
     itens = models.ManyToManyField(Item, related_name='opcoes', through='OpcaoItem')
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now_add=True, null=True)
 
     class Meta:
         managed = False
@@ -96,6 +110,8 @@ class OpcaoItem(models.Model):
     id_opcao_item = models.AutoField(primary_key=True)
     id_item = models.ForeignKey(Item, on_delete=models.CASCADE)
     id_opcao = models.ForeignKey(Opcao, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now_add=True, null=True)
 
     class Meta:
         managed = False
@@ -108,6 +124,8 @@ class OpcaoItem(models.Model):
 class Menu(models.Model):
     id_menu = models.OneToOneField(Produto, on_delete=models.CASCADE, primary_key=True, related_name='produto_menu', db_column='id_menu')
     itens = models.ManyToManyField(Item, related_name='menus', through='MenuItem')
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now_add=True, null=True)
 
     class Meta:
         managed = False
@@ -121,6 +139,8 @@ class MenuItem(models.Model):
     id_menu_item = models.AutoField(primary_key=True)
     id_menu = models.ForeignKey(Menu, on_delete=models.CASCADE, db_column='id_menu')
     id_item = models.ForeignKey(Item, on_delete=models.CASCADE, db_column='id_item')
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now_add=True, null=True)
 
     class Meta:
         managed = False
@@ -134,6 +154,8 @@ class DiaSemana(models.Model):
     id_dia_semana = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=50)
     menus = models.ManyToManyField(Menu, related_name='dias', through='MenuDiaSemana')
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now_add=True, null=True)
 
     class Meta:
         managed = False
@@ -149,6 +171,8 @@ class MenuDiaSemana(models.Model):
     id_dia_semana = models.ForeignKey(DiaSemana, on_delete=models.CASCADE, db_column='id_dia_semana')
     almoco = models.BooleanField()
     jantar = models.BooleanField()
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now_add=True, null=True)
 
     class Meta:
         managed = False

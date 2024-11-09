@@ -1,6 +1,5 @@
-from django.core.exceptions import ValidationError
-from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db import models
 
 class Utilizador(AbstractUser):
     id = models.AutoField(primary_key=True)
@@ -11,6 +10,7 @@ class Utilizador(AbstractUser):
     email = models.EmailField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now_add=True, null=True)
+    
 
     cargos = models.ManyToManyField(
         'auth.Group',
@@ -34,63 +34,3 @@ class Utilizador(AbstractUser):
 
     def __str__(self):
         return f"{self.first_name} {self.first_name}"
-
-
-
-
-""" 
-class Garcom(models.Model):
-    
-    #Representa um garçom associado a um utilizador específico.
-    
-    utilizador = models.OneToOneField(Utilizador, on_delete=models.CASCADE, primary_key=True, related_name="garcom")
-
-    class Meta:
-        managed = False
-        db_table = 'garcom'
-
-    def __str__(self):
-        return f"Garçom - {self.utilizador.primeiro_nome} {self.utilizador.ultimo_nome}"
-
-
-class Cozinheiro(models.Model):
-    
-    #Representa um cozinheiro com especialidades específicas.
-    
-    utilizador = models.OneToOneField(Utilizador, on_delete=models.CASCADE, primary_key=True, related_name="cozinheiro")
-
-    class Meta:
-        managed = False
-        db_table = 'cozinheiro'
-
-    def __str__(self):
-        return f"Cozinheiro - {self.utilizador.primeiro_nome} {self.utilizador.ultimo_nome}"
-
-
-class Administrador(models.Model):
-
-    #Representa um administrador associado a um fornecedor específico.
-    
-    utilizador = models.OneToOneField(Utilizador, on_delete=models.CASCADE, primary_key=True, related_name="administrador")
-
-    class Meta:
-        managed = False
-        db_table = 'administrador'
-
-    def __str__(self):
-        return f"Administrador - {self.utilizador.primeiro_nome} {self.utilizador.ultimo_nome}"
-
-
-class Cliente(models.Model):
-    
-    #Representa um cliente associado a um utilizador específico.
-
-    utilizador = models.OneToOneField(Utilizador, on_delete=models.CASCADE, primary_key=True, related_name="cliente")
-
-    class Meta:
-        managed = False
-        db_table = 'cliente'
-
-    def __str__(self):
-        return f"Cliente - {self.utilizador.primeiro_nome} {self.utilizador.ultimo_nome}"
-"""

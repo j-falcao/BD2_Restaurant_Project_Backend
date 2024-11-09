@@ -5,6 +5,8 @@ class Carrinho(models.Model):
     id_carrinho = models.AutoField(primary_key=True)
     preco_total = models.DecimalField(max_digits=10, decimal_places=2)
     data_compra = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now_add=True, null=True)
 
     class Meta:
         managed = False
@@ -22,6 +24,8 @@ class Fornecedor(models.Model):
     morada = models.CharField(max_length=255)
     email = models.EmailField()
     telefone = models.CharField(max_length=20)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now_add=True, null=True)
 
     class Meta:
         managed = False
@@ -40,6 +44,8 @@ class Ingrediente(models.Model):
     limite_stock = models.IntegerField()
     preco = models.DecimalField(max_digits=10, decimal_places=2)
     id_fornecedor = models.ForeignKey(Fornecedor, on_delete=models.CASCADE, db_column='id_fornecedor')
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now_add=True, null=True)
 
     class Meta:
         managed = False
@@ -55,6 +61,8 @@ class IngredienteCarrinho(models.Model):
     id_administrador = models.ForeignKey(Utilizador, on_delete=models.CASCADE, db_column='id_administrador')
     id_carrinho = models.ForeignKey(Carrinho, on_delete=models.CASCADE, db_column='id_carrinho')
     quantidade = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now_add=True, null=True)
 
     class Meta:
         managed = False
@@ -72,6 +80,8 @@ class Utensilio(models.Model):
     limite_stock = models.IntegerField()
     preco = models.DecimalField(max_digits=10, decimal_places=2)
     id_fornecedor = models.ForeignKey(Fornecedor, on_delete=models.CASCADE, db_column='id_fornecedor')
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now_add=True, null=True)
 
     class Meta:
         managed = False
@@ -87,6 +97,8 @@ class UtensilioCarrinho(models.Model):
     id_administrador = models.ForeignKey(Utilizador, on_delete=models.CASCADE, db_column='id_administrador')
     id_carrinho = models.ForeignKey(Carrinho, on_delete=models.CASCADE, db_column='id_carrinho')
     quantidade = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now_add=True, null=True)
 
     class Meta:
         managed = False
@@ -99,7 +111,9 @@ class UtensilioCarrinho(models.Model):
 class Receita(models.Model):
     id_receita = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=100)
-    estimativa_tempo = models.TimeField()
+    duracao = models.DurationField()
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now_add=True, null=True)
 
     class Meta:
         managed = False
@@ -113,6 +127,8 @@ class UtensilioReceita(models.Model):
     id_utensilio_receita = models.AutoField(primary_key=True)
     id_utensilio = models.ForeignKey(Utensilio, on_delete=models.CASCADE, db_column='id_utensilio')
     id_receita = models.ForeignKey(Receita, on_delete=models.CASCADE, db_column='id_receita')
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now_add=True, null=True)
 
     class Meta:
         managed = False
@@ -127,6 +143,8 @@ class Instrucao(models.Model):
     id_receita = models.ForeignKey(Receita, on_delete=models.CASCADE, db_column='id_receita')
     numero_sequencia = models.IntegerField()
     descricao = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now_add=True, null=True)
 
     class Meta:
         managed = False

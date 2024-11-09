@@ -1,9 +1,9 @@
 from django.db import models
-from cargos.models import Utilizador
+from autenticacao.models import Utilizador
 
 class EstadoMesa(models.Model):
     id_estado_mesa = models.AutoField(primary_key=True)
-    estado = models.CharField(max_length=20)
+    designacao = models.CharField(max_length=20)
 
     class Meta:
         managed = False

@@ -1,5 +1,5 @@
 from django.db import models
-from cargos.models import Utilizador
+from autenticacao.models import Utilizador
 
 class Carrinho(models.Model):
     id_carrinho = models.AutoField(primary_key=True)

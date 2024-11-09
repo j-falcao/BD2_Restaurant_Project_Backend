@@ -54,20 +54,6 @@ class Ingrediente(models.Model):
         return self.nome
 
 
-class IngredienteValidade(models.Model):
-    # Representa a data de validade de um ingrediente específico.
-    
-    id_ingrediente_validade = models.AutoField(primary_key=True)
-    ingrediente = models.ForeignKey(Ingrediente, on_delete=models.CASCADE)
-    data_validade = models.DateField()
-
-    class Meta:
-        managed = False
-
-    def __str__(self):
-        return f"{self.ingrediente.nome} - {self.data_validade}"
-
-
 class IngredienteAdministrador(models.Model):
     # Tabela intermediária para associar ingredientes com administradores e carrinhos.
     

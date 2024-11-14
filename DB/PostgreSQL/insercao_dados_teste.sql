@@ -1,3 +1,5 @@
+
+
 INSERT INTO EstadoMesa(designacao) VALUES
     ('Aberta'),
     ('Ocupada'),

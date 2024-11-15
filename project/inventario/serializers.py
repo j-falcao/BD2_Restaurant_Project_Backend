@@ -2,55 +2,41 @@ from rest_framework import serializers
 from .models import *
 
 
-class CarrinhoSerializer(serializers.ModelSerializer):
+class CarrinhosSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Carrinho
+        model = Carrinhos
         fields = '__all__'
         
 
-class FornecedorSerializer(serializers.ModelSerializer):
+class FornecedoresSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Fornecedor
+        model = Fornecedores
         fields = '__all__'
 
 
-class IngredienteSerializer(serializers.ModelSerializer):
+class IngredientesSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Ingrediente
+        model = Ingredientes
         fields = '__all__'
 
 
-class IngredienteCarrinhoSerializer(serializers.ModelSerializer):
+class UtensiliosSerializer(serializers.ModelSerializer):
     class Meta:
-        model = IngredienteCarrinho
+        model = Utensilios
         fields = '__all__'
 
 
-class UtensilioSerializer(serializers.ModelSerializer):
+class InstrucoesSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Utensilio
+        model = Instrucoes
         fields = '__all__'
 
 
-class UtensilioCarrinhoSerializer(serializers.ModelSerializer):
+class ReceitasSerializer(serializers.ModelSerializer):
+    ingredientes = IngredientesSerializer(many=True, read_only=True)
+    utensilios = UtensiliosSerializer(many=True, read_only=True)
+    instrucoes = InstrucoesSerializer(many=True, read_only=True)
+
     class Meta:
-        model = UtensilioCarrinho
-        fields = '__all__'
-
-
-class ReceitaSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Receita
-        fields = '__all__'
-
-
-class UtensilioReceitaSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UtensilioReceita
-        fields = '__all__'
-
-
-class InstrucaoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Instrucao
+        model = Receitas
         fields = '__all__'

@@ -1,5 +1,5 @@
 -- Carrinho View
-CREATE OR REPLACE VIEW carrinho_view AS
+CREATE OR REPLACE VIEW carrinhos_view AS
 SELECT 
     c.id_carrinho,
     c.preco_total,
@@ -13,12 +13,12 @@ JOIN utensiliocarrinho uc ON uc.id_carrinho = c.id_carrinho
 JOIN utilizador u2 ON u2.id = uc.id_administrador;
 
 -- Fornecedor View
-CREATE OR REPLACE VIEW fornecedor_view AS
+CREATE OR REPLACE VIEW fornecedores_view AS
 SELECT 
     f.id_fornecedor,
     f.nome,
-    f.ingredientes,
-    f.utensilios,
+    f.vende_ingredientes,
+    f.vende_utensilios,
     f.morada,
     f.email,
     f.telefone,
@@ -29,7 +29,7 @@ JOIN ingrediente i ON i.id_fornecedor = f.id_fornecedor
 JOIN utensilio u ON u.id_fornecedor = f.id_fornecedor;
 
 -- Ingrediente View
-CREATE OR REPLACE VIEW ingrediente_view AS
+CREATE OR REPLACE VIEW ingredientes_view AS
 SELECT 
     i.id_ingrediente,
     i.nome,
@@ -45,7 +45,7 @@ FROM ingrediente i
 JOIN fornecedor f ON i.id_fornecedor = f.id_fornecedor;
 
 -- IngredienteCarrinho View
-CREATE OR REPLACE VIEW ingredientecarrinho_view AS
+CREATE OR REPLACE VIEW ingredientescarrinhos_view AS
 SELECT 
     ic.id_ingrediente_carrinho,
     ic.id_ingrediente,
@@ -59,7 +59,7 @@ FROM ingredientecarrinho ic
 JOIN ingrediente i ON ic.id_ingrediente = i.id_ingrediente;
 
 -- Utensilio View
-CREATE OR REPLACE VIEW utensilio_view AS
+CREATE OR REPLACE VIEW utensilios_view AS
 SELECT 
     id_utensilio,
     nome,
@@ -73,7 +73,7 @@ SELECT
 FROM utensilio;
 
 -- UtensilioCarrinho View
-CREATE OR REPLACE VIEW utensiliocarrinho_view AS
+CREATE OR REPLACE VIEW utensilioscarrinhos_view AS
 SELECT 
     uc.id_utensilio_carrinho,
     uc.id_utensilio,
@@ -87,7 +87,7 @@ FROM utensiliocarrinho uc
 JOIN utensilio u ON uc.id_utensilio = u.id_utensilio;
 
 -- Receita View
-CREATE OR REPLACE VIEW receita_view AS
+CREATE OR REPLACE VIEW receitas_view AS
 SELECT 
     r.id_receita,
     r.nome,
@@ -108,3 +108,37 @@ JOIN ingrediente i ON i.id_ingrediente = ir.id_ingrediente
 JOIN utensilioreceita ur ON ur.id_receita = r.id_receita
 JOIN utensilio u ON u.id_utensilio = ur.id_utensilio
 JOIN instrucao ins ON ins.id_receita = r.id_receita;
+
+
+-- Instruções View
+CREATE OR REPLACE VIEW instrucoes_view AS
+SELECT
+	id_instrucao,
+	id_receita,
+	numero_sequencia,
+	descricao,
+	created_at,
+	updated_at
+FROM instrucao;
+
+
+-- UtensilioReceita View
+CREATE OR REPLACE VIEW utensiliosreceitas_view AS
+SELECT
+	id_utensilio_receita,
+	id_utensilio,
+	id_receita,
+	created_at,
+	updated_at
+FROM utensilioreceita;
+
+
+-- IngredientesReceitas View
+CREATE OR REPLACE VIEW ingredientesreceitas_view AS
+SELECT
+	id_ingrediente_receita,
+	id_ingrediente,
+	id_receita,
+	created_at,
+	updated_at
+FROM ingredientereceita;

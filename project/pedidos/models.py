@@ -12,7 +12,7 @@ class EstadoMesa(models.Model):
         db_table = 'estadomesa'
 
     def __str__(self):
-        return self.estado
+        return self.designacao
 
 
 class Mesa(models.Model):
@@ -54,6 +54,8 @@ class Reserva(models.Model):
     id_reserva = models.AutoField(primary_key=True)
     id_mesa = models.ForeignKey(Mesa, on_delete=models.CASCADE, db_column='id_mesa')
     data_hora = models.DateTimeField(auto_now_add=True)
+    minutos_antes = models.DurationField()
+    minutos_depois = models.DurationField()
     id_servico = models.ForeignKey(Servico, on_delete=models.CASCADE, null=True, blank=True, related_name="reserva", db_column='id_servico')
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now_add=True, null=True)
@@ -92,6 +94,7 @@ class PedidoProduto(models.Model):
     id_pedido_produto = models.AutoField(primary_key=True)
     id_pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, db_column='id_pedido')
     id_produto = models.ForeignKey('produtos.Produto', on_delete=models.CASCADE, db_column='id_produto')
+    id_cozinheiro = models.ForeignKey(Utilizador, on_delete=models.CASCADE, db_column='id_cozinheiro')
     opcoes = models.ManyToManyField('produtos.ItemOpcao', through='PedidoProdutoItemOpcao', related_name='pedido_produtos')
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now_add=True, null=True)

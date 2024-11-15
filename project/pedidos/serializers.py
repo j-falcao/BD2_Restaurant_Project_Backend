@@ -1,8 +1,5 @@
 from rest_framework import serializers
-from .models import (
-    EstadoMesa, Mesa, Servico, Reserva, Pedido, PedidoProduto,
-    PedidoProdutoItemOpcao
-)
+from .models import *
 
 class EstadoMesaSerializer(serializers.ModelSerializer):
     class Meta:

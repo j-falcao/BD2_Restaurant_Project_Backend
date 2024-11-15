@@ -24,8 +24,8 @@ BEGIN
     CREATE TABLE IF NOT EXISTS Fornecedor (
         id_fornecedor SERIAL PRIMARY KEY,
         nome VARCHAR(255) NOT NULL,
-        ingredientes BOOLEAN DEFAULT FALSE NOT NULL,
-        utensilios BOOLEAN DEFAULT FALSE NOT NULL,
+        vende_ingredientes BOOLEAN DEFAULT FALSE NOT NULL,
+        vende_utensilios BOOLEAN DEFAULT FALSE NOT NULL,
         morada VARCHAR(255) NOT NULL,
         email VARCHAR(254) NOT NULL,
         telefone VARCHAR(20) NOT NULL,

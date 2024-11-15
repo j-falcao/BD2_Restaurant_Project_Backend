@@ -9,7 +9,7 @@ INSERT INTO EstadoMesa(designacao) VALUES
 /* Insert INTO Utilizador(is_superuser, is_staff, is_active, username, password, turno_almoco, turno_jantar, data_nascimento) VALUES
 	(TRUE, TRUE, TRUE, 'dev', 'dev', CURRENT_TIMESTAMP); */
 
-INSERT INTO Fornecedor(nome, ingredientes, utensilios, morada, email, telefone) VALUES
+INSERT INTO Fornecedor(nome, vende_ingredientes, vende_utensilios, morada, email, telefone) VALUES
     ('Fornecedor 1', true, false, 'Morada 1', 'E2GwU@example.com', '123456789'),
     ('Fornecedor 2', false, true, 'Morada 2', 'pCjvI@example.com', '987654321'),
     ('Fornecedor 3', true, false, 'Morada 3', 'J5xNp@example.com', '555555555'),

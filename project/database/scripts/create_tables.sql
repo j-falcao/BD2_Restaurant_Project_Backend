@@ -1,19 +1,66 @@
-CREATE TABLE IF NOT EXISTS estadosmesas (
-	id_estado_mesa SERIAL PRIMARY KEY,
-	designacao VARCHAR(20) NOT NULL,
+CREATE TABLE IF NOT EXISTS permissoes (
+	id_permissao SERIAL PRIMARY KEY,
+	designacao VARCHAR(100) NOT NULL,
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-/* CREATE TABLE IF NOT EXISTS utilizadores (
-	id SERIAL PRIMARY KEY,
-	turno_almoco BOOLEAN DEFAULT FALSE NOT NULL,
-	turno_jantar BOOLEAN DEFAULT FALSE NOT NULL,
-	data_nascimento DATE,
-	genero VARCHAR(10) NOT NULL,
+CREATE TABLE IF NOT EXISTS cargos (
+	id_cargo SERIAL PRIMARY KEY,
+	designacao VARCHAR(100) NOT NULL,
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-); */
+);
+
+CREATE TABLE IF NOT EXISTS permissoescargos (
+	id_permissao_cargo SERIAL PRIMARY KEY,
+	id_permissao INT REFERENCES permissoes(id_permissao) ON DELETE CASCADE,
+	id_cargo INT REFERENCES cargos(id_cargo) ON DELETE CASCADE,
+	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS utilizadores (
+    id_utilizador SERIAL PRIMARY KEY,
+    turno_almoco BOOLEAN DEFAULT FALSE NOT NULL,
+    turno_jantar BOOLEAN DEFAULT FALSE NOT NULL,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    telemovel VARCHAR(50) UNIQUE,
+    data_nascimento DATE,
+    genero VARCHAR(10) CHECK (genero IN ('M', 'F', 'Other')),
+    password_hash VARCHAR(255) NOT NULL,
+    is_active BOOLEAN DEFAULT TRUE NOT NULL,
+    is_verified BOOLEAN DEFAULT FALSE NOT NULL,
+    last_login TIMESTAMP,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT email_format CHECK (email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$')
+);
+
+CREATE TABLE IF NOT EXISTS utilizadorespermissoes (
+	id_utilizador_permissao SERIAL PRIMARY KEY,
+	id_utilizador INT REFERENCES utilizadores(id_utilizador) ON DELETE CASCADE,
+	id_permissao INT REFERENCES permissoes(id_permissao) ON DELETE CASCADE,
+	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS utilizadorescargos (
+	id_utilizador_cargo SERIAL PRIMARY KEY,
+	id_utilizador INT REFERENCES utilizadores(id_utilizador) ON DELETE CASCADE,
+	id_cargo INT REFERENCES cargos(id_cargo) ON DELETE CASCADE,
+	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS estadosmesas (
+	id_estado_mesa SERIAL PRIMARY KEY,
+	designacao VARCHAR(100) NOT NULL,
+	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
 
 CREATE TABLE IF NOT EXISTS fornecedores (
 	id_fornecedor SERIAL PRIMARY KEY,
@@ -22,7 +69,7 @@ CREATE TABLE IF NOT EXISTS fornecedores (
 	vende_utensilios BOOLEAN DEFAULT FALSE NOT NULL,
 	morada VARCHAR(255) NOT NULL,
 	email VARCHAR(255) NOT NULL,
-	telemovel VARCHAR(20) NOT NULL,
+	telemovel VARCHAR(50) NOT NULL,
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -51,7 +98,7 @@ CREATE TABLE IF NOT EXISTS ingredientes (
 CREATE TABLE IF NOT EXISTS ingredientescarrinhos (
 	id_ingrediente_carrinho SERIAL PRIMARY KEY,
 	id_ingrediente INT REFERENCES ingredientes(id_ingrediente) ON DELETE CASCADE,
-	id_administrador INT REFERENCES utilizadores(id) ON DELETE CASCADE,
+	id_administrador INT REFERENCES utilizadores(id_utilizador) ON DELETE CASCADE,
 	id_carrinho INT REFERENCES carrinhos(id_carrinho) ON DELETE CASCADE,
 	quantidade INT NOT NULL,
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -60,13 +107,12 @@ CREATE TABLE IF NOT EXISTS ingredientescarrinhos (
 
 CREATE TABLE IF NOT EXISTS utensilios (
 	id_utensilio SERIAL PRIMARY KEY,
-	id_fornecedor INT REFERENCES Fornecedor(id_fornecedor) ON DELETE CASCADE,
+	id_fornecedor INT REFERENCES fornecedores(id_fornecedor) ON DELETE CASCADE,
 	nome VARCHAR(100) NOT NULL,
 	url_imagem VARCHAR(2048),
 	quantidade_stock INT NOT NULL DEFAULT 0,
 	limite_stock INT,
 	preco DECIMAL(10, 2) NOT NULL,
-	id_fornecedor INT REFERENCES fornecedores(id_fornecedor) ON DELETE CASCADE,
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -74,7 +120,7 @@ CREATE TABLE IF NOT EXISTS utensilios (
 CREATE TABLE IF NOT EXISTS utensilioscarrinhos (
 	id_utensilio_carrinho SERIAL PRIMARY KEY,
 	id_utensilio INT REFERENCES utensilios(id_utensilio) ON DELETE CASCADE,
-	id_administrador INT REFERENCES utilizadores(id) ON DELETE CASCADE,
+	id_administrador INT REFERENCES utilizadores(id_utilizador) ON DELETE CASCADE,
 	id_carrinho INT REFERENCES carrinhos(id_carrinho) ON DELETE CASCADE,
 	quantidade INT NOT NULL,
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -116,16 +162,16 @@ CREATE TABLE IF NOT EXISTS instrucoes (
 
 CREATE TABLE IF NOT EXISTS instrucoesingredientes (
 	id_instrucao_ingrediente SERIAL PRIMARY KEY,
-	id_instrucao INT REFERENCES Instrucao(id_instrucao) ON DELETE CASCADE,
-	id_ingrediente INT REFERENCES Ingrediente(id_ingrediente) ON DELETE CASCADE,
+	id_instrucao INT REFERENCES instrucoes(id_instrucao) ON DELETE CASCADE,
+	id_ingrediente INT REFERENCES ingredientes(id_ingrediente) ON DELETE CASCADE,
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS instrucoesutensilios (
 	id_instrucao_utensilio SERIAL PRIMARY KEY,
-	id_instrucao INT REFERENCES Instrucao(id_instrucao) ON DELETE CASCADE,
-	id_utensilio INT REFERENCES Utensilio(id_utensilio) ON DELETE CASCADE,
+	id_instrucao INT REFERENCES instrucoes(id_instrucao) ON DELETE CASCADE,
+	id_utensilio INT REFERENCES utensilios(id_utensilio) ON DELETE CASCADE,
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -158,8 +204,8 @@ CREATE TABLE IF NOT EXISTS tipos (
 	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS Item (
-	id_item INT PRIMARY KEY REFERENCES Produto(id_produto) ON DELETE CASCADE,
+CREATE TABLE IF NOT EXISTS itens (
+	id_item INT PRIMARY KEY REFERENCES produtos(id_produto) ON DELETE CASCADE,
 	porcao_unidade_medida VARCHAR(50) NOT NULL,
 	porcao INT NOT NULL,
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -227,8 +273,8 @@ CREATE TABLE IF NOT EXISTS diassemana (
 
 CREATE TABLE IF NOT EXISTS menusdiassemana (
 	id_menu_dia_semana SERIAL PRIMARY KEY,
-	id_menu INT REFERENCES Menu(id_menu) ON DELETE CASCADE,
-	id_dia_semana INT REFERENCES DiaSemana(id_dia_semana) ON DELETE CASCADE,
+	id_menu INT REFERENCES menus(id_menu) ON DELETE CASCADE,
+	id_dia_semana INT REFERENCES diassemana(id_dia_semana) ON DELETE CASCADE,
 	almoco BOOLEAN DEFAULT FALSE NOT NULL,
 	jantar BOOLEAN DEFAULT FALSE NOT NULL,
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -237,7 +283,7 @@ CREATE TABLE IF NOT EXISTS menusdiassemana (
 
 CREATE TABLE IF NOT EXISTS servicos (
 	id_servico SERIAL PRIMARY KEY,
-	id_garcom INT REFERENCES utilizadores(id) ON DELETE CASCADE,
+	id_garcom INT REFERENCES utilizadores(id_utilizador) ON DELETE CASCADE,
 	id_mesa INT REFERENCES mesas(id_mesa) ON DELETE CASCADE,
 	data_hora_inicio TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	data_hora_fim TIMESTAMP,
@@ -257,7 +303,7 @@ CREATE TABLE IF NOT EXISTS pedidosprodutos (
 	id_pedido_produto SERIAL PRIMARY KEY,
 	id_pedido INT REFERENCES pedidos(id_pedido) ON DELETE CASCADE,
 	id_produto INT REFERENCES produtos(id_produto) ON DELETE CASCADE,
-	id_cozinheiro INT REFERENCES utilizadores(id) ON DELETE CASCADE,
+	id_cozinheiro INT REFERENCES utilizadores(id_utilizador) ON DELETE CASCADE,
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

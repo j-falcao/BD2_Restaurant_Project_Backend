@@ -1,5 +1,5 @@
 from django.db import models
-from autenticacao.models import Utilizador
+from autenticacao.models import Utilizadores
 
 class EstadoMesa(models.Model):
     id_estado_mesa = models.AutoField(primary_key=True)
@@ -35,7 +35,7 @@ class Mesa(models.Model):
 class Servico(models.Model):
     id_servico = models.AutoField(primary_key=True)
     id_mesa = models.ForeignKey(Mesa, on_delete=models.CASCADE, null=True, blank=True, related_name="servicos", db_column='id_mesa')
-    id_garcom = models.ForeignKey(Utilizador, on_delete=models.CASCADE, null=True, blank=True, related_name="servicos", db_column='id_garcom')
+    id_garcom = models.ForeignKey(Utilizadores, on_delete=models.CASCADE, null=True, blank=True, related_name="servicos", db_column='id_garcom')
     data_hora_inicio = models.DateTimeField(auto_now_add=True)
     data_hora_fim = models.DateTimeField(null=True, blank=True)
     preco_total = models.DecimalField(max_digits=10, decimal_places=2)
@@ -94,7 +94,7 @@ class PedidoProduto(models.Model):
     id_pedido_produto = models.AutoField(primary_key=True)
     id_pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, db_column='id_pedido')
     id_produto = models.ForeignKey('produtos.Produto', on_delete=models.CASCADE, db_column='id_produto')
-    id_cozinheiro = models.ForeignKey(Utilizador, on_delete=models.CASCADE, db_column='id_cozinheiro')
+    id_cozinheiro = models.ForeignKey(Utilizadores, on_delete=models.CASCADE, db_column='id_cozinheiro')
     opcoes = models.ManyToManyField('produtos.ItemOpcao', through='PedidoProdutoItemOpcao', related_name='pedido_produtos')
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now_add=True, null=True)

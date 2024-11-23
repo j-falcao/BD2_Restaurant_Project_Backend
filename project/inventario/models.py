@@ -1,5 +1,5 @@
 from django.db import models
-from autenticacao.models import Utilizador
+from autenticacao.models import Utilizadores
 
 class Carrinhos(models.Model):
     id_carrinho = models.AutoField(primary_key=True)
@@ -58,7 +58,7 @@ class Ingredientes(models.Model):
 class IngredientesCarrinhos(models.Model):
     id_ingrediente_administrador = models.AutoField(primary_key=True)
     id_ingrediente = models.ForeignKey(Ingredientes, on_delete=models.CASCADE, db_column='id_ingrediente')
-    id_administrador = models.ForeignKey(Utilizador, on_delete=models.CASCADE, db_column='id_administrador')
+    id_administrador = models.ForeignKey(Utilizadores, on_delete=models.CASCADE, db_column='id_administrador')
     id_carrinho = models.ForeignKey(Carrinhos, on_delete=models.CASCADE, db_column='id_carrinho')
     quantidade = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True, null=True)
@@ -94,7 +94,7 @@ class Utensilios(models.Model):
 class UtensiliosCarrinhos(models.Model):
     id_utensilio_carrinho = models.AutoField(primary_key=True)
     id_utensilio = models.ForeignKey(Utensilios, on_delete=models.CASCADE, db_column='id_utensilio')
-    id_administrador = models.ForeignKey(Utilizador, on_delete=models.CASCADE, db_column='id_administrador')
+    id_administrador = models.ForeignKey(Utilizadores, on_delete=models.CASCADE, db_column='id_administrador')
     id_carrinho = models.ForeignKey(Carrinhos, on_delete=models.CASCADE, db_column='id_carrinho')
     quantidade = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True, null=True)

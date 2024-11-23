@@ -2,7 +2,7 @@ from django.http import JsonResponse
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import api_view
 from django.contrib.auth import authenticate
-from .models import Utilizador
+from .models import Utilizadores
 
 @api_view(['POST'])
 def signup_view(request):
@@ -13,7 +13,7 @@ def signup_view(request):
     if not all([username, email, password]):
         return JsonResponse({"error": "Todos os campos devem ser preenchidos"}, status = 400)
     
-    user = Utilizador.objects.create_user(username, email, password)
+    user = Utilizadores.objects.create_user(username, email, password)
 
     if user is not None:
         return JsonResponse({"message": "Utilizador criado com sucesso"})

@@ -11,10 +11,10 @@ class AutenticacaoConfig(AppConfig):
 
 
 def criar_utilizador_dev(sender, **kwargs):
-    from .models import Utilizador
+    from .models import Utilizadores
     try:
-        if not Utilizador.objects.filter(username='dev').exists():
-            Utilizador.objects.create_superuser(
+        if not Utilizadores.objects.filter(username='dev').exists():
+            Utilizadores.objects.create_superuser(
                 username='dev',
                 password='dev'
             )

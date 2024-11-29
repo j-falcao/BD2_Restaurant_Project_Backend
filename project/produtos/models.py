@@ -1,6 +1,6 @@
 from django.db import models
 
-class Produto(models.Model):
+class Produtos(models.Model):
     id_produto = models.AutoField(primary_key=True)
     item = models.BooleanField()
     menu = models.BooleanField()
@@ -17,7 +17,7 @@ class Produto(models.Model):
     def __str__(self):
         return self.nome
 
-class Categoria(models.Model):
+class Categorias(models.Model):
     id_categoria = models.AutoField(primary_key=True)
     designacao = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
@@ -31,7 +31,7 @@ class Categoria(models.Model):
         return self.designacao
     
 
-class Tipo(models.Model):
+class Tipos(models.Model):
     id_tipo = models.AutoField(primary_key=True)
     designacao = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
@@ -45,7 +45,7 @@ class Tipo(models.Model):
         return self.designacao
     
 
-class Opcao(models.Model):
+class Opcoes(models.Model):
     id_opcao = models.AutoField(primary_key=True)
     designacao = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
@@ -59,11 +59,11 @@ class Opcao(models.Model):
         return self.designacao
     
 
-class Item(models.Model):
-    id_item = models.OneToOneField(Produto, on_delete=models.CASCADE, primary_key=True, related_name='item', db_column='id_item')
-    categorias = models.ManyToManyField(Categoria, related_name='itens', through='ItemCategoria')
-    tipos = models.ManyToManyField(Tipo, related_name='itens', through='ItemTipo')
-    opcoes = models.ManyToManyField(Opcao, related_name='itens', through='ItemOpcao')
+class Itens(models.Model):
+    id_item = models.OneToOneField(Produtos, on_delete=models.CASCADE, primary_key=True, related_name='item', db_column='id_item')
+    categorias = models.ManyToManyField(Categorias, related_name='itens', through='itenscategorias')
+    tipos = models.ManyToManyField(Tipos, related_name='itens', through='itenstipos')
+    opcoes = models.ManyToManyField(Opcoes, related_name='itens', through='itensopcoes')
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now_add=True, null=True)
 
@@ -75,10 +75,10 @@ class Item(models.Model):
         return self.id_item.nome
 
 
-class ItemCategoria(models.Model):
+class ItensCategorias(models.Model):
     id_item_categoria = models.AutoField(primary_key=True)
-    id_item = models.ForeignKey(Item, on_delete=models.CASCADE, db_column='id_item')
-    id_categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, db_column='id_categoria')
+    id_item = models.ForeignKey(Itens, on_delete=models.CASCADE, db_column='id_item')
+    id_categoria = models.ForeignKey(Categorias, on_delete=models.CASCADE, db_column='id_categoria')
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now_add=True, null=True)
 
@@ -90,10 +90,10 @@ class ItemCategoria(models.Model):
         return f'{self.id_item} - {self.id_categoria}'
 
 
-class ItemTipo(models.Model):
+class ItensTipos(models.Model):
     id_item_tipo = models.AutoField(primary_key=True)
-    id_item = models.ForeignKey(Item, on_delete=models.CASCADE, db_column='id_item')
-    id_tipo = models.ForeignKey(Tipo, on_delete=models.CASCADE, db_column='id_tipo')
+    id_item = models.ForeignKey(Itens, on_delete=models.CASCADE, db_column='id_item')
+    id_tipo = models.ForeignKey(Tipos, on_delete=models.CASCADE, db_column='id_tipo')
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now_add=True, null=True)
 
@@ -105,10 +105,10 @@ class ItemTipo(models.Model):
         return f"Item: {self.id_item} - Tipo: {self.id_tipo}"
     
 
-class ItemOpcao(models.Model):
+class ItensOpcoes(models.Model):
     id_item_opcao = models.AutoField(primary_key=True)
-    id_item = models.ForeignKey(Item, on_delete=models.CASCADE, db_column='id_item')
-    id_opcao = models.ForeignKey(Opcao, on_delete=models.CASCADE, db_column='id_opcao')
+    id_item = models.ForeignKey(Itens, on_delete=models.CASCADE, db_column='id_item')
+    id_opcao = models.ForeignKey(Opcoes, on_delete=models.CASCADE, db_column='id_opcao')
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now_add=True, null=True)
 
@@ -120,9 +120,9 @@ class ItemOpcao(models.Model):
         return f"{self.id_item} - {self.id_opcao}"
     
 
-class Menu(models.Model):
-    id_menu = models.OneToOneField(Produto, on_delete=models.CASCADE, primary_key=True, related_name='produto_menu', db_column='id_menu')
-    itens = models.ManyToManyField(Item, related_name='menus', through='ItemMenu')
+class Menus(models.Model):
+    id_menu = models.OneToOneField(Produtos, on_delete=models.CASCADE, primary_key=True, related_name='produto_menu', db_column='id_menu')
+    itens = models.ManyToManyField(Itens, related_name='menus', through='ItemMenu')
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now_add=True, null=True)
 
@@ -134,10 +134,10 @@ class Menu(models.Model):
         return self.id_menu.nome
 
 
-class ItemMenu(models.Model):
+class ItensMenus(models.Model):
     id_item_menu = models.AutoField(primary_key=True)
-    id_item = models.ForeignKey(Item, on_delete=models.CASCADE, db_column='id_item')
-    id_menu = models.ForeignKey(Menu, on_delete=models.CASCADE, db_column='id_menu')
+    id_item = models.ForeignKey(Itens, on_delete=models.CASCADE, db_column='id_item')
+    id_menu = models.ForeignKey(Menus, on_delete=models.CASCADE, db_column='id_menu')
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now_add=True, null=True)
 
@@ -149,10 +149,10 @@ class ItemMenu(models.Model):
         return f'Menu: {self.id_menu} - Item: {self.id_item}'
 
 
-class DiaSemana(models.Model):
+class DiasSemana(models.Model):
     id_dia_semana = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=50)
-    menus = models.ManyToManyField(Menu, related_name='dias', through='MenuDiaSemana')
+    menus = models.ManyToManyField(Menus, related_name='dias', through='MenuDiaSemana')
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now_add=True, null=True)
 
@@ -164,10 +164,10 @@ class DiaSemana(models.Model):
         return self.nome
 
 
-class MenuDiaSemana(models.Model):
+class MenusDiasSemana(models.Model):
     id_menu_dia_semana = models.AutoField(primary_key=True)
-    id_menu = models.ForeignKey(Menu, on_delete=models.CASCADE, db_column='id_menu')
-    id_dia_semana = models.ForeignKey(DiaSemana, on_delete=models.CASCADE, db_column='id_dia_semana')
+    id_menu = models.ForeignKey(Menus, on_delete=models.CASCADE, db_column='id_menu')
+    id_dia_semana = models.ForeignKey(DiasSemana, on_delete=models.CASCADE, db_column='id_dia_semana')
     almoco = models.BooleanField()
     jantar = models.BooleanField()
     created_at = models.DateTimeField(auto_now_add=True, null=True)

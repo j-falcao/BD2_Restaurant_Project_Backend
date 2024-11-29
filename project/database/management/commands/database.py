@@ -4,6 +4,7 @@ from django.core.management import call_command
 from faker import Faker
 from tqdm import tqdm
 from django.db import connection, transaction
+from datetime import timedelta
 
 fake = Faker()
 
@@ -66,7 +67,6 @@ class Command(BaseCommand):
         try:
             self.seed_estados_mesas(num_entries)
             self.seed_fornecedores(num_entries)
-            self.seed_carrinhos(num_entries)
             self.seed_ingredientes(num_entries)
             self.seed_utensilios(num_entries)
             self.seed_receitas(num_entries)
@@ -74,8 +74,22 @@ class Command(BaseCommand):
             self.seed_produtos(num_entries)
             self.seed_categorias(num_entries)
             self.seed_opcoes(num_entries)
-            self.seed_menus(num_entries)
             self.seed_dias_semana(num_entries)
+            self.seed_ingredientes_receitas(num_entries)
+            self.seed_utensilios_receitas(num_entries)
+            self.seed_instrucoes(num_entries)
+            self.seed_instrucoes_ingredientes(num_entries)
+            self.seed_tipos(num_entries)
+            self.seed_itens(num_entries)
+            self.seed_itens_tipos(num_entries)
+            self.seed_itens_categorias(num_entries)
+            self.sedd_itens_opcoes(num_entries)
+            self.seed_menus(num_entries)
+            self.seed_itens_menus(num_entries)
+            self.seed_menus_dias_semana(num_entries)
+            self.seed_pedidos_produtos_itens_opcoes(num_entries)
+            self.seed_reservas(num_entries)
+            """ self.seed_servicos(num_entries) """
             self.stdout.write(self.style.SUCCESS("Data seeding completed successfully."))
         except Exception as e:
             transaction.rollback()
@@ -103,13 +117,13 @@ class Command(BaseCommand):
                 )
             transaction.commit()
 
-    def seed_carrinhos(self, num_entries):
+    """     def seed_carrinhos(self, num_entries):
         with connection.cursor() as cursor:
             for _ in tqdm(range(num_entries), desc="Seeding carrinhos"):
                 preco_total = fake.random_number(digits=5)
                 data_compra = fake.date_time_this_year()
                 cursor.execute("INSERT INTO carrinhos(preco_total, data_compra) VALUES (%s, %s)", [preco_total, data_compra])
-            transaction.commit()
+            transaction.commit() """
 
     def seed_ingredientes(self, num_entries):
         with connection.cursor() as cursor:
@@ -181,12 +195,33 @@ class Command(BaseCommand):
                 )
             transaction.commit()
 
-    def seed_categorias(self, num_entries):
+    """ def seed_categorias(self, num_entries):
         with connection.cursor() as cursor:
             for _ in tqdm(range(num_entries), desc="Seeding categorias"):
                 designacao = fake.word()
                 cursor.execute("INSERT INTO categorias(designacao) VALUES (%s)", [designacao])
+            transaction.commit() """
+
+    def seed_categorias(self):
+        categorias = [
+            "Alcoólicas",
+            "Refrigerantes",
+            "Vinhos",
+            "Vegetarianos",
+            "Sem Glúten",
+            "Sem Lactose",
+            "Picante",
+            "Entrada",
+            "Sobremesa"
+        ]
+        with connection.cursor() as cursor:
+            for categoria in tqdm(categorias, desc="Seeding categorias"):
+                cursor.execute(
+                    "INSERT INTO categorias (designacao) VALUES (%s) ON CONFLICT DO NOTHING",
+                    [categoria]
+                )
             transaction.commit()
+
 
     def seed_opcoes(self, num_entries):
         with connection.cursor() as cursor:
@@ -198,18 +233,245 @@ class Command(BaseCommand):
                 )
             transaction.commit()
 
-    def seed_menus(self, num_entries):
-        with connection.cursor() as cursor:
-            for _ in tqdm(range(num_entries), desc="Seeding menus"):
-                cursor.execute(
-                    "INSERT INTO menus VALUES ()",
-                    []
-                )
-            transaction.commit()
-
     def seed_dias_semana(self, num_entries):
         dias = ["Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado", "Domingo"]
         with connection.cursor() as cursor:
             for dia in tqdm(dias, desc="Seeding dias_semana"):
                 cursor.execute("INSERT INTO dias_semana(nome) VALUES (%s)", [dia])
+            transaction.commit()
+
+    def seed_ingredientes_receitas(self, num_entries):
+        with connection.cursor() as cursor:
+            for _ in tqdm(range(num_entries), desc="Seeding ingredientes_receitas"):
+                id_receita = fake.random_int(min=1, max=100) 
+                id_ingrediente = fake.random_int(min=1, max=500) 
+                quantidade = fake.random_int(min=1, max=10)
+                unidade = fake.random_element(elements=['kg', 'g', 'ml', 'l', 'unidade'])
+                cursor.execute(
+                    "INSERT INTO ingredientes_receitas(id_receita, id_ingrediente, quantidade, unidade) VALUES (%s, %s, %s, %s)",
+                    [id_receita, id_ingrediente, quantidade, unidade]
+                )
+            transaction.commit()
+
+    def seed_utensilios_receitas(self, num_entries):
+        with connection.cursor() as cursor:
+            for _ in tqdm(range(num_entries), desc="Seeding utensilios_receitas"):
+                id_receita = fake.random_int(min=1, max=100)  # IDs de receitas existentes
+                id_utensilio = fake.random_int(min=1, max=300)  # IDs de utensílios existentes
+                cursor.execute(
+                    "INSERT INTO utensilios_receitas(id_receita, id_utensilio) VALUES (%s, %s)",
+                    [id_receita, id_utensilio]
+                )
+            transaction.commit()
+
+    def seed_instrucoes(self, num_entries):
+        with connection.cursor() as cursor:
+            for _ in tqdm(range(num_entries), desc="Seeding instrucoes"):
+                id_receita = fake.random_int(min=1, max=100)
+                total_instrucoes = fake.random_int(min=3, max=10)
+                for numero_sequencia in range(1, total_instrucoes + 1):
+                    descricao = fake.sentence(nb_words=12) 
+                    cursor.execute(
+                        "INSERT INTO instrucoes (id_receita, numero_sequencia, descricao) VALUES (%s, %s, %s)",
+                        [id_receita, numero_sequencia, descricao]
+                    )
+            transaction.commit()
+
+    def seed_instrucoes_ingredientes(self, num_entries):
+        with connection.cursor() as cursor:
+            for _ in tqdm(range(num_entries), desc="Seeding instrucoesingredientes"):
+                id_instrucao = fake.random_int(min=1, max=500)
+                total_ingredientes = fake.random_int(min=1, max=5)
+                for _ in range(total_ingredientes):
+                    id_ingrediente = fake.random_int(min=1, max=1000)
+                    cursor.execute(
+                        "INSERT INTO instrucoesingredientes (id_instrucao, id_ingrediente) VALUES (%s, %s)",
+                        [id_instrucao, id_ingrediente]
+                    )
+            transaction.commit()
+
+    def seed_tipos(self):
+        tipos = [
+            "Bebida",
+            "Prato Principal",
+            "Acompanhamento",
+            "Sobremesa",
+            "Entrada",
+            "Lanche",
+            "Molho",
+            "Guarnição"
+        ]
+        with connection.cursor() as cursor:
+            for tipo in tqdm(tipos, desc="Seeding tipos"):
+                cursor.execute(
+                    "INSERT INTO tipos (designacao) VALUES (%s) ON CONFLICT DO NOTHING",
+                    [tipo]
+                )
+            transaction.commit()
+
+    def seed_itens(self, num_entries):
+        with connection.cursor() as cursor:
+            for _ in tqdm(range(num_entries), desc="Seeding itens"):
+                id_item = fake.random_int(min=1, max=500)
+                porcao_unidade_medida = fake.random_element(elements=['g', 'ml', 'unidade', 'kg', 'l'])
+                porcao = fake.random_int(min=1, max=1000)
+                cursor.execute(
+                    "INSERT INTO itens (id_item, porcao_unidade_medida, porcao) VALUES (%s, %s, %s)",
+                    [id_item, porcao_unidade_medida, porcao]
+                )
+            transaction.commit()
+
+    def seed_itens_tipos(self, num_entries):
+        with connection.cursor() as cursor:
+            for _ in tqdm(range(num_entries), desc="Seeding itenstipos"):
+                id_item = fake.random_int(min=1, max=500)
+                id_tipo = fake.random_int(min=1, max=20)
+                cursor.execute(
+                    "INSERT INTO itenstipos (id_item, id_tipo) VALUES (%s, %s)",
+                    [id_item, id_tipo]
+                )
+            transaction.commit()
+
+    def seed_itens_categorias(self, num_entries):
+        with connection.cursor() as cursor:
+            for _ in tqdm(range(num_entries), desc="Seeding itenscategorias"):
+                id_item = fake.random_int(min=1, max=500)
+                id_categoria = fake.random_int(min=1, max=20)
+                cursor.execute(
+                    "INSERT INTO itenscategorias (id_item, id_categoria) VALUES (%s, %s)",
+                    [id_item, id_categoria]
+                )
+            transaction.commit()
+
+    def seed_itens_opcoes(self, num_entries):
+        with connection.cursor() as cursor:
+            for _ in tqdm(range(num_entries), desc="Seeding itensopcoes"):
+                id_item = fake.random_int(min=1, max=500)
+                id_opcao = fake.random_int(min=1, max=50)
+                cursor.execute(
+                    "INSERT INTO itensopcoes (id_item, id_opcao) VALUES (%s, %s)",
+                    [id_item, id_opcao]
+                )
+            transaction.commit()
+
+    def seed_menus(self, num_entries):
+        with connection.cursor() as cursor:
+            for _ in tqdm(range(num_entries), desc="Seeding menus"):
+                id_menu = fake.random_int(min=1, max=500)  # IDs de produtos existentes
+                cursor.execute(
+                    "INSERT INTO menus (id_menu) VALUES (%s) ON CONFLICT DO NOTHING",
+                    [id_menu]
+                )
+            transaction.commit()
+
+    def seed_itens_menus(self, num_entries):
+        with connection.cursor() as cursor:
+            for _ in tqdm(range(num_entries), desc="Seeding itensmenus"):
+                id_menu = fake.random_int(min=1, max=100)
+                id_item = fake.random_int(min=1, max=500)
+                cursor.execute(
+                    "INSERT INTO itensmenus (id_item, id_menu) VALUES (%s, %s)",
+                    [id_item, id_menu]
+                )
+            transaction.commit()
+
+    def seed_menus_dias_semana(self, num_entries):
+        dias_semana = ["Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado", "Domingo"]
+        
+        with connection.cursor() as cursor:
+            for _ in tqdm(range(num_entries), desc="Seeding menusdiassemana"):
+                id_menu = fake.random_int(min=1, max=100)            
+                dia_semana = fake.random_element(elements=dias_semana)            
+                id_dia_semana = dias_semana.index(dia_semana) + 1
+                almoco = fake.boolean()
+                jantar = fake.boolean()
+                
+                cursor.execute(
+                    "INSERT INTO menusdiassemana (id_menu, id_dia_semana, almoco, jantar) VALUES (%s, %s, %s, %s)",
+                    [id_menu, id_dia_semana, almoco, jantar]
+                )
+            transaction.commit()
+
+    """ def seed_servicos(self, num_entries):
+        with connection.cursor() as cursor:
+            for _ in tqdm(range(num_entries), desc="Seeding servicos"):
+                id_garcom = fake.random_int(min=1, max=100)
+                id_mesa = fake.random_int(min=1, max=50)
+                data_hora_inicio = fake.date_time_this_year()
+                data_hora_fim = data_hora_inicio + timedelta(minutes=fake.random_int(min=30, max=120))
+                preco_total = fake.random_number(digits=3) + fake.random_int(min=10, max=30)
+
+                cursor.execute(
+                    "INSERT INTO servicos (id_garcom, id_mesa, data_hora_inicio, data_hora_fim, preco_total) VALUES (%s, %s, %s, %s, %s)",
+                    [id_garcom, id_mesa, data_hora_inicio, data_hora_fim, preco_total]
+                )
+                
+                id_servico = cursor.lastrowid
+                num_pedidos = fake.random_int(min=1, max=5)
+                
+                for _ in range(num_pedidos):
+                    pedido_inicio = data_hora_inicio + timedelta(minutes=fake.random_int(min=5, max=30))
+                    pedido_fim = pedido_inicio + timedelta(minutes=fake.random_int(min=10, max=30))
+                    cursor.execute(
+                        "INSERT INTO pedidos (id_servico, data_hora_inicio, data_hora_fim) VALUES (%s, %s, %s)",
+                        [id_servico, pedido_inicio, pedido_fim]
+                    )
+                    
+            transaction.commit()
+
+    def seed_pedidos(self, num_entries):
+        with connection.cursor() as cursor:
+            for _ in tqdm(range(num_entries), desc="Seeding pedidos"):
+                # Seleciona um serviço existente
+                id_servico = fake.random_int(min=1, max=100)  # IDs de serviços existentes
+                
+                # Gera um número aleatório de pedidos para o serviço (1 a 5 pedidos)
+                num_pedidos = fake.random_int(min=1, max=5)
+                
+                for _ in range(num_pedidos):
+                    # Insere um pedido para o serviço
+                    cursor.execute(
+                        "INSERT INTO pedidos (id_servico) VALUES (%s)",
+                        [id_servico]
+                    )
+            transaction.commit()
+ """
+
+    def seed_pedidos_produtos_itens_opcoes(self, num_entries):
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT id_pedido_produto FROM pedidosprodutos")
+            id_pedidosprodutos = [row[0] for row in cursor.fetchall()]
+            
+            cursor.execute("SELECT id_item_opcao FROM itensopcoes")
+            id_itensopcoes = [row[0] for row in cursor.fetchall()]
+
+            for _ in tqdm(range(num_entries), desc="Seeding pedidosprodutositensopcoes"):
+                id_pedido_produto = fake.random_element(elements=id_pedidosprodutos)
+                id_item_opcao = fake.random_element(elements=id_itensopcoes)
+                
+                cursor.execute(
+                    "INSERT INTO pedidosprodutositensopcoes (id_item_opcao, id_pedido_produto) VALUES (%s, %s)",
+                    [id_item_opcao, id_pedido_produto]
+                )
+            transaction.commit()
+
+    def seed_reservas(self, num_entries):
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT id_mesa FROM mesas")
+            id_mesas = [row[0] for row in cursor.fetchall()]
+
+            cursor.execute("SELECT id_servico FROM servicos")
+            id_servicos = [row[0] for row in cursor.fetchall()]
+
+            for _ in tqdm(range(num_entries), desc="Seeding reservas"):
+                id_mesa = fake.random_element(elements=id_mesas)
+                id_servico = fake.random_element(elements=id_servicos)
+                data_hora = fake.date_time_this_year()
+                minutos_antes = fake.random_int(min=0, max=120) 
+                minutos_depois = fake.random_int(min=0, max=120)
+
+                cursor.execute(
+                    "INSERT INTO reservas (id_mesa, data_hora, minutos_antes, minutos_depois, id_servico) VALUES (%s, %s, %s, %s, %s)",
+                    [id_mesa, data_hora, f"{minutos_antes} minutes", f"{minutos_depois} minutes", id_servico]
+                )
             transaction.commit()

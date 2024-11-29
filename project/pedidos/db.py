@@ -1,12 +1,12 @@
-from .models import EstadoMesa, Mesas, Servico, Reservas, Pedidos
+from .models import EstadosMesas, Mesas, Servicos, Reservas, Pedidos
 
 
 def get_all_estados_mesa():
-    return EstadoMesa.objects.all()
+    return EstadosMesas.objects.all()
 
 
 def get_estado_mesa_by_id(id_estado_mesa):
-    return EstadoMesa.objects.get(id_estado_mesa=id_estado_mesa)
+    return EstadosMesas.objects.get(id_estado_mesa=id_estado_mesa)
 
 
 def get_all_mesas():
@@ -18,11 +18,11 @@ def get_mesa_by_id(id_mesa):
 
 
 def get_all_servicos():
-    return Servico.objects.all()
+    return Servicos.objects.all()
 
 
 def get_servico_by_id(id_servico):
-    return Servico.objects.get(id_servico=id_servico)
+    return Servicos.objects.get(id_servico=id_servico)
 
 
 def get_all_reservas():

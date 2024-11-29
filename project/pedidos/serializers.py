@@ -2,43 +2,43 @@ from rest_framework import serializers
 from .models import *
 
 
-class EstadoMesaSerializer(serializers.ModelSerializer):
+class EstadosMesasSerializer(serializers.ModelSerializer):
     class Meta:
-        model = EstadoMesa
+        model = EstadosMesas
         fields = '__all__'
 
 
-class MesaSerializer(serializers.ModelSerializer):
+class MesasSerializer(serializers.ModelSerializer):
     class Meta:
         model = Mesas
         fields = '__all__'
 
 
-class ServicoSerializer(serializers.ModelSerializer):
+class ServicosSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Servico
+        model = Servicos
         fields = '__all__'
 
 
-class ReservaSerializer(serializers.ModelSerializer):
+class ReservasSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reservas
         fields = '__all__'
 
 
-class PedidoSerializer(serializers.ModelSerializer):
+class PedidosSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pedidos
         fields = '__all__'
 
 
-class PedidoProdutoSerializer(serializers.ModelSerializer):
+class PedidosProdutosSerializer(serializers.ModelSerializer):
     class Meta:
         model = PedidosProdutos
         fields = '__all__'
 
 
-class PedidoProdutoOpcaoItemSerializer(serializers.ModelSerializer):
+class PedidosProdutosOpcoesItensSerializer(serializers.ModelSerializer):
     class Meta:
         model = PedidosProdutosItensOpcoes
         fields = '__all__'

@@ -60,7 +60,7 @@ class Opcoes(models.Model):
     
 
 class Itens(models.Model):
-    id_item = models.OneToOneField(Produtos, on_delete=models.CASCADE, primary_key=True, related_name='item', db_column='id_item')
+    id_item = models.OneToOneField(Produtos, on_delete=models.CASCADE, primary_key=True, related_name='produto_item', db_column='id_item')
     categorias = models.ManyToManyField(Categorias, related_name='itens', through='itenscategorias')
     tipos = models.ManyToManyField(Tipos, related_name='itens', through='itenstipos')
     opcoes = models.ManyToManyField(Opcoes, related_name='itens', through='itensopcoes')
@@ -84,7 +84,7 @@ class ItensCategorias(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'itenscategorias_view'
+        db_table = 'itenscategorias'
 
     def __str__(self):
         return f'{self.id_item} - {self.id_categoria}'
@@ -99,7 +99,7 @@ class ItensTipos(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'itenstipos_view'
+        db_table = 'itenstipos'
 
     def __str__(self):
         return f"Item: {self.id_item} - Tipo: {self.id_tipo}"
@@ -114,7 +114,7 @@ class ItensOpcoes(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'itensopcoes_view'
+        db_table = 'itensopcoes'
 
     def __str__(self):
         return f"{self.id_item} - {self.id_opcao}"
@@ -122,7 +122,7 @@ class ItensOpcoes(models.Model):
 
 class Menus(models.Model):
     id_menu = models.OneToOneField(Produtos, on_delete=models.CASCADE, primary_key=True, related_name='produto_menu', db_column='id_menu')
-    itens = models.ManyToManyField(Itens, related_name='menus', through='ItemMenu')
+    itens = models.ManyToManyField(Itens, related_name='menus', through='ItensMenus')
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now_add=True, null=True)
 
@@ -143,7 +143,7 @@ class ItensMenus(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'itensmenus_view'
+        db_table = 'itensmenus'
 
     def __str__(self):
         return f'Menu: {self.id_menu} - Item: {self.id_item}'
@@ -152,13 +152,13 @@ class ItensMenus(models.Model):
 class DiasSemana(models.Model):
     id_dia_semana = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=50)
-    menus = models.ManyToManyField(Menus, related_name='dias', through='MenuDiaSemana')
+    menus = models.ManyToManyField(Menus, related_name='dias', through='MenusDiasSemana')
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now_add=True, null=True)
 
     class Meta:
         managed = False
-        db_table = 'diassemana_view'
+        db_table = 'diassemana'
 
     def __str__(self):
         return self.nome
@@ -175,7 +175,7 @@ class MenusDiasSemana(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'menusdiassemana_view'
+        db_table = 'menusdiassemana'
 
     def __str__(self):
         return f'Menu: {self.id_menu} - Dia: {self.id_dia_semana} - Almoço: {self.almoco} - Jantar: {self.jantar}'

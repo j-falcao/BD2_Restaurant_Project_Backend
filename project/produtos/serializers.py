@@ -1,76 +1,73 @@
 from rest_framework import serializers
-from .models import (
-    Produto, Item, Tipo, ItemTipo, Categoria, ItemCategoria, 
-    Opcao, ItemOpcao, Menu, ItemMenu, DiaSemana, MenuDiaSemana
-)
+from .models import *
 
-class ProdutoSerializer(serializers.ModelSerializer):
+class ProdutosSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Produto
+        model = Produtos
         fields = '__all__'
 
 
-class ItemSerializer(serializers.ModelSerializer):
+class ItensSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Item
+        model = Itens
         fields = '__all__'
 
 
-class TipoSerializer(serializers.ModelSerializer):
+class TiposSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Tipo
+        model = Tipos
         fields = '__all__'
 
 
-class ItemTipoSerializer(serializers.ModelSerializer):
+class ItensTiposSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ItemTipo
+        model = ItensTipos
         fields = '__all__'
 
 
-class CategoriaSerializer(serializers.ModelSerializer):
+class CategoriasSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Categoria
+        model = Categorias
         fields = '__all__'
 
 
-class ItemCategoriaSerializer(serializers.ModelSerializer):
+class ItensCategoriasSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ItemCategoria
+        model = ItensCategorias
         fields = '__all__'
 
 
-class OpcaoSerializer(serializers.ModelSerializer):
+class OpcoesSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Opcao
+        model = Opcoes
         fields = '__all__'
 
 
-class ItemOpcaoSerializer(serializers.ModelSerializer):
+class ItensOpcoesSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ItemOpcao
+        model = ItensOpcoes
         fields = '__all__'
 
 
-class MenuSerializer(serializers.ModelSerializer):
+class MenusSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Menu
+        model = Menus
         fields = '__all__'
 
 
-class MenuItemSerializer(serializers.ModelSerializer):
+class MenusItensSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ItemMenu
+        model = ItensMenus
         fields = '__all__'
 
 
-class DiaSemanaSerializer(serializers.ModelSerializer):
+class DiasSemanaSerializer(serializers.ModelSerializer):
     class Meta:
-        model = DiaSemana
+        model = DiasSemana
         fields = '__all__'
 
 
-class MenuDiaSemanaSerializer(serializers.ModelSerializer):
+class MenusDiasSemanaSerializer(serializers.ModelSerializer):
     class Meta:
-        model = MenuDiaSemana
+        model = MenusDiasSemana
         fields = '__all__'

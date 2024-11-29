@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import *
 
+
 class EstadoMesaSerializer(serializers.ModelSerializer):
     class Meta:
         model = EstadoMesa
@@ -9,7 +10,7 @@ class EstadoMesaSerializer(serializers.ModelSerializer):
 
 class MesaSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Mesa
+        model = Mesas
         fields = '__all__'
 
 
@@ -21,23 +22,23 @@ class ServicoSerializer(serializers.ModelSerializer):
 
 class ReservaSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Reserva
+        model = Reservas
         fields = '__all__'
 
 
 class PedidoSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Pedido
+        model = Pedidos
         fields = '__all__'
 
 
 class PedidoProdutoSerializer(serializers.ModelSerializer):
     class Meta:
-        model = PedidoProduto
+        model = PedidosProdutos
         fields = '__all__'
 
 
 class PedidoProdutoOpcaoItemSerializer(serializers.ModelSerializer):
     class Meta:
-        model = PedidoProdutoItemOpcao
+        model = PedidosProdutosItensOpcoes
         fields = '__all__'

@@ -1,4 +1,4 @@
-from .models import Produtos, Itens, Tipos, Categorias, Opcoes, Menus
+from models import *
 
 def get_all_produtos():
     return Produtos.objects.all()

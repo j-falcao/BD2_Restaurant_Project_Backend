@@ -2,8 +2,8 @@ from django.db import models
 
 class Produto(models.Model):
     id_produto = models.AutoField(primary_key=True)
-    is_item = models.BooleanField()
-    is_menu = models.BooleanField()
+    item = models.BooleanField()
+    menu = models.BooleanField()
     nome = models.CharField(max_length=100)
     url_imagem = models.URLField(blank=True, null=True)
     preco = models.DecimalField(max_digits=10, decimal_places=2)
@@ -12,7 +12,7 @@ class Produto(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'produto'
+        db_table = 'produtos_view'
 
     def __str__(self):
         return self.nome
@@ -25,7 +25,7 @@ class Categoria(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'categoria'
+        db_table = 'categorias_view'
 
     def __str__(self):
         return self.designacao
@@ -39,7 +39,7 @@ class Tipo(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'tipo'
+        db_table = 'tipos_view'
 
     def __str__(self):
         return self.designacao
@@ -53,7 +53,7 @@ class Opcao(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'opcao'
+        db_table = 'opcoes_view'
 
     def __str__(self):
         return self.designacao
@@ -69,7 +69,7 @@ class Item(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'item'
+        db_table = 'itens_view'
 
     def __str__(self):
         return self.id_item.nome
@@ -84,7 +84,7 @@ class ItemCategoria(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'itemcategoria'
+        db_table = 'itenscategorias_view'
 
     def __str__(self):
         return f'{self.id_item} - {self.id_categoria}'
@@ -99,7 +99,7 @@ class ItemTipo(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'itemtipo'
+        db_table = 'itenstipos_view'
 
     def __str__(self):
         return f"Item: {self.id_item} - Tipo: {self.id_tipo}"
@@ -114,7 +114,7 @@ class ItemOpcao(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'itemopcao'
+        db_table = 'itensopcoes_view'
 
     def __str__(self):
         return f"{self.id_item} - {self.id_opcao}"
@@ -128,7 +128,7 @@ class Menu(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'menu'
+        db_table = 'menus_view'
 
     def __str__(self):
         return self.id_menu.nome
@@ -143,7 +143,7 @@ class ItemMenu(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'itemmenu'
+        db_table = 'itensmenus_view'
 
     def __str__(self):
         return f'Menu: {self.id_menu} - Item: {self.id_item}'
@@ -158,7 +158,7 @@ class DiaSemana(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'diasemana'
+        db_table = 'diassemana_view'
 
     def __str__(self):
         return self.nome
@@ -175,7 +175,7 @@ class MenuDiaSemana(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'menudiasemana'
+        db_table = 'menusdiassemana_view'
 
     def __str__(self):
         return f'Menu: {self.id_menu} - Dia: {self.id_dia_semana} - Almoço: {self.almoco} - Jantar: {self.jantar}'

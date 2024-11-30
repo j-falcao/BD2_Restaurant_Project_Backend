@@ -24,6 +24,8 @@ def signup_view(request):
 def login_view(request):
     username = request.data.get("username")
     password = request.data.get("password")
+
+    print(username, password)
     
     # Autenticar o usuário
     user = authenticate(request, username=username, password=password)

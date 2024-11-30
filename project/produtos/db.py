@@ -13,6 +13,9 @@ def get_all_itens():
 def get_item_by_id(id_item):
     return Itens.objects.get(id_item=id_item)
 
+def get_itens_by_categoria(id_categoria):
+    return Itens.objects.filter(categorias=id_categoria)
+
 
 def get_all_tipos():
     return Tipos.objects.all()

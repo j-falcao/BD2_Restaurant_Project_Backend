@@ -113,7 +113,7 @@ class PedidosProdutos(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'pedidosprodutos_view'
+        db_table = 'pedidosprodutos'
 
     def __str__(self):
         return f"Produto {self.id_produto} no Pedido {self.id_pedido}"
@@ -130,7 +130,7 @@ class PedidosProdutosItensOpcoes(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'pedidosprodutositensopcoes_view'
+        db_table = 'pedidosprodutositensopcoes'
 
     def __str__(self):
         return f"Opção {self.id_item_opcao} no Produto do Pedido {self.id_pedido_produto}"

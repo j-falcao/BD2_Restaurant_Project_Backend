@@ -32,8 +32,8 @@ CREATE TABLE IF NOT EXISTS utilizadores (
     genero VARCHAR(10) CHECK (genero IN ('M', 'F', 'Other')),
     password_hash VARCHAR(255) NOT NULL,
     is_active BOOLEAN DEFAULT TRUE NOT NULL,
-    is_verified BOOLEAN DEFAULT FALSE NOT NULL,
     last_login TIMESTAMP,
+	username VARCHAR(255) NOT NULL UNIQUE,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT email_format CHECK (email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$')

@@ -37,7 +37,8 @@ class PermissoesCargos(models.Model):
 class Utilizadores(models.Model):
     id_utilizador = models.AutoField(primary_key=True)
     cargos = models.ManyToManyField(Cargos, through='UtilizadoresCargos', related_name='utilizadores')
-    cargos = models.ManyToManyField(Permissoes, through='UtilizadoresPermissoes', related_name='utilizadores')
+    permissoes = models.ManyToManyField(Permissoes, through='UtilizadoresPermissoes', related_name='utilizadores')
+    username = models.CharField(max_length=50, unique=True)
     turno_almoco = models.BooleanField(default=False)
     turno_jantar = models.BooleanField(default=False)
     first_name = models.CharField(max_length=30, null=True, blank=True)

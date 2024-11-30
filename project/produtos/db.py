@@ -43,3 +43,6 @@ def get_all_menus():
 
 def get_menu_by_id(id_menu):
     return Menus.objects.get(id_menu=id_menu)
+
+def get_all_itens_opcoes():
+    return ItensOpcoes.objects.all()

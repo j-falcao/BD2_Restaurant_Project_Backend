@@ -22,7 +22,7 @@ class Mesas(models.Model):
         EstadosMesas, on_delete=models.CASCADE, db_column='id_estado_mesa')
     numero = models.IntegerField()
     capacidade_maxima = models.IntegerField()
-    quantidade_ocupantes = models.IntegerField()
+    quantidade_clientes = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now_add=True, null=True)
 
@@ -134,3 +134,5 @@ class PedidosProdutosItensOpcoes(models.Model):
 
     def __str__(self):
         return f"Opção {self.id_item_opcao} no Produto do Pedido {self.id_pedido_produto}"
+    
+

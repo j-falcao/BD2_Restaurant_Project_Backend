@@ -48,14 +48,14 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS("Dropping tables..."))
         self._run_sql_file(os.getcwd() + '/database/scripts/drop_tables.sql')
         self.stdout.write(self.style.SUCCESS("Dropping views..."))
-        # self._run_sql_file(os.getcwd() + '/database/scripts/drop_views.sql')
+        self._run_sql_file(os.getcwd() + '/database/scripts/drop_views.sql')
         # self.stdout.write(self.style.SUCCESS("Dropping stored procedures..."))
         # self._run_sql_file(os.getcwd() + '/database/scripts/drop_stored_procedures.sql')
 
         self.stdout.write(self.style.SUCCESS("Creating tables..."))
         self._run_sql_file(os.getcwd() + '/database/scripts/create_tables.sql')
         self.stdout.write(self.style.SUCCESS("Creating views..."))
-        # self._run_sql_file(os.getcwd() + '/database/scripts/create_views.sql')
+        self._run_sql_file(os.getcwd() + '/database/scripts/create_views.sql')
         # self.stdout.write(self.style.SUCCESS("Creating stored procedures..."))
         # self._run_sql_file(os.getcwd() + '/database/scripts/create_stored_procedures.sql')
 

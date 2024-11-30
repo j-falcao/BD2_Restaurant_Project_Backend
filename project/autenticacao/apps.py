@@ -14,7 +14,7 @@ def criar_utilizador_dev(sender, **kwargs):
     from .models import Utilizadores
     try:
         if not Utilizadores.objects.filter(username='dev').exists():
-            Utilizadores.objects.create_superuser(
+            Utilizadores.objects.create(
                 username='dev',
                 password='dev'
             )

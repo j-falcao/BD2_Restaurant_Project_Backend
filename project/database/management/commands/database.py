@@ -45,10 +45,10 @@ class Command(BaseCommand):
     def _reset_db(self):
         self.stdout.write(self.style.WARNING("Resetting the database..."))
 
-        self.stdout.write(self.style.SUCCESS("Dropping tables..."))
-        self._run_sql_file(os.getcwd() + '/database/scripts/drop_tables.sql')
         self.stdout.write(self.style.SUCCESS("Dropping views..."))
         self._run_sql_file(os.getcwd() + '/database/scripts/drop_views.sql')
+        self.stdout.write(self.style.SUCCESS("Dropping tables..."))
+        self._run_sql_file(os.getcwd() + '/database/scripts/drop_tables.sql')
         # self.stdout.write(self.style.SUCCESS("Dropping stored procedures..."))
         # self._run_sql_file(os.getcwd() + '/database/scripts/drop_stored_procedures.sql')
 

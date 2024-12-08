@@ -285,7 +285,15 @@ class Command(BaseCommand):
                 )
 
     def seed_dias_semana(self):
-        dias = ["Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado", "Domingo"]
+        dias = [
+            "Segunda-feira",
+            "Terça-feira", 
+            "Quarta-feira", 
+            "Quinta-feira", 
+            "Sexta-feira", 
+            "Sábado", 
+            "Domingo"
+        ]
         with transaction.atomic(), connection.cursor() as cursor:
             for dia in tqdm(dias, desc="Seeding dias_semana"):
                 cursor.execute("INSERT INTO diassemana(designacao) VALUES (%s)", [dia])
@@ -387,8 +395,15 @@ class Command(BaseCommand):
                 )
 
     def seed_menus_dias_semana(self, num_entries):
-        dias_semana = ["Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado", "Domingo"]
-        
+        dias_semana = [
+            "Segunda-feira", 
+            "Terça-feira", 
+            "Quarta-feira", 
+            "Quinta-feira", 
+            "Sexta-feira", 
+            "Sábado", 
+            "Domingo"
+        ]
         with transaction.atomic(), connection.cursor() as cursor:
             for _ in tqdm(range(num_entries), desc="Seeding menusdiassemana"):
                 id_menu = fake.random_int(min=1, max=100)            

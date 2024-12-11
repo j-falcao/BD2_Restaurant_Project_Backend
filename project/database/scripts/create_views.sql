@@ -107,7 +107,7 @@ JOIN pedidosprodutos_view pp ON pp.id_pedido_produto = ppio.id_pedido_produto;
 CREATE OR REPLACE VIEW instrucoes_view AS
 SELECT i.*, ii.descricao AS descricao_ingrediente, iu.descricao AS descricao_utensilio FROM instrucoes i
 JOIN instrucoesingredientes ii ON ii.id_instrucao = instrucoes.id_instrucao
-JOIN instrucoesutensilios iu ON iu.id_instrucao = instrucoes.id_instrucao
+JOIN instrucoesutensilios iu ON iu.id_instrucao = instrucoes.id_instrucao;
 
 CREATE OR REPLACE VIEW instrucoesingredientes_view AS
 SELECT * FROM instrucoesingredientes;

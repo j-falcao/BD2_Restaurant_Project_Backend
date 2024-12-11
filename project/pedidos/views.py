@@ -27,6 +27,7 @@ def get_mesa(request, id_mesa):
     serializer = MesasSerializer(mesa)
     return JsonResponse(serializer.data, safe=False)
 
+
 @api_view(['GET'])
 def get_servicos(request):
     servicos = db.get_all_servicos()

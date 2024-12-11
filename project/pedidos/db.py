@@ -1,4 +1,4 @@
-from .models import EstadosMesas, Mesas, Servicos, Reservas, Pedidos
+from .models import *
 
 
 def get_all_estados_mesa():
@@ -39,3 +39,7 @@ def get_all_pedidos():
 
 def get_pedido_by_id(id_pedido):
     return Pedidos.objects.get(id_pedido=id_pedido)
+
+
+def get_all_pedidos_produtos():
+    return PedidosProdutos.objects.all()

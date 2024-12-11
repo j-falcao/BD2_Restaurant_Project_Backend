@@ -1,4 +1,4 @@
-from models import *
+from .models import *
 
 def get_all_utilizadores():
     return Utilizadores.objects.all()

@@ -1,17 +1,18 @@
 CREATE OR REPLACE VIEW estadosmesas_view AS 
 SELECT * FROM estadosmesas;
 
-CREATE OR REPLACE VIEW permissoescargos_view AS
-SELECT pc.*, p.designacao AS designacao_permissao, c.designacao AS designacao_cargo FROM permissoescargos pc
-JOIN permissoes p ON p.id_permissao = pc.id_permissao
-JOIN cargos c ON c.id_cargo = pc.id_cargo;
-
 CREATE OR REPLACE VIEW utilizadores_view AS 
-SELECT u.*, p.designacao AS designacao_permissao, c.designacao AS designacao_cargo FROM utilizadores u
-JOIN utilizadorespermissoes up ON up.id_utilizador = u.id_utilizador
-JOIN permissoes p ON p.id_permissao = up.id_permissao
+SELECT u.*, c.designacao AS designacao_cargo FROM utilizadores u
 JOIN utilizadorescargos uc ON uc.id_utilizador = u.id_utilizador
 JOIN cargos c ON c.id_cargo = uc.id_cargo;
+
+CREATE OR REPLACE VIEW cargos_view AS 
+SELECT c.*, CONCAT(u.first_name, ' ', u.last_name) AS nome_utilizador, u.url_imagem FROM cargos c
+JOIN utilizadorescargos uc ON uc.id_utilizador = c.id_cargo
+JOIN utilizadores u ON u.id_utilizador = uc.id_utilizador;
+
+CREATE OR REPLACE VIEW utilizadorescargos_view AS
+SELECT * FROM utilizadorescargos;
 
 CREATE OR REPLACE VIEW produtos_view AS
 SELECT * FROM produtos;

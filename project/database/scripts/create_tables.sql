@@ -1,21 +1,6 @@
-CREATE TABLE IF NOT EXISTS permissoes (
-	id_permissao SERIAL PRIMARY KEY,
-	designacao VARCHAR(100) NOT NULL,
-	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
-
 CREATE TABLE IF NOT EXISTS cargos (
 	id_cargo SERIAL PRIMARY KEY,
 	designacao VARCHAR(100) NOT NULL,
-	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS permissoescargos (
-	id_permissao_cargo SERIAL PRIMARY KEY,
-	id_permissao INT REFERENCES permissoes(id_permissao) ON DELETE CASCADE,
-	id_cargo INT REFERENCES cargos(id_cargo) ON DELETE CASCADE,
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -28,23 +13,15 @@ CREATE TABLE IF NOT EXISTS utilizadores (
     last_name VARCHAR(100) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     telemovel VARCHAR(50) UNIQUE,
+	url_imagem VARCHAR(2048),
     data_nascimento DATE,
     genero VARCHAR(10) CHECK (genero IN ('M', 'F', 'Other')),
     password_hash VARCHAR(255) NOT NULL,
     is_active BOOLEAN DEFAULT TRUE NOT NULL,
     last_login TIMESTAMP,
-	username VARCHAR(255) NOT NULL UNIQUE,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT email_format CHECK (email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$')
-);
-
-CREATE TABLE IF NOT EXISTS utilizadorespermissoes (
-	id_utilizador_permissao SERIAL PRIMARY KEY,
-	id_utilizador INT REFERENCES utilizadores(id_utilizador) ON DELETE CASCADE,
-	id_permissao INT REFERENCES permissoes(id_permissao) ON DELETE CASCADE,
-	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS utilizadorescargos (

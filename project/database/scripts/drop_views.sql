@@ -1,5 +1,6 @@
--- DROP VIEW IF EXISTS permissoescargos_view CASCADE;
--- DROP VIEW IF EXISTS utilizadores_view CASCADE;
+DROP VIEW IF EXISTS utilizadores_view CASCADE;
+DROP VIEW IF EXISTS cargos_view CASCADE;
+DROP VIEW IF EXISTS utilizadorescargos_view CASCADE;
 DROP VIEW IF EXISTS estadosmesas_view CASCADE;
 DROP VIEW IF EXISTS instrucoes_view CASCADE;
 DROP VIEW IF EXISTS servicos_view CASCADE;

@@ -7,7 +7,7 @@ JOIN utilizadorescargos uc ON uc.id_utilizador = u.id_utilizador
 JOIN cargos c ON c.id_cargo = uc.id_cargo;
 
 CREATE OR REPLACE VIEW cargos_view AS 
-SELECT c.*, CONCAT(u.first_name, ' ', u.last_name) AS nome_utilizador, u.url_imagem FROM cargos c
+SELECT c.*, CONCAT(u.first_name, ' ', u.last_name) AS nome_utilizador, u.username, u.url_imagem FROM cargos c
 JOIN utilizadorescargos uc ON uc.id_utilizador = c.id_cargo
 JOIN utilizadores u ON u.id_utilizador = uc.id_utilizador;
 
@@ -105,9 +105,11 @@ SELECT ppio.*, pp.id_produto FROM pedidosprodutositensopcoes ppio
 JOIN pedidosprodutos_view pp ON pp.id_pedido_produto = ppio.id_pedido_produto;
 
 CREATE OR REPLACE VIEW instrucoes_view AS
-SELECT i.*, ii.descricao AS descricao_ingrediente, iu.descricao AS descricao_utensilio FROM instrucoes i
-JOIN instrucoesingredientes ii ON ii.id_instrucao = i.id_instrucao
-JOIN instrucoesutensilios iu ON iu.id_instrucao = i.id_instrucao;
+SELECT i.*, i.nome AS nome_ingrediente, u.nome AS nome_utensilio FROM instrucoes ins
+JOIN instrucoesingredientes ii ON ii.id_instrucao = ins.id_instrucao
+JOIN ingredientes i ON i.id_ingrediente = ii.id_ingrediente
+JOIN instrucoesutensilios iu ON iu.id_instrucao = ins.id_instrucao
+JOIN utensilios u ON u.id_utensilio = iu.id_utensilio;
 
 CREATE OR REPLACE VIEW instrucoesingredientes_view AS
 SELECT * FROM instrucoesingredientes;
@@ -116,17 +118,15 @@ CREATE OR REPLACE VIEW instrucoesutensilios_view AS
 SELECT * FROM instrucoesutensilios;
 
 CREATE OR REPLACE VIEW utensiliosreceitas_view AS
-SELECT ur.*, u.nome FROM utensiliosreceitas ur
-JOIN utensilios_view u ON u.id_utensilio = ur.id_utensilio;
+SELECT * FROM utensiliosreceitas;
 
 CREATE OR REPLACE VIEW ingredientesreceitas_view AS
-SELECT ir.*, i.nome FROM ingredientesreceitas ir
-JOIN ingredientes_view i ON i.id_ingrediente = ir.id_ingrediente;
+SELECT * FROM ingredientesreceitas;
 
 CREATE OR REPLACE VIEW receitas_view AS
-SELECT r.*, ing.nome AS designacao_ingrediente, u.nome AS designacao_utensilio FROM receitas r
-JOIN utensiliosreceitas_view ur ON ur.id_receita = r.id_receita
-JOIN utensilios_view u ON u.id_utensilio = ur.id_utensilio
-JOIN ingredientesreceitas_view ir ON ir.id_receita = r.id_receita
-JOIN ingredientes_view ing ON ing.id_ingrediente = ir.id_ingrediente
-JOIN instrucoes_view i ON i.id_receita = r.id_receita;
+SELECT r.*, i.nome AS designacao_ingrediente, u.nome AS designacao_utensilio FROM receitas r
+JOIN utensiliosreceitas ur ON ur.id_receita = r.id_receita
+JOIN utensilios u ON u.id_utensilio = ur.id_utensilio
+JOIN ingredientesreceitas ir ON ir.id_receita = r.id_receita
+JOIN ingredientes i ON i.id_ingrediente = ir.id_ingrediente
+JOIN instrucoes ins ON ins.id_receita = r.id_receita;

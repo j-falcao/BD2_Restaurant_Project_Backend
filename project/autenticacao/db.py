@@ -16,13 +16,13 @@ def get_utilizador_by_telemovel(telemovel):
     return Utilizadores.objects.filter(telemovel=telemovel).first() 
 
 def get_all_cozinheiros():
-    return Utilizadores.objects.filter(permissoes__id_permissao=1)
+    return Utilizadores.objects.filter(cargos__id_cargo=1)
 
 def get_all_garcons():
-    return Utilizadores.objects.filter(permissoes__id_permissao=2)
+    return Utilizadores.objects.filter(cargos__id_cargo=2)
 
 def get_all_administradores():
-    return Utilizadores.objects.filter(permissoes__id_permissao=3)
+    return Utilizadores.objects.filter(cargos__id_cargo=3)
 
 def get_all_cargos():
     return Cargos.objects.all()

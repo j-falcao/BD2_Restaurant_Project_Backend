@@ -4,6 +4,7 @@ from django.core.management.base import BaseCommand
 from faker import Faker
 from tqdm import tqdm
 from django.db import connection, transaction
+from django.contrib.auth.hashers import make_password
 from produtos import db as produtos_db
 from pedidos import db as pedidos_db
 from autenticacao import db as autenticacao_db
@@ -169,15 +170,16 @@ class Command(BaseCommand):
     def seed_utilizadores(self):
         utilizadores_data = []
         for _ in range(10):
-            first_name = fake.name()
-            last_name = fake.name()
+            first_name = fake.first_name()
+            last_name = fake.last_name()
             username = 'dev' if _ == 0 else fake.user_name()
             url_imagem = fake.image_url()
             turno_almoco = fake.boolean()
             turno_jantar = not turno_almoco
             data_nascimento = fake.date()
             genero = fake.random_element(elements=['M', 'F', 'O'])
-            password_hash = 'password' if _ == 0 else fake.password()
+            raw_password = 'password' if _ == 0 else fake.password()
+            password_hash = make_password(raw_password)  # Hash the password
             is_active = fake.boolean()
             last_login = fake.date_time()
             email = fake.email()
@@ -192,7 +194,7 @@ class Command(BaseCommand):
                 """
                 INSERT INTO utilizadores(
                     first_name, last_name, username, url_imagem, turno_almoco, turno_jantar,
-                    data_nascimento, genero, password_hash, is_active, last_login, email, telemovel
+                    data_nascimento, genero, password, is_active, last_login, email, telemovel
                 ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 """,
                 utilizadores_data
@@ -259,21 +261,21 @@ class Command(BaseCommand):
             )
 
     def seed_utensilios(self, num_entries):
-        utensilios_data = [
-            (
-                fake.random_int(min=1, max=100),  # id_fornecedor
-                fake.word(),                      # nome
-                fake.random_int(min=1, max=500),  # quantidade_stock
-                fake.random_int(min=100, max=2000),  # limite_stock
-                fake.random_number(digits=4, fix_len=True) / 100  # preco
-            )
-            for _ in range(num_entries)
-        ]
+        utensilios_data = []
+        for _ in range(num_entries):
+            id_fornecedor = fake.random_int(min=1, max=100)
+            nome = fake.word()
+            url_imagem = fake.image_url()
+            quantidade_stock = fake.random_int(min=1, max=1000)
+            limite_stock = fake.random_int(min=100, max=2000)
+            preco = fake.random_number(digits=4, fix_len=True) / 100
+            utensilios_data.append((id_fornecedor, nome, url_imagem, quantidade_stock, limite_stock, preco))
+
         with transaction.atomic(), connection.cursor() as cursor:
             cursor.executemany(
                 """
-                INSERT INTO utensilios (id_fornecedor, nome, quantidade_stock, limite_stock, preco)
-                VALUES (%s, %s, %s, %s, %s)
+                INSERT INTO utensilios (id_fornecedor, nome, url_imagem, quantidade_stock, limite_stock, preco)
+                VALUES (%s, %s, %s, %s, %s, %s)
                 """,
                 utensilios_data
             )
@@ -572,10 +574,10 @@ class Command(BaseCommand):
 
     def seed_servicos_pedidos_pedidosprodutos(self, num_entries):
         with transaction.atomic(), connection.cursor() as cursor:
-            id_garcons = [garcom.id_utilizador for garcom in autenticacao_db.get_all_garcons()]
+            id_garcons = [garcom.id for garcom in autenticacao_db.get_all_garcons()]
             id_mesas = [mesa.id_mesa for mesa in pedidos_db.get_all_mesas()]
             id_produtos = [produto.id_produto for produto in produtos_db.get_all_produtos()]
-            id_cozinheiros = [cozinheiro.id_utilizador for cozinheiro in autenticacao_db.get_all_cozinheiros()]
+            id_cozinheiros = [cozinheiro.id for cozinheiro in autenticacao_db.get_all_cozinheiros()]
 
             servicos_data = []
             pedidos_data = []

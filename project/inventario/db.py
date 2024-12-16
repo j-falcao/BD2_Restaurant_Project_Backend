@@ -1,3 +1,4 @@
+from django.db import connection
 from .models import *
 
 
@@ -7,6 +8,34 @@ def get_all_ingredientes():
 def get_ingrediente_by_id(id_ingrediente):
     return Ingredientes.objects.get(id_ingrediente=id_ingrediente)
 
+def create_ingrediente(ingrediente):
+    with connection.cursor() as cursor:
+        cursor.callproc('create_ingrediente', [
+            ingrediente['id_fornecedor'],
+            ingrediente['nome'],
+            ingrediente['url_imagem'],
+            ingrediente['quantidade_stock'],
+            ingrediente['unidade_medida'],
+            ingrediente['limite_stock'],
+            ingrediente['preco']
+        ])
+
+def update_ingrediente(id_ingrediente, ingrediente):
+    with connection.cursor() as cursor:
+        cursor.callproc('update_ingrediente', [
+            id_ingrediente,
+            ingrediente['id_fornecedor'],
+            ingrediente['nome'],
+            ingrediente['url_imagem'],
+            ingrediente['quantidade_stock'],
+            ingrediente['unidade_medida'],
+            ingrediente['limite_stock'],
+            ingrediente['preco']
+        ])
+
+def delete_ingrediente(id_ingrediente):
+    with connection.cursor() as cursor:
+        cursor.callproc('delete_ingrediente', [id_ingrediente])
 
 def get_all_utensilios():
     return Utensilios.objects.all()

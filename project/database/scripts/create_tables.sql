@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS cargos (
 );
 
 CREATE TABLE IF NOT EXISTS utilizadores (
-    id_utilizador SERIAL PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     turno_almoco BOOLEAN DEFAULT FALSE NOT NULL,
     turno_jantar BOOLEAN DEFAULT FALSE NOT NULL,
     first_name VARCHAR(100) NOT NULL,
@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS utilizadores (
 	url_imagem VARCHAR(2048),
     data_nascimento DATE,
     genero VARCHAR(10) CHECK (genero IN ('M', 'F', 'O')) NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
     is_active BOOLEAN DEFAULT TRUE NOT NULL,
     last_login TIMESTAMP,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS utilizadores (
 
 CREATE TABLE IF NOT EXISTS utilizadorescargos (
 	id_utilizador_cargo SERIAL PRIMARY KEY,
-	id_utilizador INT REFERENCES utilizadores(id_utilizador) ON DELETE CASCADE,
+	id_utilizador INT REFERENCES utilizadores(id) ON DELETE CASCADE,
 	id_cargo INT REFERENCES cargos(id_cargo) ON DELETE CASCADE,
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS ingredientes (
 CREATE TABLE IF NOT EXISTS ingredientescarrinhos (
 	id_ingrediente_carrinho SERIAL PRIMARY KEY,
 	id_ingrediente INT REFERENCES ingredientes(id_ingrediente) ON DELETE CASCADE,
-	id_administrador INT REFERENCES utilizadores(id_utilizador) ON DELETE CASCADE,
+	id_administrador INT REFERENCES utilizadores(id) ON DELETE CASCADE,
 	id_carrinho INT REFERENCES carrinhos(id_carrinho) ON DELETE CASCADE,
 	quantidade INT NOT NULL,
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -98,7 +98,7 @@ CREATE TABLE IF NOT EXISTS utensilios (
 CREATE TABLE IF NOT EXISTS utensilioscarrinhos (
 	id_utensilio_carrinho SERIAL PRIMARY KEY,
 	id_utensilio INT REFERENCES utensilios(id_utensilio) ON DELETE CASCADE,
-	id_administrador INT REFERENCES utilizadores(id_utilizador) ON DELETE CASCADE,
+	id_administrador INT REFERENCES utilizadores(id) ON DELETE CASCADE,
 	id_carrinho INT REFERENCES carrinhos(id_carrinho) ON DELETE CASCADE,
 	quantidade INT NOT NULL,
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -261,7 +261,7 @@ CREATE TABLE IF NOT EXISTS menusdiassemana (
 
 CREATE TABLE IF NOT EXISTS servicos (
 	id_servico SERIAL PRIMARY KEY,
-	id_garcom INT REFERENCES utilizadores(id_utilizador) ON DELETE CASCADE,
+	id_garcom INT REFERENCES utilizadores(id) ON DELETE CASCADE,
 	id_mesa INT REFERENCES mesas(id_mesa) ON DELETE CASCADE,
 	data_hora_inicio TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	data_hora_fim TIMESTAMP,
@@ -281,7 +281,7 @@ CREATE TABLE IF NOT EXISTS pedidosprodutos (
 	id_pedido_produto SERIAL PRIMARY KEY,
 	id_pedido INT REFERENCES pedidos(id_pedido) ON DELETE CASCADE,
 	id_produto INT REFERENCES produtos(id_produto) ON DELETE CASCADE,
-	id_cozinheiro INT REFERENCES utilizadores(id_utilizador) ON DELETE CASCADE,
+	id_cozinheiro INT REFERENCES utilizadores(id) ON DELETE CASCADE,
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

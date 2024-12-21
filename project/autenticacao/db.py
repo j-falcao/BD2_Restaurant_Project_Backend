@@ -33,24 +33,6 @@ def get_cargo_by_id(id_cargo):
 def get_cargo_by_designacao(designacao):
     return Cargos.objects.filter(designacao=designacao).first()
 
-def get_all_permissoes():
-    return Permissoes.objects.all() 
-
-def get_permissao_by_id(id_permissao):
-    return Permissoes.objects.filter(id_permissao=id_permissao).first()
-
-def get_permissao_by_designacao(designacao):
-    return Permissoes.objects.filter(designacao=designacao).first()
-
-def get_all_utilizadores_permissoes():
-    return UtilizadoresPermissoes.objects.all()
-
-def get_utilizadores_permissoes_by_id_utilizador(id_utilizador):
-    return UtilizadoresPermissoes.objects.filter(id_utilizador=id_utilizador)
-
-def get_utilizadores_permissoes_by_id_permissao(id_permissao):
-    return UtilizadoresPermissoes.objects.filter(id_permissao=id_permissao)
-
 def get_all_utilizadores_cargos():
     return UtilizadoresCargos.objects.all()
 
@@ -59,12 +41,3 @@ def get_utilizadores_cargos_by_id_utilizador(id_utilizador):
 
 def get_utilizadores_cargos_by_id_cargo(id_cargo):
     return UtilizadoresCargos.objects.filter(id_cargo=id_cargo)
-
-def get_all_permissoes_cargos():
-    return PermissoesCargos.objects.all()
-
-def get_permissoes_cargos_by_id_permissao(id_permissao):
-    return PermissoesCargos.objects.filter(id_permissao=id_permissao)
-
-def get_permissoes_cargos_by_id_cargo(id_cargo):
-    return PermissoesCargos.objects.filter(id_cargo=id_cargo)

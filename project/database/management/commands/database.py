@@ -51,11 +51,19 @@ class Command(BaseCommand):
         self._run_sql_file(os.getcwd() + '/database/scripts/drop_views.sql')
         self.stdout.write(self.style.SUCCESS("Dropping tables..."))
         self._run_sql_file(os.getcwd() + '/database/scripts/drop_tables.sql')
+        self.stdout.write(self.style.SUCCESS("Dropping stored procedures..."))
+        self._run_sql_file(os.getcwd() + '/database/scripts/drop_stored_procedures.sql')
+        self.stdout.write(self.style.SUCCESS("Dropping triggers..."))
+        self._run_sql_file(os.getcwd() + '/database/scripts/drop_triggers.sql')
 
         self.stdout.write(self.style.SUCCESS("Creating tables..."))
         self._run_sql_file(os.getcwd() + '/database/scripts/create_tables.sql')
         self.stdout.write(self.style.SUCCESS("Creating views..."))
         self._run_sql_file(os.getcwd() + '/database/scripts/create_views.sql')
+        self.stdout.write(self.style.SUCCESS("Creating stored procedures..."))
+        self._run_sql_file(os.getcwd() + '/database/scripts/create_stored_procedures.sql')
+        self.stdout.write(self.style.SUCCESS("Creating triggers..."))
+        self._run_sql_file(os.getcwd() + '/database/scripts/create_triggers.sql')
 
         self._seed_all()
 
@@ -182,11 +190,10 @@ class Command(BaseCommand):
             password_hash = make_password(raw_password)  # Hash the password
             is_active = fake.boolean()
             last_login = fake.date_time()
-            email = fake.email()
             telemovel = fake.phone_number()
             utilizadores_data.append((
                 first_name, last_name, username, url_imagem, turno_almoco, turno_jantar,
-                data_nascimento, genero, password_hash, is_active, last_login, email, telemovel
+                data_nascimento, genero, password_hash, is_active, last_login, telemovel
             ))
 
         with transaction.atomic(), connection.cursor() as cursor:
@@ -194,8 +201,8 @@ class Command(BaseCommand):
                 """
                 INSERT INTO utilizadores(
                     first_name, last_name, username, url_imagem, turno_almoco, turno_jantar,
-                    data_nascimento, genero, password, is_active, last_login, email, telemovel
-                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    data_nascimento, genero, password, is_active, last_login, telemovel
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 """,
                 utilizadores_data
             )

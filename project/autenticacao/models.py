@@ -24,7 +24,6 @@ class Utilizadores(models.Model):
     first_name = models.CharField(max_length=30, null=True, blank=True)
     last_name = models.CharField(max_length=30, null=True, blank=True)
     username = models.CharField(max_length=30, unique=True)
-    email = models.EmailField(null=True, blank=True, unique=True)
     telemovel = models.CharField(max_length=50, null=True, blank=True, unique=True)
     data_nascimento = models.DateField(null=True, blank=True)
     genero = models.CharField(

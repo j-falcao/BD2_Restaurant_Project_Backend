@@ -7,14 +7,10 @@ class CargosSerializer(serializers.ModelSerializer):
         model = Cargos
         fields = '__all__'
 
-
 class UtilizadoresSerializer(serializers.ModelSerializer):
-    cargos = CargosSerializer(many=True, read_only=True)
-
-    class Meta:
+    class Meta: 
         model = Utilizadores
-        fields = '__all__'        
-
+        fields = '__all__'
 
 class UtilizadoresCargosSerializer(serializers.ModelSerializer):
     id_utilizador = UtilizadoresSerializer(read_only=True)

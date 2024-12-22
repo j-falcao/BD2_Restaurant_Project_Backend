@@ -12,7 +12,6 @@ CREATE TABLE IF NOT EXISTS utilizadores (
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
 	username VARCHAR(50) UNIQUE NOT NULL,
-    email VARCHAR(255) UNIQUE NOT NULL,
     telemovel VARCHAR(50) UNIQUE,
 	url_imagem VARCHAR(2048),
     data_nascimento DATE,
@@ -21,8 +20,7 @@ CREATE TABLE IF NOT EXISTS utilizadores (
     is_active BOOLEAN DEFAULT TRUE NOT NULL,
     last_login TIMESTAMP,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT email_format CHECK (email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$')
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS utilizadorescargos (

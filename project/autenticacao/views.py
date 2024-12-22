@@ -1,71 +1,73 @@
 from django.http import JsonResponse, Http404
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.decorators import api_view
-from django.contrib.auth.hashers import check_password
-from django.contrib.auth.hashers import make_password
+from rest_framework.permissions import AllowAny
+from rest_framework.decorators import permission_classes, api_view
+from django.contrib.auth.hashers import check_password, make_password
 from .models import Utilizadores
 from . import db
 from .serializers import UtilizadoresSerializer, CargosSerializer, UtilizadoresCargosSerializer
 
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def signup_view(request):
     """
     Handle user signup and return a success message.
     """
-    username = request.data.get("username")
-    email = request.data.get("email")
-    password = request.data.get("password")
+    try:
+        username = request.data.get("username")
+        password = request.data.get("password")
 
-    if not all([username, email, password]):
-        return JsonResponse({"error": "Todos os campos devem ser preenchidos"}, status=400)
+        if not all([username, password]):
+            return JsonResponse({"error": "Todos os campos devem ser preenchidos"}, status=400)
 
-    if Utilizadores.objects.filter(username=username).exists():
-        return JsonResponse({"error": "Nome de utilizador já existe"}, status=400)
-    
-    if Utilizadores.objects.filter(email=email).exists():
-        return JsonResponse({"error": "Email já registrado"}, status=400)
+        if Utilizadores.objects.filter(username=username).exists():
+            return JsonResponse({"error": "O username fornecido já existe"}, status=400)
 
-    # Hash the password before saving the user
-    hashed_password = make_password(password)
-    user = Utilizadores.objects.create(username=username, email=email, password=hashed_password)
-
-    if user:
-        return JsonResponse({"message": "Utilizador criado com sucesso"})
-    else:
+        # Hash the password before saving the user
+        hashed_password = make_password(password)
+        user = db.criar_utilizador(username, hashed_password)
+        return JsonResponse({"message": "Utilizador criado com sucesso", "username": user.username}, status=201)
+    except Exception as e:
+        print("Erro ao criar o utilizador: " + e)
         return JsonResponse({"error": "Erro ao criar o utilizador"}, status=500)
 
 
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def login_view(request):
     """
     Handle user login and return JWT in an HTTP-only cookie.
     """
-    username = request.data.get("username")
-    password = request.data.get("password")
+    try:
+        username = request.data.get("username")
+        password = request.data.get("password")
 
-    if not all([username, password]):
-        return JsonResponse({"error": "Todos os campos devem ser preenchidos"}, status=400)
+        if not all([username, password]):
+            return JsonResponse({"error": "Todos os campos devem ser preenchidos"}, status=400)
 
 
-    # Verificar as credenciais
-    user = Utilizadores.objects.get(username=username)
-    if not check_password(password, user.password):
-        return JsonResponse({"error": "Credenciais inválidas"}, status=401)
+        # Verificar as credenciais
+        user = Utilizadores.objects.get(username=username)
+        if not check_password(password, user.password):
+            return JsonResponse({"error": "Credenciais inválidas"}, status=401)
 
-    # Generate JWT tokens
-    refresh = RefreshToken.for_user(user)
-    access_token = str(refresh.access_token)
+        # Generate JWT tokens
+        refresh = RefreshToken.for_user(user)
+        access_token = str(refresh.access_token)
 
-    # Set the access token as an HTTP-only cookie
-    response = JsonResponse({"message": "Login bem-sucedido"})
-    response.set_cookie(
-        "access_token",
-        access_token,
-        httponly=True,
-        secure=True,
-        samesite="Strict"
-    )
-    return response
+        # Set the access token as an HTTP-only cookie
+        response = JsonResponse({"message": "Login bem-sucedido"})
+        response.set_cookie(
+            "access_token",
+            access_token,
+            httponly=True,
+            secure=True,
+            samesite="Strict"
+        )
+        return response
+    except Exception as e:
+        print("Erro ao autenticar o utilizador: " + e)
+        return JsonResponse({"error": "Erro ao autenticar o utilizador"}, status=500)
 
 
 @api_view(['GET'])
@@ -88,6 +90,15 @@ def whoami_view(request):
 
 
 # UTILIZADORES
+
+@api_view(['POST'])
+def criar_utilizador_view(request):
+    serializer = UtilizadoresSerializer(data=request.data)
+    if serializer.is_valid():
+        db.criar_utilizador(serializer.validated_data)
+        return JsonResponse(serializer.data, status=201)
+    return JsonResponse(serializer.errors, status=400)
+
 @api_view(['GET'])
 def get_all_utilizadores_view(request):
     utilizadores = db.get_all_utilizadores()

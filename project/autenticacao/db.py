@@ -1,4 +1,23 @@
 from .models import *
+from django.db import connection
+
+def create_utilizador(validated_data):
+    with connection.cursor() as cursor:
+        cursor.callproc(
+            'create_utilizador', 
+            [
+                validated_data.get('username'),
+                validated_data.get('first_name'),
+                validated_data.get('last_name'),
+                validated_data.get('password'),
+                validated_data.get('telemovel'),
+                validated_data.get('data_nascimento'),
+                validated_data.get('genero'),
+                validated_data.get('url_imagem'),
+                validated_data.get('turno_almoco'),
+                validated_data.get('turno_jantar'),
+            ]
+        )
 
 def get_all_utilizadores():
     return Utilizadores.objects.all()

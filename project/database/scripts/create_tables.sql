@@ -7,18 +7,14 @@ CREATE TABLE IF NOT EXISTS cargos (
 
 CREATE TABLE IF NOT EXISTS utilizadores (
     id SERIAL PRIMARY KEY,
-    turno_almoco BOOLEAN DEFAULT FALSE NOT NULL,
-    turno_jantar BOOLEAN DEFAULT FALSE NOT NULL,
+	is_superuser BOOLEAN DEFAULT FALSE NOT NULL,
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
 	username VARCHAR(50) UNIQUE NOT NULL,
-    telemovel VARCHAR(50) UNIQUE,
 	url_imagem VARCHAR(2048),
-    data_nascimento DATE,
-    genero VARCHAR(10) CHECK (genero IN ('M', 'F', 'O')) NOT NULL,
     password VARCHAR(255) NOT NULL,
     is_active BOOLEAN DEFAULT TRUE NOT NULL,
-    last_login TIMESTAMP,
+    last_login TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

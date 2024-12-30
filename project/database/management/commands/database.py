@@ -180,29 +180,22 @@ class Command(BaseCommand):
         for _ in range(10):
             first_name = fake.first_name()
             last_name = fake.last_name()
+            is_superuser = _ == 0
             username = 'dev' if _ == 0 else fake.user_name()
             url_imagem = fake.image_url()
-            turno_almoco = fake.boolean()
-            turno_jantar = not turno_almoco
-            data_nascimento = fake.date()
-            genero = fake.random_element(elements=['M', 'F', 'O'])
             raw_password = 'password' if _ == 0 else fake.password()
             password_hash = make_password(raw_password)  # Hash the password
-            is_active = fake.boolean()
-            last_login = fake.date_time()
-            telemovel = fake.phone_number()
             utilizadores_data.append((
-                first_name, last_name, username, url_imagem, turno_almoco, turno_jantar,
-                data_nascimento, genero, password_hash, is_active, last_login, telemovel
+                first_name, last_name, is_superuser, username, url_imagem,
+                password_hash
             ))
 
         with transaction.atomic(), connection.cursor() as cursor:
             cursor.executemany(
                 """
                 INSERT INTO utilizadores(
-                    first_name, last_name, username, url_imagem, turno_almoco, turno_jantar,
-                    data_nascimento, genero, password, is_active, last_login, telemovel
-                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    first_name, last_name, is_superuser, username, url_imagem, password
+                ) VALUES (%s, %s, %s, %s, %s, %s)
                 """,
                 utilizadores_data
             )

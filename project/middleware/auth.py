@@ -31,7 +31,6 @@ class DynamicDatabaseUserMiddleware:
 
 class CookieJWTAuthentication(JWTAuthentication):
     def authenticate(self, request):
-        # Extract token from the "access_token" cookie
         token = request.COOKIES.get('access_token')
         if token is None:
             return None

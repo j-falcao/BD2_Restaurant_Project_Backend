@@ -26,31 +26,36 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_utilizadores(_new_turno_almoco BOOLEAN, _new_turno_jantar BOOLEAN, _new_first_name VARCHAR(100), _new_last_name VARCHAR(100), _new_username VARCHAR(50), _new_telemovel VARCHAR(50), _new_url_imagem VARCHAR(2048), _new_data_nascimento DATE, _new_genero VARCHAR(10), _new_password VARCHAR(255), _new_is_active BOOLEAN, _new_last_login TIMESTAMP)
+
+CREATE OR REPLACE PROCEDURE create_utilizadores(_new_username VARCHAR(50), _new_first_name VARCHAR(100), _new_last_name VARCHAR(100), _new_is_superuser BOOLEAN, _new_url_imagem VARCHAR(2048), _new_password VARCHAR(255), OUT _id INT)
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    INSERT INTO utilizadores (turno_almoco, turno_jantar, first_name, last_name, username, telemovel, url_imagem, data_nascimento, genero, password, is_active, last_login)
-    VALUES (_new_turno_almoco, _new_turno_jantar, _new_first_name, _new_last_name, _new_username, _new_telemovel, _new_url_imagem, _new_data_nascimento, _new_genero, _new_password, _new_is_active, _new_last_login);
+    INSERT INTO utilizadores (username, first_name, last_name, is_superuser, url_imagem, password)
+    VALUES (_new_username, _new_first_name, _new_last_name, _new_is_superuser, _new_url_imagem, _new_password)
+    RETURNING id INTO _id;
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE update_utilizadores(id_in INT, _new_turno_almoco BOOLEAN, _new_turno_jantar BOOLEAN, _new_first_name VARCHAR(100), _new_last_name VARCHAR(100), _new_username VARCHAR(50), _new_telemovel VARCHAR(50), _new_url_imagem VARCHAR(2048), _new_data_nascimento DATE, _new_genero VARCHAR(10), _new_password VARCHAR(255), _new_is_active BOOLEAN, _new_last_login TIMESTAMP)
+
+CREATE OR REPLACE PROCEDURE update_utilizadores(id_in INT, _new_first_name VARCHAR(100), _new_last_name VARCHAR(100), _new_is_superuser BOOLEAN, _new_username VARCHAR(50), _new_url_imagem VARCHAR(2048), _new_password VARCHAR(255), OUT _id INT)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     UPDATE utilizadores
-    SET turno_almoco = _new_turno_almoco, turno_jantar = _new_turno_jantar, first_name = _new_first_name, last_name = _new_last_name, username = _new_username, telemovel = _new_telemovel, url_imagem = _new_url_imagem, data_nascimento = _new_data_nascimento, genero = _new_genero, password = _new_password, is_active = _new_is_active, last_login = _new_last_login
-    WHERE id = id_in;
+    SET first_name = _new_first_name, last_name = _new_last_name, is_superuser = _new_is_superuser, username = _new_username, url_imagem = _new_url_imagem, password = _new_password
+    WHERE id = id_in
+    RETURNING id INTO _id;
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE delete_utilizadores(id_in INT)
+CREATE OR REPLACE PROCEDURE delete_utilizadores(id_in INT, OUT _id INT)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     DELETE FROM utilizadores
-    WHERE id = id_in;
+    WHERE id = id_in
+    RETURNING id INTO _id;
 END;
 $$;
 

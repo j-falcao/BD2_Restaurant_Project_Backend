@@ -2,9 +2,7 @@ CREATE OR REPLACE VIEW estadosmesas_view AS
 SELECT * FROM estadosmesas;
 
 CREATE OR REPLACE VIEW utilizadores_view AS 
-SELECT u.*, c.designacao AS designacao_cargo FROM utilizadores u
-JOIN utilizadorescargos uc ON uc.id_utilizador = u.id
-JOIN cargos c ON c.id_cargo = uc.id_cargo;
+SELECT * FROM utilizadores;
 
 CREATE OR REPLACE VIEW cargos_view AS 
 SELECT c.*, CONCAT(u.first_name, ' ', u.last_name) AS nome_utilizador, u.username, u.url_imagem FROM cargos c

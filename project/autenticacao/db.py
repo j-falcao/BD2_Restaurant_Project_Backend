@@ -1,23 +1,46 @@
 from .models import *
-from django.db import connection
+from django.db import connection, transaction
 
 def create_utilizador(validated_data):
     with connection.cursor() as cursor:
-        cursor.callproc(
-            'create_utilizador', 
-            [
+        cursor.execute(
+            """
+            CALL create_utilizadores(%s, %s, %s, %s, %s, %s, %s) 
+            """,
+            (
                 validated_data.get('username'),
                 validated_data.get('first_name'),
                 validated_data.get('last_name'),
-                validated_data.get('password'),
-                validated_data.get('telemovel'),
-                validated_data.get('data_nascimento'),
-                validated_data.get('genero'),
+                validated_data.get('is_superuser'),
                 validated_data.get('url_imagem'),
-                validated_data.get('turno_almoco'),
-                validated_data.get('turno_jantar'),
-            ]
+                validated_data.get('password'),
+                None
+            )
         )
+        id_novo_utilizador = cursor.fetchone()[0]
+
+    return get_utilizador_by_id(id_novo_utilizador)
+
+def update_utilizador(id_utilizador, validated_data):
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+            CALL update_utilizadores(%s, %s, %s, %s, %s, %s, %s) 
+            """,
+            (
+                id_utilizador,
+                validated_data.get('username'),
+                validated_data.get('first_name'),
+                validated_data.get('last_name'),
+                validated_data.get('is_superuser'),
+                validated_data.get('url_imagem'),
+                validated_data.get('password'),
+            )
+        )
+        id_utilizador = cursor.fetchone()[0]
+
+    return get_utilizador_by_id(id_utilizador)
+
 
 def get_all_utilizadores():
     return Utilizadores.objects.all()
@@ -25,14 +48,8 @@ def get_all_utilizadores():
 def get_utilizador_by_username(username):
     return Utilizadores.objects.filter(username=username).first()
 
-def get_utilizador_by_id(id_utilizador):
-    return Utilizadores.objects.filter(id_utilizador=id_utilizador).first()
-
-def get_utilizador_by_email(email):
-    return Utilizadores.objects.filter(email=email).first()
-
-def get_utilizador_by_telemovel(telemovel):
-    return Utilizadores.objects.filter(telemovel=telemovel).first() 
+def get_utilizador_by_id(id):
+    return Utilizadores.objects.filter(id=id).first()
 
 def get_all_cozinheiros():
     return Utilizadores.objects.filter(cargos__id_cargo=1)
@@ -56,7 +73,7 @@ def get_all_utilizadores_cargos():
     return UtilizadoresCargos.objects.all()
 
 def get_utilizadores_cargos_by_id_utilizador(id_utilizador):
-    return UtilizadoresCargos.objects.filter(id_utilizador=id_utilizador)
+    return UtilizadoresCargos.objects.filter(id=id_utilizador)
 
 def get_utilizadores_cargos_by_id_cargo(id_cargo):
     return UtilizadoresCargos.objects.filter(id_cargo=id_cargo)

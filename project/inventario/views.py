@@ -5,8 +5,7 @@ from . import db
 
 @api_view(['GET', 'POST'])
 def get_post_ingredientes(request):
-    print('ooalaolaoaloa')
-
+    print("get_post_ingredientes")
     if request.method == 'GET':
         # Check if query parameter 'id_ingrediente' is present
         id_ingrediente = request.GET.get('id_ingrediente')

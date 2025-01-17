@@ -6,7 +6,19 @@ class CarrinhosSerializer(serializers.ModelSerializer):
     class Meta:
         model = Carrinhos
         fields = '__all__'
-        
+
+
+class IngredientesCarrinhosSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = IngredientesCarrinhos
+        fields = '__all__'
+
+
+class UtensiliosCarrinhosSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UtensiliosCarrinhos
+        fields = '__all__'
+
 
 class FornecedoresSerializer(serializers.ModelSerializer):
     class Meta:
@@ -39,4 +51,15 @@ class ReceitasSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Receitas
+        fields = '__all__'
+
+class UtensiliosReceitasSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UtensiliosReceitas
+        fields = '__all__'
+
+
+class IngredientesReceitasSerializer(serializers.ModelSerializer):
+    class Meta: 
+        model = IngredientesReceitas
         fields = '__all__'

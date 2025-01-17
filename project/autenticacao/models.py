@@ -3,7 +3,7 @@ from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 
 class Cargos(models.Model):
-    id_cargo = models.AutoField(primary_key=True)
+    id_cargo = models.AutoField(primary_key=True, unique=True)
     designacao = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
@@ -32,7 +32,7 @@ class CustomUserManager(BaseUserManager):
         return self.get(username=username)
 
 class Utilizadores(AbstractBaseUser, PermissionsMixin):
-    id = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True, unique=True)
     is_superuser = models.BooleanField(default=False)
     cargos = models.ManyToManyField(Cargos, through='UtilizadoresCargos')
     username = models.CharField(max_length=30, unique=True)
@@ -40,6 +40,8 @@ class Utilizadores(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=30, null=True, blank=True)
     last_name = models.CharField(max_length=30, null=True, blank=True)
     is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
 
     objects = CustomUserManager()
 
@@ -54,7 +56,7 @@ class Utilizadores(AbstractBaseUser, PermissionsMixin):
         return self.username
 
 class UtilizadoresCargos(models.Model):
-    id_utilizador_cargo = models.AutoField(primary_key=True)
+    id_utilizador_cargo = models.AutoField(primary_key=True, unique=True)
     id_utilizador = models.ForeignKey(
         Utilizadores,
         on_delete=models.CASCADE,

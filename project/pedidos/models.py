@@ -3,10 +3,10 @@ from autenticacao.models import Utilizadores
 
 
 class EstadosMesas(models.Model):
-    id_estado_mesa = models.AutoField(primary_key=True)
+    id_estado_mesa = models.AutoField(primary_key=True, unique=True)
     designacao = models.CharField(max_length=20)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
-    updated_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
 
     class Meta:
         managed = False
@@ -17,14 +17,14 @@ class EstadosMesas(models.Model):
 
 
 class Mesas(models.Model):
-    id_mesa = models.AutoField(primary_key=True)
+    id_mesa = models.AutoField(primary_key=True, unique=True)
     id_estado_mesa = models.ForeignKey(
         EstadosMesas, on_delete=models.CASCADE, db_column='id_estado_mesa')
     numero = models.IntegerField()
     capacidade_maxima = models.IntegerField()
     quantidade_clientes = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True, null=True)
-    updated_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
 
     class Meta:
         managed = False
@@ -35,7 +35,7 @@ class Mesas(models.Model):
 
 
 class Servicos(models.Model):
-    id_servico = models.AutoField(primary_key=True)
+    id_servico = models.AutoField(primary_key=True, unique=True)
     id_mesa = models.ForeignKey(Mesas, on_delete=models.CASCADE, null=True,
                                 blank=True, related_name="servicos", db_column='id_mesa')
     id_garcom = models.ForeignKey(Utilizadores, on_delete=models.CASCADE,
@@ -44,7 +44,7 @@ class Servicos(models.Model):
     data_hora_fim = models.DateTimeField(null=True, blank=True)
     preco_total = models.DecimalField(max_digits=10, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
-    updated_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
 
     class Meta:
         managed = False
@@ -55,7 +55,7 @@ class Servicos(models.Model):
 
 
 class Reservas(models.Model):
-    id_reserva = models.AutoField(primary_key=True)
+    id_reserva = models.AutoField(primary_key=True, unique=True)
     id_mesa = models.ForeignKey(
         Mesas, on_delete=models.CASCADE, db_column='id_mesa')
     data_hora = models.DateTimeField(auto_now_add=True)
@@ -64,7 +64,7 @@ class Reservas(models.Model):
     id_servico = models.ForeignKey(Servicos, on_delete=models.CASCADE,
                                    null=True, blank=True, related_name="reserva", db_column='id_servico')
     created_at = models.DateTimeField(auto_now_add=True, null=True)
-    updated_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
 
     class Meta:
         managed = False
@@ -75,13 +75,13 @@ class Reservas(models.Model):
 
 
 class Pedidos(models.Model):
-    id_pedido = models.AutoField(primary_key=True)
+    id_pedido = models.AutoField(primary_key=True, unique=True)
     id_servico = models.ForeignKey(Servicos, on_delete=models.CASCADE,
                                    null=True, blank=True, related_name="pedidos", db_column='id_servico')
     produtos = models.ManyToManyField(
         'produtos.Produtos', through='PedidosProdutos', related_name='pedidos')
     created_at = models.DateTimeField(auto_now_add=True, null=True)
-    updated_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
 
     def data_hora_valida(self):
         if self.created_at < self.id_servico.data_hora_inicio:
@@ -99,7 +99,7 @@ class Pedidos(models.Model):
 
 
 class PedidosProdutos(models.Model):
-    id_pedido_produto = models.AutoField(primary_key=True)
+    id_pedido_produto = models.AutoField(primary_key=True, unique=True)
     id_pedido = models.ForeignKey(
         Pedidos, on_delete=models.CASCADE, db_column='id_pedido')
     id_produto = models.ForeignKey(
@@ -109,7 +109,7 @@ class PedidosProdutos(models.Model):
     opcoes = models.ManyToManyField(
         'produtos.ItensOpcoes', through='PedidosProdutosItensOpcoes', related_name='pedido_produto')
     created_at = models.DateTimeField(auto_now_add=True, null=True)
-    updated_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
 
     class Meta:
         managed = False
@@ -120,13 +120,13 @@ class PedidosProdutos(models.Model):
 
 
 class PedidosProdutosItensOpcoes(models.Model):
-    id_pedido_produto_item_opcao = models.AutoField(primary_key=True)
+    id_pedido_produto_item_opcao = models.AutoField(primary_key=True, unique=True)
     id_item_opcao = models.ForeignKey(
         'produtos.ItensOpcoes', on_delete=models.CASCADE, db_column='id_item_opcao')
     id_pedido_produto = models.ForeignKey(
         PedidosProdutos, on_delete=models.CASCADE, db_column='id_pedido_produto')
     created_at = models.DateTimeField(auto_now_add=True, null=True)
-    updated_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
 
     class Meta:
         managed = False

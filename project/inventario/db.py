@@ -77,7 +77,7 @@ def get_fornecedores(id_fornecedor=None):
         return Fornecedores.objects.get(id_fornecedor=id_fornecedor)
     return Fornecedores.objects.all()
 
-def create_fornecedors(fornecedor):
+def create_fornecedores(fornecedor):
     with connection.cursor() as cursor:
         cursor.execute('CALL create_fornecedor(%s, %s, %s, %s, %s, %s)', [
             fornecedor['nome'],
@@ -88,7 +88,7 @@ def create_fornecedors(fornecedor):
             fornecedor['telefone']
         ])
 
-def update_fornecedors(id_fornecedor, fornecedor):
+def update_fornecedores(id_fornecedor, fornecedor):
     with connection.cursor() as cursor:
         cursor.execute('CALL update_fornecedor(%s, %s, %s, %s, %s, %s, %s)', [
             id_fornecedor,
@@ -100,7 +100,7 @@ def update_fornecedors(id_fornecedor, fornecedor):
             fornecedor['telefone']
         ])
 
-def delete_fornecedors(id_fornecedor):
+def delete_fornecedores(id_fornecedor):
     with connection.cursor() as cursor:
         cursor.execute('CALL delete_fornecedor(%s)', [id_fornecedor])
 

@@ -4,7 +4,7 @@ from rest_framework.decorators import api_view
 from . import db
 # ✅
 
-
+# Ingredientes
 @api_view(['GET', 'POST'])
 def get_post_ingredientes(request):
     if request.method == 'GET':
@@ -50,6 +50,7 @@ def update_delete_ingredientes(request, id_ingrediente):
             raise Response("Ingrediente não encontrado", status=404)
 
 
+# Utensílios
 @api_view(['GET', 'POST'])
 def get_post_utensilios(request):
     if request.method == 'GET':
@@ -75,67 +76,363 @@ def get_post_utensilios(request):
         return Response(serializer.errors, status=400)
 
 @api_view(['PUT', 'DELETE'])
-def update_delete_utensilios(request, id_ingrediente):
-    utensilio = db.get_utensilios(id_ingrediente)
+def update_delete_utensilios(request, id_utensilio):
+    utensilio = db.get_utensilios(id_utensilio)
     if not utensilio:
         raise Response("Utensílio não encontrado", status=404)
 
     if request.method == 'PUT':
-        try:
-            serializer = IngredientesSerializer(utensilio)
-            if serializer.is_valid():
-                db.update_utensilios(serializer.validated_data)
-                return Response(serializer.data)
-            return Response(serializer.errors, status=400)
-        except Ingredientes.DoesNotExist:
-            raise Response("Ingrediente não encontrado", status=404)
+        serializer = IngredientesSerializer(utensilio)
+        if serializer.is_valid():
+            db.update_utensilios(serializer.validated_data)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
 
     elif request.method == 'DELETE':
-        try:
-            db.delete_ingredientes(ingrediente)
-            return Response({"msg": "Ingrediente apagado"}, status=200)
-        except Ingredientes.DoesNotExist:
-            raise Response("Ingrediente não encontrado", status=404)
+        db.delete_utensilios(id_utensilio)
+        return Response({"msg": "Utensílio apagado"}, status=200)
 
 
-@api_view(['GET'])
-def get_receitas(request):
-    receitas = db.get_all_receitas()
-    serializer = ReceitasSerializer(receitas, many=True)
-    return JsonResponse(serializer.data, safe=False)
+# Fornecedores
+@api_view(['GET', 'POST'])
+def get_post_fornecedores(request):
+    if request.method == 'GET':
+        id_fornecedor = request.GET.get('id_fornecedor')
+
+        if id_fornecedor:
+            try:
+                fornecedor = db.get_fornecedores(id_fornecedor)
+                serializer = FornecedoresSerializer(fornecedor)
+                return Response(serializer.data)
+            except Fornecedores.DoesNotExist:
+                raise Response("Fornecedor nao encontrado", status=404)
+        else:
+            fornecedores = db.get_fornecedores()
+            serializer = FornecedoresSerializer(fornecedores, many=True)
+            return Response(serializer.data)
+
+    elif request.method == 'POST':
+        serializer = FornecedoresSerializer(data=request.data)
+        if serializer.is_valid():
+            db.create_fornecedores(serializer.validated_data)
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+
+@api_view(['PUT', 'DELETE'])
+def update_delete_fornecedores(request, id_fornecedor):
+    fornecedor = db.get_fornecedores(id_fornecedor)
+    if not fornecedor:
+        raise Response("Fornecedor nao encontrado", status=404)
+
+    if request.method == 'PUT':
+        serializer = FornecedoresSerializer(fornecedor)
+        if serializer.is_valid():
+            db.update_fornecedores(id_fornecedor, serializer.validated_data)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
+
+    elif request.method == 'DELETE':
+        db.delete_fornecedores(id_fornecedor)
+        return Response({"msg": "Fornecedor apagado"}, status=200)
 
 
-@api_view(['GET'])
-def get_receita(request, id_receita):
-    print('OOOOOOOOOOOOOOOOOOO')
-    receita = db.get_receita_by_id(id_receita)
-    serializer = ReceitasSerializer(receita)
-    return JsonResponse(serializer.data, safe=False)
+# Carrinhos
+@api_view(['GET', 'POST'])
+def get_post_carrinhos(request):
+    if request.method == 'GET':
+        id_carrinho = request.GET.get('id_carrinho')
+
+        if id_carrinho:
+            try:
+                carrinho = db.get_carrinhos(id_carrinho)
+                serializer = CarrinhosSerializer(carrinho)
+                return Response(serializer.data)
+            except Carrinhos.DoesNotExist:
+                raise Response("Carrinho não encontrado", status=404)
+        else:
+            carrinhos = db.get_carrinhos()
+            serializer = CarrinhosSerializer(carrinhos, many=True)
+            return Response(serializer.data)
 
 
-@api_view(['GET'])
-def get_carrinhos(request):
-    carrinhos = db.get_all_carrinhos()
-    serializer = CarrinhosSerializer(carrinhos, many=True)
-    return JsonResponse(serializer.data, safe=False)
+    elif request.method == 'POST':
+        serializer = CarrinhosSerializer(data=request.data)
+        if serializer.is_valid():
+            db.create_carrinhos(serializer.validated_data)
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+
+@api_view(['PUT', 'DELETE'])
+def update_delete_carrinhos(request, id_carrinho):
+    carrinho = db.get_carrinhos(id_carrinho)
+    if not carrinho:
+        raise Response("Carrinho nao encontrado", status=404)
+
+    if request.method == 'PUT':
+        serializer = CarrinhosSerializer(carrinho)
+        if serializer.is_valid():
+            db.update_carrinhos(id_carrinho, serializer.validated_data)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
+
+    elif request.method == 'DELETE':
+        db.delete_carrinhos(id_carrinho)
+        return Response({"msg": "Carrinho apagado"}, status=200)
 
 
-@api_view(['GET'])
-def get_carrinho(request, id_carrinho):
-    carrinho = db.get_carrinho_by_id(id_carrinho)
-    serializer = CarrinhosSerializer(carrinho)
-    return JsonResponse(serializer.data, safe=False)
+# IngredientesCarrinhos
+@api_view(['GET', 'POST'])
+def get_post_ingredientesCarrinhos(request):
+    if request.method == 'GET':
+        id_ingrediente_carrinho = request.GET.get('id_ingrediente_carrinho')
+
+        if id_ingrediente_carrinho:
+            try:
+                ingredienteCarrinho = db.get_ingredientesCarrinhos(id_ingrediente_carrinho)
+                serializer = IngredientesCarrinhosSerializer(ingredienteCarrinho)
+                return Response(serializer.data)
+            except IngredientesCarrinhos.DoesNotExist:
+                raise Response("IngredientesCarrinhos nao encontrado", status=404)
+        else:
+            ingredienteCarrinho = db.get_ingredientesCarrinhos()
+            serializer = IngredientesCarrinhosSerializer(ingredienteCarrinho, many=True)
+            return Response(serializer.data)
+
+    elif request.method == 'POST':
+        serializer = IngredientesCarrinhosSerializer(data=request.data)
+        if serializer.is_valid():
+            db.create_ingredientesCarrinhos(serializer.validated_data)
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+
+@api_view(['PUT', 'DELETE'])
+def update_delete_ingredientesCarrinhos(request, id_ingrediente_carrinho):
+    ingredienteCarrinho = db.get_ingredientesCarrinhos(id_ingrediente_carrinho)
+    if not ingredienteCarrinho:
+        raise Response("IngredienteCarrinho não encontrado", status=404)
+
+    if request.method == 'PUT':
+        serializer = IngredientesCarrinhosSerializer(ingredienteCarrinho)
+        if serializer.is_valid():
+            db.update_ingredientesCarrinhos(ingredienteCarrinho, serializer.validated_data)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
+
+    elif request.method == 'DELETE':
+        db.delete_ingredientesCarrinhos(id_ingrediente_carrinho)
+        return Response({"msg": "IngredienteCarrinho apagado"}, status=200)
+    
+
+# UtensiliosCarrinhos
+@api_view(['GET', 'POST'])
+def get_post_utensiliosCarrinhos(request):
+    if request.method == 'GET':
+        id_utensilio_carrinho = request.GET.get('id_utensilio_carrinho')
+
+        if id_utensilio_carrinho:
+            try:
+                utensilioCarrinho = db.get_utensiliosCarrinhos(id_utensilio_carrinho)
+                serializer = UtensiliosCarrinhosSerializer(utensilioCarrinho)
+                return Response(serializer.data)
+            except UtensiliosCarrinhos.DoesNotExist:
+                raise Response("UtensilioCarrinho não encontrado", status=404)
+        else:
+            utensilioCarrinho = db.get_utensiliosCarrinhos()
+            serializer = UtensiliosCarrinhosSerializer(utensilioCarrinho, many=True)
+            return Response(serializer.data)
+
+    elif request.method == 'POST':
+        serializer = UtensiliosCarrinhosSerializer(data=request.data)
+        if serializer.is_valid():
+            db.create_utensiliosCarrinhos(serializer.validated_data)
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+    
+@api_view(['PUT', 'DELETE'])
+def update_delete_utensiliosCarrinhos(request, id_utensilio_carrinho):
+    utensilioCarrinho = db.get_utensiliosCarrinhos(id_utensilio_carrinho)
+    if not utensilioCarrinho:
+        raise Response("UtensilioCarrinho não encontrado", status=404)
+
+    if request.method == 'PUT':
+        serializer = UtensiliosCarrinhosSerializer(utensilioCarrinho)
+        if serializer.is_valid():
+            db.update_utensiliosCarrinhos(id_utensilio_carrinho, serializer.validated_data)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
+
+    elif request.method == 'DELETE':    
+        db.delete_utensiliosCarrinhos(id_utensilio_carrinho)
+        return Response({"msg": "UtensilioCarrinho apagado"}, status=200)
 
 
-@api_view(['GET'])
-def get_fornecedores(request):
-    fornecedores = db.get_all_fornecedores()
-    serializer = FornecedoresSerializer(fornecedores, many=True)
-    return JsonResponse(serializer.data, safe=False)
+# Receitas
+@api_view(['GET', 'POST'])
+def get_post_receitas(request):
+    if request.method == 'GET':
+        id_receita = request.GET.get('id_receita')
+
+        if id_receita:
+            try:
+                receita = db.get_receitas(id_receita)
+                serializer = ReceitasSerializer(receita)
+                return Response(serializer.data)
+            except Receitas.DoesNotExist:
+                raise Response("Receita não encontrado", status=404)
+        else:
+            receitas = db.get_receitas()
+            serializer = ReceitasSerializer(receitas, many=True)
+            return Response(serializer.data)
+
+    elif request.method == 'POST':
+        serializer = ReceitasSerializer(data=request.data)
+        if serializer.is_valid():
+            db.create_receitas(serializer.validated_data)
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+
+@api_view(['PUT', 'DELETE'])
+def update_delete_receitas(request, id_receita):
+    receita = db.get_receitas(id_receita)
+    if not receita:
+        raise Response("Receita nao encontrada", status=404)
+
+    if request.method == 'PUT':
+        serializer = ReceitasSerializer(receita)
+        if serializer.is_valid():
+            db.update_receitas(id_receita, serializer.validated_data)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
+
+    elif request.method == 'DELETE':
+        db.delete_receitas(id_receita)
+        return Response({"msg": "Receita apagada"}, status=200)
 
 
-@api_view(['GET'])
-def get_fornecedor(request, id_fornecedor):
-    fornecedor = db.get_fornecedor_by_id(id_fornecedor)
-    serializer = FornecedoresSerializer(fornecedor)
-    return JsonResponse(serializer.data, safe=False)
+# UtensiliosReceitas
+@api_view(['GET', 'POST'])
+def get_post_utensiliosReceitas(request):
+    if request.method == 'GET':
+        id_utensilio_receita = request.GET.get('id_utensilio_receita')
+
+        if id_utensilio_receita:
+            try:
+                utensilioReceita = db.get_utensiliosReceitas(id_utensilio_receita)
+                serializer = UtensiliosReceitasSerializer(utensilioReceita)
+                return Response(serializer.data)
+            except UtensiliosReceitas.DoesNotExist:
+                raise Response("UtensilioReceita não encontrado", status=404)
+        else:
+            utensilioReceita = db.get_utensiliosReceitas()
+            serializer = UtensiliosReceitasSerializer(utensilioReceita, many=True)
+            return Response(serializer.data)
+
+    elif request.method == 'POST':
+        serializer = UtensiliosReceitasSerializer(data=request.data)
+        if serializer.is_valid():
+            db.create_utensiliosReceitas(serializer.validated_data)
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+    
+@api_view(['PUT', 'DELETE'])
+def update_delete_utensiliosReceitas(request, id_utensilio_receita):
+    utensilioReceita = db.get_utensiliosReceitas(id_utensilio_receita)
+    if not utensilioReceita:
+        raise Response("UtensilioReceita nao encontrado", status=404)
+
+    if request.method == 'PUT':
+        serializer = UtensiliosReceitasSerializer(utensilioReceita)
+        if serializer.is_valid():
+            db.update_utensiliosReceitas(id_utensilio_receita, serializer.validated_data)            
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
+
+    elif request.method == 'DELETE':    
+        db.delete_utensiliosReceitas(id_utensilio_receita)
+        return Response({"msg": "UtensilioReceita apagado"}, status=200)
+    
+
+# IngredientesReceitas
+@api_view(['GET', 'POST'])
+def get_post_ingredientesReceitas(request):
+    if request.method == 'GET':
+        id_ingrediente_receita = request.GET.get('id_ingrediente_receita')
+
+        if id_ingrediente_receita:
+            try:
+                ingredienteReceita = db.get_ingredientesReceitas(id_ingrediente_receita)
+                serializer = IngredientesReceitasSerializer(ingredienteReceita)
+                return Response(serializer.data)
+            except IngredientesReceitas.DoesNotExist:
+                raise Response("IngredienteReceita não encontrado", status=404)
+        else:
+            ingredienteReceita = db.get_ingredientesReceitas()
+            serializer = IngredientesReceitasSerializer(ingredienteReceita, many=True)
+            return Response(serializer.data)
+
+    elif request.method == 'POST':
+        serializer = IngredientesReceitasSerializer(data=request.data)
+        if serializer.is_valid():
+            db.create_ingredientesReceitas(serializer.validated_data)
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+    
+@api_view(['PUT', 'DELETE'])
+def update_delete_ingredientesReceitas(request, id_ingrediente_receita):
+    ingredienteReceita = db.get_ingredientesReceitas(id_ingrediente_receita)
+    if not ingredienteReceita:
+        raise Response("IngredienteReceita nao encontrado", status=404)
+
+    if request.method == 'PUT':
+        serializer = IngredientesReceitasSerializer(ingredienteReceita)
+        if serializer.is_valid():
+            db.update_ingredientesReceitas(id_ingrediente_receita, serializer.validated_data)            
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
+
+    elif request.method == 'DELETE':    
+        db.delete_ingredientesReceitas(id_ingrediente_receita)
+        return Response({"msg": "IngredienteReceita apagado"}, status=200)
+
+
+# Instruções
+@api_view(['GET', 'POST'])
+def get_post_instrucoes(request):
+    if request.method == 'GET':
+        id_instrucao = request.GET.get('id_instrucao')
+
+        if id_instrucao:
+            try:
+                instrucao = db.get_instrucoes(id_instrucao)
+                serializer = InstrucoesSerializer(instrucao)
+                return Response(serializer.data)
+            except Instrucoes.DoesNotExist:
+                raise Response("Instrução não encontrada", status=404)
+        else:
+            instrucoes = db.get_instrucoes()
+            serializer = InstrucoesSerializer(instrucoes, many=True)
+            return Response(serializer.data)
+
+    elif request.method == 'POST':        
+        serializer = InstrucoesSerializer(data=request.data)
+        if serializer.is_valid():
+            db.create_instrucoes(serializer.validated_data)
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+
+@api_view(['PUT', 'DELETE'])
+def update_delete_instrucoes(request, id_instrucao):
+    instrucao = db.get_instrucoes(id_instrucao)
+    if not instrucao:
+        raise Response("Instrução não encontrada", status=404)    
+
+    if request.method == 'PUT':
+        serializer = InstrucoesSerializer(instrucao)
+        if serializer.is_valid():
+            db.update_instrucoes(id_instrucao, serializer.validated_data)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
+
+    elif request.method == 'DELETE':
+        db.delete_instrucoes(id_instrucao)
+        return Response({"msg": "Instrução apagada"}, status=200)

@@ -1,21 +1,6 @@
 from django.db import models
 from autenticacao.models import Utilizadores
 
-class Carrinhos(models.Model):
-    id_carrinho = models.AutoField(primary_key=True)
-    preco_total = models.DecimalField(max_digits=10, decimal_places=2)
-    data_compra = models.DateTimeField()
-    created_at = models.DateTimeField(auto_now_add=True, null=True)
-    updated_at = models.DateTimeField(auto_now_add=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'carrinhos_view'
-
-    def __str__(self):
-        return f"Carrinho - {self.data_compra}"
-
-
 class Fornecedores(models.Model):
     id_fornecedor = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=255)
@@ -34,6 +19,21 @@ class Fornecedores(models.Model):
     def __str__(self):
         return self.nome
 
+
+class Carrinhos(models.Model):
+    id_carrinho = models.AutoField(primary_key=True)
+    preco_total = models.DecimalField(max_digits=10, decimal_places=2)
+    data_compra = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now_add=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'carrinhos_view'
+
+    def __str__(self):
+        return f"Carrinho - {self.data_compra}"
+    
 
 class Ingredientes(models.Model):
     id_ingrediente = models.AutoField(primary_key=True)

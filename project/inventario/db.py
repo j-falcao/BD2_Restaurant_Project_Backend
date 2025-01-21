@@ -23,7 +23,7 @@ def create_ingredientes(ingrediente): #✅
 
 def update_ingredientes(id_ingrediente, ingrediente): #✅
     with connection.cursor() as cursor:
-        cursor.execute('CALL update_ingredientes(%s, %s, %s, %s, %s, %s, %s, %s)', [
+        cursor.execute('CALL update_ingredientes(%s, %s, %s, %s, %s, %s, %s, %s, %s)', [
             id_ingrediente,
             ingrediente['id_fornecedor'],
             ingrediente['nome'],
@@ -31,8 +31,10 @@ def update_ingredientes(id_ingrediente, ingrediente): #✅
             ingrediente['quantidade_stock'],
             ingrediente['unidade_medida'],
             ingrediente['limite_stock'],
-            ingrediente['preco']
+            ingrediente['preco'],
+            None
         ])
+        return cursor.fetchone()[0]
 
 def delete_ingredientes(id_ingrediente): #✅
     with connection.cursor() as cursor:
@@ -61,7 +63,7 @@ def create_utensilios(utensilio): #✅
 
 def update_utensilios(id_utensilio, utensilio): #✅
     with connection.cursor() as cursor:
-        cursor.execute('CALL update_utensilios(%s, %s, %s, %s, %s, %s, %s, %s)', [
+        cursor.execute('CALL update_utensilios(%s, %s, %s, %s, %s, %s, %s, %s, %s)', [
             id_utensilio,
             utensilio['id_fornecedor'],
             utensilio['nome'],
@@ -69,8 +71,10 @@ def update_utensilios(id_utensilio, utensilio): #✅
             utensilio['quantidade_stock'],
             utensilio['unidade_medida'],
             utensilio['limite_stock'],
-            utensilio['preco']
+            utensilio['preco'],
+            None
         ])
+        return cursor.fetchone()[0]
 
 def delete_utensilios(id_utensilio): #✅
     with connection.cursor() as cursor:
@@ -98,14 +102,15 @@ def create_fornecedores(fornecedor): #✅
 
 def update_fornecedores(id_fornecedor, fornecedor): #✅
     with connection.cursor() as cursor:
-        cursor.execute('CALL update_fornecedores(%s, %s, %s, %s, %s, %s, %s)', [
+        cursor.execute('CALL update_fornecedores(%s, %s, %s, %s, %s, %s, %s, %s)', [
             id_fornecedor,
             fornecedor['nome'],
             fornecedor['vende_ingredientes'],
             fornecedor['vende_utensilios'],
             fornecedor['morada'],
             fornecedor['email'],
-            fornecedor['telemovel']
+            fornecedor['telemovel'],
+            None
         ])
 
 def delete_fornecedores(id_fornecedor): #✅
@@ -132,7 +137,7 @@ def create_carrinhos(carrinho):
 
 def update_carrinhos(id_carrinho, carrinho):
     with connection.cursor() as cursor:
-        cursor.execute('CALL update_carrinhos(%s, %s, %s)', [
+        cursor.execute('CALL update_carrinhos(%s, %s, %s, %s)', [
             id_carrinho,
             carrinho['preco_total'],
             carrinho['data_compra']
@@ -151,21 +156,23 @@ def get_ingredientesCarrinhos(id_ingrediente_administrador=None):
 
 def create_ingredientesCarrinhos(data):
     with connection.cursor() as cursor:
-        cursor.execute('CALL create_ingrediente_carrinho(%s, %s, %s, %s)', [
+        cursor.execute('CALL create_ingrediente_carrinho(%s, %s, %s, %s, %s)', [
             data['id_ingrediente'],
             data['id_administrador'],
             data['id_carrinho'],
-            data['quantidade']
+            data['quantidade'],
+            None
         ])
 
 def update_ingredientesCarrinhos(id_ingrediente_administrador, data):
     with connection.cursor() as cursor:
-        cursor.execute('CALL update_ingrediente_carrinho(%s, %s, %s, %s, %s)', [
+        cursor.execute('CALL update_ingrediente_carrinho(%s, %s, %s, %s, %s, %s)', [
             id_ingrediente_administrador,
             data['id_ingrediente'],
             data['id_administrador'],
             data['id_carrinho'],
-            data['quantidade']
+            data['quantidade'],
+            None
         ])
 
 def delete_ingredientesCarrinhos(id_ingrediente_administrador):

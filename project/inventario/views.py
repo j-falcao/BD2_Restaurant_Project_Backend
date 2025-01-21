@@ -119,7 +119,7 @@ def get_post_fornecedores(request): #✅
         return Response(serializer.errors, status=400)
 
 @api_view(['PUT', 'DELETE'])
-def update_delete_fornecedores(request, id_fornecedor):
+def update_delete_fornecedores(request, id_fornecedor): #✅
     try:
         fornecedor_old = db.get_fornecedores(id_fornecedor)
     except:
@@ -138,11 +138,22 @@ def update_delete_fornecedores(request, id_fornecedor):
 
 
 # Carrinhos
-@api_view(['GET', 'POST'])
-def get_post_carrinhos(request):
+@api_view(['GET'])
+def get_carrinhos(request):
     if request.method == 'GET':
-        id_carrinho = request.GET.get('id_carrinho')
 
+        # Carrinho atual
+        atual = request.GET.get('atual')
+        if atual != None and atual == 'true': 
+            try:
+                carrinho = db.get_carrinhos(atual=True)
+                serializer = CarrinhosSerializer(carrinho)
+                return Response(serializer.data)
+            except Carrinhos.DoesNotExist:
+                raise NotFound("Carrinho não encontrado")
+
+        # Carrinho por id
+        id_carrinho = request.GET.get('id_carrinho')
         if id_carrinho:
             try:
                 carrinho = db.get_carrinhos(id_carrinho)
@@ -150,35 +161,11 @@ def get_post_carrinhos(request):
                 return Response(serializer.data)
             except Carrinhos.DoesNotExist:
                 raise Response("Carrinho não encontrado", status=404)
-        else:
-            carrinhos = db.get_carrinhos()
-            serializer = CarrinhosSerializer(carrinhos, many=True)
-            return Response(serializer.data)
-
-
-    elif request.method == 'POST':
-        serializer = CarrinhosSerializer(data=request.data)
-        if serializer.is_valid():
-            db.create_carrinhos(serializer.validated_data)
-            return Response(serializer.data, status=201)
-        return Response(serializer.errors, status=400)
-
-@api_view(['PUT', 'DELETE'])
-def update_delete_carrinhos(request, id_carrinho):
-    carrinho = db.get_carrinhos(id_carrinho)
-    if not carrinho:
-        raise Response("Carrinho nao encontrado", status=404)
-
-    if request.method == 'PUT':
-        serializer = CarrinhosSerializer(carrinho)
-        if serializer.is_valid():
-            db.update_carrinhos(id_carrinho, serializer.validated_data)
-            return Response(serializer.data)
-        return Response(serializer.errors, status=400)
-
-    elif request.method == 'DELETE':
-        db.delete_carrinhos(id_carrinho)
-        return Response({"msg": "Carrinho apagado"}, status=200)
+        
+        # Carrinhos todos
+        carrinhos = db.get_carrinhos()
+        serializer = CarrinhosSerializer(carrinhos, many=True)
+        return Response(serializer.data)
 
 
 # IngredientesCarrinhos

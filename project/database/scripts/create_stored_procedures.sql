@@ -176,13 +176,13 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_ingredientes(_new_id_fornecedor INT, _new_nome VARCHAR(255), _new_url_imagem VARCHAR(2048), _new_quantidade_stock INT, _new_unidade_medida VARCHAR(50), _new_limite_stock INT, _new_preco DECIMAL(10, 2), OUT _id INT)
+CREATE OR REPLACE PROCEDURE create_ingredientes(_new_id_fornecedor INT, _new_nome VARCHAR(255), _new_url_imagem VARCHAR(2048), _new_quantidade_stock INT, _new_unidade_medida VARCHAR(50), _new_limite_stock INT, _new_preco DECIMAL(10, 2), OUT _new_ingrediente JSON)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     INSERT INTO ingredientes (id_fornecedor, nome, url_imagem, quantidade_stock, unidade_medida, limite_stock, preco)
     VALUES (_new_id_fornecedor, _new_nome, _new_url_imagem, _new_quantidade_stock, _new_unidade_medida, _new_limite_stock, _new_preco)
-    RETURNING ingredientes.id_ingrediente INTO _id;
+    RETURNING row_to_json(ingredientes) INTO _new_ingrediente;
 END;
 $$;
 

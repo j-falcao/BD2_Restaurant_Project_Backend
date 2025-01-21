@@ -10,11 +10,10 @@ class IngredientesSerializer(serializers.ModelSerializer): #✅
         fields = '__all__'
 
     def create(self, validated_data):
-        return get_ingredientes(create_ingredientes(validated_data))
+        return create_ingredientes(validated_data)
     
     def update(self, instance, validated_data):
-        update_ingredientes(instance.id_ingrediente, validated_data)
-        return get_ingredientes(instance.id_ingrediente)
+        return update_ingredientes(instance.id_ingrediente, validated_data)
 
 class UtensiliosSerializer(serializers.ModelSerializer): #✅
     class Meta:
@@ -22,11 +21,10 @@ class UtensiliosSerializer(serializers.ModelSerializer): #✅
         fields = '__all__'
 
     def create(self, validated_data):
-        return get_utensilios(create_utensilios(validated_data))
+        return create_utensilios(validated_data)
     
     def update(self, instance, validated_data):
-        update_utensilios(instance.id_utensilio, validated_data)
-        return get_utensilios(instance.id_utensilio)
+        return update_utensilios(instance.id_utensilio, validated_data)
     
 class FornecedoresSerializer(serializers.ModelSerializer):  #✅
     class Meta:
@@ -34,11 +32,10 @@ class FornecedoresSerializer(serializers.ModelSerializer):  #✅
         fields = '__all__'
 
     def create(self, validated_data):
-        return get_fornecedores(create_fornecedores(validated_data))
+        return create_fornecedores(validated_data)
     
     def update(self, instance, validated_data):
-        update_fornecedores(instance.id_fornecedor, validated_data)
-        return get_fornecedores(instance.id_fornecedor)
+        return update_fornecedores(instance.id_fornecedor, validated_data)
 
 
 class CarrinhosSerializer(serializers.ModelSerializer):

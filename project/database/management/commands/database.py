@@ -92,10 +92,10 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS("Seeding utensilios"))
             self.seed_utensilios(num_entries)
 
-            """ self.stdout.write(self.style.SUCCESS("Seeding carrinhos"))
-            self.seed_carrinhos(num_entries)
+            self.stdout.write(self.style.SUCCESS("Seeding carrinhos"))
+            self.seed_carrinhos()
 
-            self.stdout.write(self.style.SUCCESS("Seeding ingredientescarrinhos"))
+            """ self.stdout.write(self.style.SUCCESS("Seeding ingredientescarrinhos"))
             self.seed_ingredientescarrinhos(num_entries)
 
             self.stdout.write(self.style.SUCCESS("Seeding utensilioscarrinhos"))
@@ -281,9 +281,14 @@ class Command(BaseCommand):
                 utensilios_data
             )
 
+    def seed_carrinhos(self):
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "INSERT INTO carrinhos (preco_total, data_compra) VALUES (%s, %s)", (0, None)
+            )
 
     def seed_receitas(self, num_entries):
-        data = [
+        receitas = [
             (
                 fake.word(),
                 f"{fake.random_int(min=1, max=300)} minutes",
@@ -292,7 +297,7 @@ class Command(BaseCommand):
         ]
         with transaction.atomic(), connection.cursor() as cursor:
             cursor.executemany(
-            "INSERT INTO receitas (nome, duracao) VALUES (%s, %s)", data
+            "INSERT INTO receitas (nome, duracao) VALUES (%s, %s)", receitas
         )
 
     def seed_estadosmesas(self):

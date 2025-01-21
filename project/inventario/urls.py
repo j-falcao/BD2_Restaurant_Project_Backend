@@ -11,8 +11,7 @@ urlpatterns = [
     path('fornecedores/', views.get_post_fornecedores, name='fornecedores'),
     path('fornecedores/<str:id_fornecedor>/', views.update_delete_fornecedores, name='fornecedor'),
 
-    path('carrinhos/', views.get_post_carrinhos, name='carrinhos'),
-    path('carrinhos/<str:id_carrinho>/', views.update_delete_carrinhos, name='carrinho'),
+    path('carrinhos/', views.get_carrinhos, name='carrinhos'),
 
     path('ingredientescarrinhos/', views.get_post_ingredientesCarrinhos, name='ingredientescarrinhos'),
     path('ingredientescarrinhos/<str:id_ingredientescarrinho>/', views.update_delete_ingredientesCarrinhos, name='ingredientescarrinho'),

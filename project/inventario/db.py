@@ -114,7 +114,9 @@ def delete_fornecedores(id_fornecedor): #✅
 
 
 # Carrinhos
-def get_carrinhos(id_carrinho=None): #✅
+def get_carrinhos(id_carrinho=None, atual=None): #✅
+    if atual:
+        return Carrinhos.objects.all().order_by('created_at').last()
     if id_carrinho:
         return Carrinhos.objects.get(id_carrinho=id_carrinho)
     return Carrinhos.objects.all()

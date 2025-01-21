@@ -1,9 +1,10 @@
-CREATE OR REPLACE PROCEDURE create_cargos(_new_designacao VARCHAR(100))
+CREATE OR REPLACE PROCEDURE create_cargos(_new_designacao VARCHAR(100), OUT _id INT)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     INSERT INTO cargos (designacao)
-    VALUES (_new_designacao);
+    VALUES (_new_designacao)
+    RETURNING cargos.id INTO _id;
 END;
 $$;
 
@@ -33,7 +34,7 @@ AS $$
 BEGIN
     INSERT INTO utilizadores (username, first_name, last_name, is_superuser, url_imagem, password)
     VALUES (_new_username, _new_first_name, _new_last_name, _new_is_superuser, _new_url_imagem, _new_password)
-    RETURNING id INTO _id;
+    RETURNING utilizadores.id INTO _id;
 END;
 $$;
 
@@ -59,12 +60,13 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_utilizadorescargos(_new_id_utilizador INT, _new_id_cargo INT)
+CREATE OR REPLACE PROCEDURE create_utilizadorescargos(_new_id_utilizador INT, _new_id_cargo INT, OUT _id INT)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     INSERT INTO utilizadorescargos (id_utilizador, id_cargo)
-    VALUES (_new_id_utilizador, _new_id_cargo);
+    VALUES (_new_id_utilizador, _new_id_cargo)
+    RETURNING utilizadorescargos.id_utilizador_cargo INTO _id;
 END;
 $$;
 
@@ -87,12 +89,13 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_estadosmesas(_new_designacao VARCHAR(100))
+CREATE OR REPLACE PROCEDURE create_estadosmesas(_new_designacao VARCHAR(100), OUT _id INT)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     INSERT INTO estadosmesas (designacao)
-    VALUES (_new_designacao);
+    VALUES (_new_designacao)
+    RETURNING estadosmesas.id_estado_mesa INTO _id;
 END;
 $$;
 
@@ -144,12 +147,13 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_carrinhos(_new_preco_total DECIMAL(10, 2), _new_data_compra TIMESTAMP)
+CREATE OR REPLACE PROCEDURE create_carrinhos(_new_preco_total DECIMAL(10, 2), _new_data_compra TIMESTAMP, OUT _id INT)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     INSERT INTO carrinhos (preco_total, data_compra)
-    VALUES (_new_preco_total, _new_data_compra);
+    VALUES (_new_preco_total, _new_data_compra)
+    RETURNING carrinhos.id_carrinho INTO _id;
 END;
 $$;
 
@@ -201,12 +205,13 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_ingredientescarrinhos(_new_id_ingrediente INT, _new_id_administrador INT, _new_id_carrinho INT, _new_quantidade INT)
+CREATE OR REPLACE PROCEDURE create_ingredientescarrinhos(_new_id_ingrediente INT, _new_id_administrador INT, _new_id_carrinho INT, _new_quantidade INT, OUT _id INT)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     INSERT INTO ingredientescarrinhos (id_ingrediente, id_administrador, id_carrinho, quantidade)
-    VALUES (_new_id_ingrediente, _new_id_administrador, _new_id_carrinho, _new_quantidade);
+    VALUES (_new_id_ingrediente, _new_id_administrador, _new_id_carrinho, _new_quantidade)
+    RETURNING ingredientescarrinhos.id_ingrediente_carrinho INTO _id;
 END;
 $$;
 
@@ -258,12 +263,13 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_utensilioscarrinhos(_new_id_utensilio INT, _new_id_administrador INT, _new_id_carrinho INT, _new_quantidade INT)
+CREATE OR REPLACE PROCEDURE create_utensilioscarrinhos(_new_id_utensilio INT, _new_id_administrador INT, _new_id_carrinho INT, _new_quantidade INT, OUT _id INT)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     INSERT INTO utensilioscarrinhos (id_utensilio, id_administrador, id_carrinho, quantidade)
-    VALUES (_new_id_utensilio, _new_id_administrador, _new_id_carrinho, _new_quantidade);
+    VALUES (_new_id_utensilio, _new_id_administrador, _new_id_carrinho, _new_quantidade)
+    RETURNING utensilioscarrinhos.id_utensilio_carrinho INTO _id;
 END;
 $$;
 
@@ -286,12 +292,13 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_receitas(_new_nome VARCHAR(100), _new_duracao INTERVAL)
+CREATE OR REPLACE PROCEDURE create_receitas(_new_nome VARCHAR(100), _new_duracao INTERVAL, OUT _id INT)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     INSERT INTO receitas (nome, duracao)
-    VALUES (_new_nome, _new_duracao);
+    VALUES (_new_nome, _new_duracao)
+    RETURNING receitas.id_receita INTO _id;
 END;
 $$;
 
@@ -314,12 +321,13 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_ingredientesreceitas(_new_id_ingrediente INT, _new_id_receita INT)
+CREATE OR REPLACE PROCEDURE create_ingredientesreceitas(_new_id_ingrediente INT, _new_id_receita INT, OUT _id INT)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     INSERT INTO ingredientesreceitas (id_ingrediente, id_receita)
-    VALUES (_new_id_ingrediente, _new_id_receita);
+    VALUES (_new_id_ingrediente, _new_id_receita)
+    RETURNING ingredientesreceitas.id_ingrediente_receita INTO _id;
 END;
 $$;
 
@@ -342,12 +350,13 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_utensiliosreceitas(_new_id_utensilio INT, _new_id_receita INT)
+CREATE OR REPLACE PROCEDURE create_utensiliosreceitas(_new_id_utensilio INT, _new_id_receita INT, OUT _id INT)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     INSERT INTO utensiliosreceitas (id_utensilio, id_receita)
-    VALUES (_new_id_utensilio, _new_id_receita);
+    VALUES (_new_id_utensilio, _new_id_receita)
+    RETURNING utensiliosreceitas.id_utensilio_receita INTO _id;
 END;
 $$;
 
@@ -370,12 +379,13 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_instrucoes(_new_id_receita INT, _new_numero_sequencia INT, _new_descricao TEXT)
+CREATE OR REPLACE PROCEDURE create_instrucoes(_new_id_receita INT, _new_numero_sequencia INT, _new_descricao TEXT, OUT _id INT)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     INSERT INTO instrucoes (id_receita, numero_sequencia, descricao)
-    VALUES (_new_id_receita, _new_numero_sequencia, _new_descricao);
+    VALUES (_new_id_receita, _new_numero_sequencia, _new_descricao)
+    RETURNING instrucoes.id_instrucao INTO _id;
 END;
 $$;
 
@@ -398,12 +408,13 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_instrucoesingredientes(_new_id_instrucao INT, _new_id_ingrediente INT)
+CREATE OR REPLACE PROCEDURE create_instrucoesingredientes(_new_id_instrucao INT, _new_id_ingrediente INT, OUT _id INT)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     INSERT INTO instrucoesingredientes (id_instrucao, id_ingrediente)
-    VALUES (_new_id_instrucao, _new_id_ingrediente);
+    VALUES (_new_id_instrucao, _new_id_ingrediente)
+    RETURNING instrucoesingredientes.id_instrucao_ingrediente INTO _id;
 END;
 $$;
 
@@ -426,12 +437,13 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_instrucoesutensilios(_new_id_instrucao INT, _new_id_utensilio INT)
+CREATE OR REPLACE PROCEDURE create_instrucoesutensilios(_new_id_instrucao INT, _new_id_utensilio INT, OUT _id INT)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     INSERT INTO instrucoesutensilios (id_instrucao,  id_utensilio)
-    VALUES (_new_id_instrucao, _new_id_utensilio);
+    VALUES (_new_id_instrucao, _new_id_utensilio)
+    RETURNING instrucoesutensilios.id_instrucao_utensilio INTO _id;
 END;
 $$;
 
@@ -454,12 +466,13 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_mesas(_new_id_estado_mesa INT, _new_numero INT, _new_capacidade_maxima INT, _new_quantidade_clientes INT)
+CREATE OR REPLACE PROCEDURE create_mesas(_new_id_estado_mesa INT, _new_numero INT, _new_capacidade_maxima INT, _new_quantidade_clientes INT, OUT _id INT)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     INSERT INTO mesas (id_estado_mesa, numero, capacidade_maxima, quantidade_clientes)
-    VALUES (_new_id_estado_mesa, _new_numero, _new_capacidade_maxima, _new_quantidade_clientes);
+    VALUES (_new_id_estado_mesa, _new_numero, _new_capacidade_maxima, _new_quantidade_clientes)
+    RETURNING mesas.id_mesa INTO _id;
 END;
 $$;
 
@@ -482,12 +495,13 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_produtos(_new_item BOOLEAN, _new_menu BOOLEAN, _new_nome VARCHAR(100), _new_url_imagem VARCHAR(2048), _new_preco DECIMAL(10, 2))
+CREATE OR REPLACE PROCEDURE create_produtos(_new_item BOOLEAN, _new_menu BOOLEAN, _new_nome VARCHAR(100), _new_url_imagem VARCHAR(2048), _new_preco DECIMAL(10, 2), OUT _id INT)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     INSERT INTO produtos (item, menu, nome, url_imagem, preco)
-    VALUES (_new_item, _new_menu, _new_nome, _new_url_imagem, _new_preco);
+    VALUES (_new_item, _new_menu, _new_nome, _new_url_imagem, _new_preco)
+    RETURNING produtos.id_produto INTO _id;
 END;
 $$;
 
@@ -510,12 +524,13 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_tipos(_new_designacao VARCHAR(100))
+CREATE OR REPLACE PROCEDURE create_tipos(_new_designacao VARCHAR(100), OUT _id INT)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     INSERT INTO tipos (designacao)
-    VALUES (_new_designacao);
+    VALUES (_new_designacao)
+    RETURNING tipos.id_tipo INTO _id;
 END;
 $$;
 
@@ -538,12 +553,13 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_itens(_new_id_item INT, _new_porcao_unidade_medida VARCHAR(50), _new_porcao INT)
+CREATE OR REPLACE PROCEDURE create_itens(_new_id_item INT, _new_porcao_unidade_medida VARCHAR(50), _new_porcao INT, OUT _id INT)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     INSERT INTO itens (id_item, porcao_unidade_medida, porcao)
-    VALUES (_new_id_item, _new_porcao_unidade_medida, _new_porcao);
+    VALUES (_new_id_item, _new_porcao_unidade_medida, _new_porcao)
+    RETURNING itens.id_item INTO _id;
 END;
 $$;
 
@@ -566,12 +582,13 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_itenstipos(_new_id_item INT, _new_id_tipo INT)
+CREATE OR REPLACE PROCEDURE create_itenstipos(_new_id_item INT, _new_id_tipo INT, OUT _id INT)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     INSERT INTO itenstipos (id_item, id_tipo)
-    VALUES (_new_id_item, _new_id_tipo);
+    VALUES (_new_id_item, _new_id_tipo)
+    RETURNING itenstipos.id_item_tipo INTO _id;
 END;
 $$;
 
@@ -594,12 +611,13 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_categorias(_new_designacao VARCHAR(100))
+CREATE OR REPLACE PROCEDURE create_categorias(_new_designacao VARCHAR(100), OUT _id INT)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     INSERT INTO categorias (designacao)
-    VALUES (_new_designacao);
+    VALUES (_new_designacao)
+    RETURNING categorias.id_categoria INTO _id;
 END;
 $$;
 
@@ -622,12 +640,13 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_itenscategorias(_new_id_item INT, _new_id_categoria INT)
+CREATE OR REPLACE PROCEDURE create_itenscategorias(_new_id_item INT, _new_id_categoria INT, OUT _id INT)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     INSERT INTO itenscategorias (id_item, id_categoria)
-    VALUES (_new_id_item, _new_id_categoria);
+    VALUES (_new_id_item, _new_id_categoria)
+    RETURNING itenscategorias.id_item_categoria INTO _id;
 END;
 $$;
 
@@ -650,12 +669,13 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_opcoes(_new_designacao VARCHAR(100))
+CREATE OR REPLACE PROCEDURE create_opcoes(_new_designacao VARCHAR(100), OUT _id INT)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     INSERT INTO opcoes (designacao)
-    VALUES (_new_designacao);
+    VALUES (_new_designacao)
+    RETURNING opcoes.id_opcao INTO _id;
 END;
 $$;
 
@@ -678,12 +698,13 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_itensopcoes(_new_id_item INT, _new_id_opcao INT)
+CREATE OR REPLACE PROCEDURE create_itensopcoes(_new_id_item INT, _new_id_opcao INT, OUT _id INT)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     INSERT INTO itensopcoes (id_item, id_opcao)
-    VALUES (_new_id_item, _new_id_opcao);
+    VALUES (_new_id_item, _new_id_opcao)
+    RETURNING itensopcoes.id_item_opcao INTO _id;
 END;
 $$;
 
@@ -706,12 +727,13 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_menus(_new_id_menu INT)
+CREATE OR REPLACE PROCEDURE create_menus(_new_id_menu INT, OUT _id INT)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     INSERT INTO menus (id_menu)
-    VALUES (_new_id_menu);
+    VALUES (_new_id_menu)
+    RETURNING menus.id_menu INTO _id;
 END;
 $$;
 
@@ -734,12 +756,13 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_itensmenus(_new_id_item INT, _new_id_menu INT)
+CREATE OR REPLACE PROCEDURE create_itensmenus(_new_id_item INT, _new_id_menu INT, OUT _id INT)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     INSERT INTO itensmenus (id_item, id_menu)
-    VALUES (_new_id_item, _new_id_menu);
+    VALUES (_new_id_item, _new_id_menu)
+    RETURNING itensmenus.id_item_menu INTO _id;
 END;
 $$;
 
@@ -762,12 +785,13 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_diassemana(_new_designacao VARCHAR(50))
+CREATE OR REPLACE PROCEDURE create_diassemana(_new_designacao VARCHAR(50), OUT _id INT)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     INSERT INTO diassemana (designacao)
-    VALUES (_new_designacao);
+    VALUES (_new_designacao)
+    RETURNING diassemana.id_dia_semana INTO _id;
 END;
 $$;
 
@@ -790,12 +814,13 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_menusdiassemana(_new_id_menu INT, _new_id_dia_semana INT, _new_almoco BOOLEAN, _new_jantar BOOLEAN)
+CREATE OR REPLACE PROCEDURE create_menusdiassemana(_new_id_menu INT, _new_id_dia_semana INT, _new_almoco BOOLEAN, _new_jantar BOOLEAN, OUT _id INT)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     INSERT INTO menusdiassemana (id_menu, id_dia_semana, almoco, jantar)
-    VALUES (_new_id_menu, _new_id_dia_semana, _new_almoco, _new_jantar);
+    VALUES (_new_id_menu, _new_id_dia_semana, _new_almoco, _new_jantar)
+    RETURNING menusdiassemana.id_menu_dia_semana INTO _id;
 END;
 $$;
 
@@ -818,12 +843,13 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_servicos(_new_id_garcom INT, _new_id_mesa INT, _new_data_hora_inicio TIMESTAMP, _new_data_hora_fim TIMESTAMP, _new_preco_total DECIMAL(10, 2))
+CREATE OR REPLACE PROCEDURE create_servicos(_new_id_garcom INT, _new_id_mesa INT, _new_data_hora_inicio TIMESTAMP, _new_data_hora_fim TIMESTAMP, _new_preco_total DECIMAL(10, 2), OUT _id INT)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     INSERT INTO servicos (id_garcom, id_mesa, data_hora_inicio, data_hora_fim, preco_total)
-    VALUES (_new_id_garcom, _new_id_mesa, _new_data_hora_inicio, _new_data_hora_fim, _new_preco_total);
+    VALUES (_new_id_garcom, _new_id_mesa, _new_data_hora_inicio, _new_data_hora_fim, _new_preco_total)
+    RETURNING servicos.id_servico INTO _id;
 END;
 $$;
 
@@ -846,12 +872,13 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_pedidos(_new_id_servico INT)
+CREATE OR REPLACE PROCEDURE create_pedidos(_new_id_servico INT, OUT _id INT)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     INSERT INTO pedidos (id_servico)
-    VALUES (_new_id_servico);
+    VALUES (_new_id_servico)
+    RETURNING pedidos.id_pedido INTO _id;
 END;
 $$;
 
@@ -874,12 +901,13 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_pedidosprodutos(_new_id_pedido INT, _new_id_produto INT, _new_id_cozinheiro INT)
+CREATE OR REPLACE PROCEDURE create_pedidosprodutos(_new_id_pedido INT, _new_id_produto INT, _new_id_cozinheiro INT, OUT _id INT)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     INSERT INTO pedidosprodutos (id_pedido, id_produto, id_cozinheiro)
-    VALUES (_new_id_pedido, _new_id_produto, _new_id_cozinheiro);
+    VALUES (_new_id_pedido, _new_id_produto, _new_id_cozinheiro)
+    RETURNING pedidosprodutos.id_pedido_produto INTO _id;
 END;
 $$;
 
@@ -904,12 +932,13 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_pedidosprodutositensopcoes(_new_id_item_opcao INT, _new_id_pedido_produto INT)
+CREATE OR REPLACE PROCEDURE create_pedidosprodutositensopcoes(_new_id_item_opcao INT, _new_id_pedido_produto INT, OUT _id INT)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     INSERT INTO pedidosprodutositensopcoes (id_item_opcao, id_pedido_produto)
-    VALUES (_new_id_item_opcao, _new_id_pedido_produto);
+    VALUES (_new_id_item_opcao, _new_id_pedido_produto)
+    RETURNING pedidosprodutositensopcoes.id_pedido_produto_item_opcao INTO _id;
 END;
 $$;
 
@@ -932,12 +961,13 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_reservas(_new_id_mesa INT, _new_data_hora TIMESTAMP, _new_minutos_antes INT, _new_minutos_depois INT, _new_id_servico INT)
+CREATE OR REPLACE PROCEDURE create_reservas(_new_id_mesa INT, _new_data_hora TIMESTAMP, _new_minutos_antes INT, _new_minutos_depois INT, _new_id_servico INT, OUT _id INT)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     INSERT INTO reservas (id_mesa, data_hora, minutos_antes, minutos_depois, id_servico)
-    VALUES (_new_id_mesa, _new_data_hora, _new_minutos_antes, _new_minutos_depois, _new_id_servico);
+    VALUES (_new_id_mesa, _new_data_hora, _new_minutos_antes, _new_minutos_depois, _new_id_servico)
+    RETURNING reservas.id_reserva INTO _id;
 END;
 $$;
 

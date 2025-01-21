@@ -83,6 +83,7 @@ CREATE TABLE IF NOT EXISTS utensilios (
 	nome VARCHAR(100) NOT NULL,
 	url_imagem VARCHAR(2048),
 	quantidade_stock INT NOT NULL DEFAULT 0,
+	unidade_medida VARCHAR(50) NOT NULL,
 	limite_stock INT,
 	preco DECIMAL(10, 2) NOT NULL,
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

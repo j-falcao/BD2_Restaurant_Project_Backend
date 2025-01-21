@@ -8,7 +8,7 @@ class Fornecedores(models.Model):
     vende_utensilios = models.BooleanField(default=False)
     morada = models.CharField(max_length=255)
     email = models.EmailField()
-    telefone = models.CharField(max_length=20)
+    telemovel = models.CharField(max_length=20)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
 
@@ -43,7 +43,7 @@ class Ingredientes(models.Model):
     unidade_medida = models.CharField(max_length=50)
     limite_stock = models.IntegerField()
     preco = models.DecimalField(max_digits=10, decimal_places=2)
-    id_fornecedor = models.ForeignKey(Fornecedores, on_delete=models.CASCADE, db_column='id_fornecedor')
+    id_fornecedor = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
 
@@ -77,9 +77,10 @@ class Utensilios(models.Model):
     nome = models.CharField(max_length=255)
     url_imagem = models.URLField(blank=True, null=True)
     quantidade_stock = models.IntegerField()
+    unidade_medida = models.CharField(max_length=50)
     limite_stock = models.IntegerField()
     preco = models.DecimalField(max_digits=10, decimal_places=2)
-    id_fornecedor = models.ForeignKey(Fornecedores, on_delete=models.CASCADE, db_column='id_fornecedor')
+    id_fornecedor = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
 

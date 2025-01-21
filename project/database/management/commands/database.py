@@ -267,15 +267,16 @@ class Command(BaseCommand):
             nome = fake.word()
             url_imagem = fake.image_url()
             quantidade_stock = fake.random_int(min=1, max=1000)
+            unidade_medida = fake.random_element(elements=['kg', 'g', 'ml', 'l', 'unidade'])
             limite_stock = fake.random_int(min=100, max=2000)
             preco = fake.random_number(digits=4, fix_len=True) / 100
-            utensilios_data.append((id_fornecedor, nome, url_imagem, quantidade_stock, limite_stock, preco))
+            utensilios_data.append((id_fornecedor, nome, url_imagem, quantidade_stock, unidade_medida, limite_stock, preco))
 
         with transaction.atomic(), connection.cursor() as cursor:
             cursor.executemany(
                 """
-                INSERT INTO utensilios (id_fornecedor, nome, url_imagem, quantidade_stock, limite_stock, preco)
-                VALUES (%s, %s, %s, %s, %s, %s)
+                INSERT INTO utensilios (id_fornecedor, nome, url_imagem, quantidade_stock, unidade_medida, limite_stock, preco)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
                 """,
                 utensilios_data
             )

@@ -115,12 +115,13 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_fornecedores(_new_nome VARCHAR(100), _new_vende_ingredientes BOOLEAN, _new_vende_utensilios BOOLEAN, _new_morada VARCHAR(255), _new_email VARCHAR(255), _new_telemovel VARCHAR(50))
+CREATE OR REPLACE PROCEDURE create_fornecedores(_new_nome VARCHAR(100), _new_vende_ingredientes BOOLEAN, _new_vende_utensilios BOOLEAN, _new_morada VARCHAR(255), _new_email VARCHAR(255), _new_telemovel VARCHAR(50), OUT _id INT)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     INSERT INTO fornecedores (nome, vende_ingredientes, vende_utensilios, morada, email, telemovel)
-    VALUES (_new_nome, _new_vende_ingredientes, _new_vende_utensilios, _new_morada, _new_email, _new_telemovel);
+    VALUES (_new_nome, _new_vende_ingredientes, _new_vende_utensilios, _new_morada, _new_email, _new_telemovel)
+    RETURNING fornecedores.id_fornecedor INTO _id; 
 END;
 $$;
 
@@ -171,12 +172,13 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_ingredientes(_new_id_fornecedor INT, _new_nome VARCHAR(255), _new_url_imagem VARCHAR(2048), _new_quantidade_stock INT, _new_unidade_medida VARCHAR(50), _new_limite_stock INT, _new_preco DECIMAL(10, 2))
+CREATE OR REPLACE PROCEDURE create_ingredientes(_new_id_fornecedor INT, _new_nome VARCHAR(255), _new_url_imagem VARCHAR(2048), _new_quantidade_stock INT, _new_unidade_medida VARCHAR(50), _new_limite_stock INT, _new_preco DECIMAL(10, 2), OUT _id INT)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     INSERT INTO ingredientes (id_fornecedor, nome, url_imagem, quantidade_stock, unidade_medida, limite_stock, preco)
-    VALUES (_new_id_fornecedor, _new_nome, _new_url_imagem, _new_quantidade_stock, _new_unidade_medida, _new_limite_stock, _new_preco);
+    VALUES (_new_id_fornecedor, _new_nome, _new_url_imagem, _new_quantidade_stock, _new_unidade_medida, _new_limite_stock, _new_preco)
+    RETURNING ingredientes.id_ingrediente INTO _id;
 END;
 $$;
 
@@ -227,21 +229,22 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_utensilios(_new_id_fornecedor INT, _new_nome VARCHAR(100), _new_url_imagem VARCHAR(2048), _new_quantidade_stock INT, _new_limite_stock INT, _new_preco DECIMAL(10, 2))
+CREATE OR REPLACE PROCEDURE create_utensilios(_new_id_fornecedor INT, _new_nome VARCHAR(100), _new_url_imagem VARCHAR(2048), _new_quantidade_stock INT, _new_unidade_medida VARCHAR(50), _new_limite_stock INT, _new_preco DECIMAL(10, 2), OUT _id INT)
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    INSERT INTO utensilios (id_fornecedor, nome, url_imagem, quantidade_stock, limite_stock, preco)
-    VALUES (_new_id_fornecedor, _new_nome, _new_url_imagem, _new_quantidade_stock, _new_limite_stock, _new_preco);
+    INSERT INTO utensilios (id_fornecedor, nome, url_imagem, quantidade_stock, unidade_medida, limite_stock, preco)
+    VALUES (_new_id_fornecedor, _new_nome, _new_url_imagem, _new_quantidade_stock, _new_unidade_medida, _new_limite_stock, _new_preco)
+    RETURNING utensilios.id_utensilio INTO _id;
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE update_utensilios(id_utensilio_in INT, _new_id_fornecedor INT, _new_nome VARCHAR(100), _new_url_imagem VARCHAR(2048), _new_quantidade_stock INT, _new_limite_stock INT, _new_preco DECIMAL(10, 2))
+CREATE OR REPLACE PROCEDURE update_utensilios(id_utensilio_in INT, _new_id_fornecedor INT, _new_nome VARCHAR(100), _new_url_imagem VARCHAR(2048), _new_quantidade_stock INT, _new_unidade_medida VARCHAR(50), _new_limite_stock INT, _new_preco DECIMAL(10, 2))
 LANGUAGE plpgsql
 AS $$
 BEGIN
     UPDATE utensilios
-    SET id_fornecedor = _new_id_fornecedor, nome = _new_nome, url_imagem = _new_url_imagem, quantidade_stock = _new_quantidade_stock, limite_stock = _new_limite_stock, preco = _new_preco
+    SET id_fornecedor = _new_id_fornecedor, nome = _new_nome, url_imagem = _new_url_imagem, quantidade_stock = _new_quantidade_stock, unidade_medida = _new_unidade_medida, limite_stock = _new_limite_stock, preco = _new_preco
     WHERE id_utensilio = id_utensilio_in;
 END;
 $$;

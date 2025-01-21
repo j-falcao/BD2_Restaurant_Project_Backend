@@ -1,5 +1,44 @@
 from rest_framework import serializers
 from .models import *
+from .db import *
+
+class IngredientesSerializer(serializers.ModelSerializer): #✅
+    id_fornecedor = serializers.IntegerField()
+
+    class Meta:
+        model = Ingredientes
+        fields = '__all__'
+
+    def create(self, validated_data):
+        return get_ingredientes(create_ingredientes(validated_data))
+    
+    def update(self, instance, validated_data):
+        update_ingredientes(instance.id_ingrediente, validated_data)
+        return get_ingredientes(instance.id_ingrediente)
+
+class UtensiliosSerializer(serializers.ModelSerializer): #✅
+    class Meta:
+        model = Utensilios
+        fields = '__all__'
+
+    def create(self, validated_data):
+        return get_utensilios(create_utensilios(validated_data))
+    
+    def update(self, instance, validated_data):
+        update_utensilios(instance.id_utensilio, validated_data)
+        return get_utensilios(instance.id_utensilio)
+    
+class FornecedoresSerializer(serializers.ModelSerializer):  #✅
+    class Meta:
+        model = Fornecedores
+        fields = '__all__'
+
+    def create(self, validated_data):
+        return get_fornecedores(create_fornecedores(validated_data))
+    
+    def update(self, instance, validated_data):
+        update_fornecedores(instance.id_fornecedor, validated_data)
+        return get_fornecedores(instance.id_fornecedor)
 
 
 class CarrinhosSerializer(serializers.ModelSerializer):
@@ -20,22 +59,8 @@ class UtensiliosCarrinhosSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class FornecedoresSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Fornecedores
-        fields = '__all__'
 
 
-class IngredientesSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Ingredientes
-        fields = '__all__'
-
-
-class UtensiliosSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Utensilios
-        fields = '__all__'
 
 
 class InstrucoesSerializer(serializers.ModelSerializer):

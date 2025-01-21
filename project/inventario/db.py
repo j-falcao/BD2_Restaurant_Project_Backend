@@ -2,24 +2,26 @@ from django.db import connection
 from .models import *
 
 # Ingredientes
-def get_ingredientes(id_ingrediente=None):
+def get_ingredientes(id_ingrediente=None): #✅
     if id_ingrediente:
         return Ingredientes.objects.get(id_ingrediente=id_ingrediente)
     return Ingredientes.objects.all()
 
-def create_ingredientes(ingrediente):
+def create_ingredientes(ingrediente): #✅
     with connection.cursor() as cursor:
-        cursor.execute('CALL create_ingredientes(%s, %s, %s, %s, %s, %s, %s)', [
+        cursor.execute('CALL create_ingredientes(%s, %s, %s, %s, %s, %s, %s, %s)', [
             ingrediente['id_fornecedor'],
             ingrediente['nome'],
             ingrediente['url_imagem'],
             ingrediente['quantidade_stock'],
             ingrediente['unidade_medida'],
             ingrediente['limite_stock'],
-            ingrediente['preco']
+            ingrediente['preco'],
+            None
         ])
+        return cursor.fetchone()[0]
 
-def update_ingredientes(id_ingrediente, ingrediente):
+def update_ingredientes(id_ingrediente, ingrediente): #✅
     with connection.cursor() as cursor:
         cursor.execute('CALL update_ingredientes(%s, %s, %s, %s, %s, %s, %s, %s)', [
             id_ingrediente,
@@ -32,95 +34,103 @@ def update_ingredientes(id_ingrediente, ingrediente):
             ingrediente['preco']
         ])
 
-def delete_ingredientes(id_ingrediente):
+def delete_ingredientes(id_ingrediente): #✅
     with connection.cursor() as cursor:
         cursor.execute('CALL delete_ingredientes(%s)', [id_ingrediente])
 
 
 # Utensílios
-def get_utensilios(id_utensilio=None):
+def get_utensilios(id_utensilio=None): #✅
     if id_utensilio:
         return Utensilios.objects.get(id_utensilio=id_utensilio)
     return Utensilios.objects.all()
 
-def create_utensilios(utensilio):
+def create_utensilios(utensilio): #✅
     with connection.cursor() as cursor:
-        cursor.execute('CALL create_utensilios(%s, %s)', [
+        cursor.execute('CALL create_utensilios(%s, %s, %s, %s, %s, %s, %s, %s)', [
+            utensilio['id_fornecedor'],
             utensilio['nome'],
             utensilio['url_imagem'],
             utensilio['quantidade_stock'],
+            utensilio['unidade_medida'],
             utensilio['limite_stock'],
             utensilio['preco'],
-            utensilio['id_fornecedor']
+            None
         ])
+        return cursor.fetchone()[0]
 
-def update_utensilios(id_utensilio, utensilio):
+def update_utensilios(id_utensilio, utensilio): #✅
     with connection.cursor() as cursor:
-        cursor.execute('CALL update_utensilios(%s, %s, %s)', [
+        cursor.execute('CALL update_utensilios(%s, %s, %s, %s, %s, %s, %s, %s)', [
             id_utensilio,
+            utensilio['id_fornecedor'],
             utensilio['nome'],
             utensilio['url_imagem'],
             utensilio['quantidade_stock'],
+            utensilio['unidade_medida'],
             utensilio['limite_stock'],
-            utensilio['preco'],
-            utensilio['id_fornecedor']
+            utensilio['preco']
         ])
 
-def delete_utensilios(id_utensilio):
+def delete_utensilios(id_utensilio): #✅
     with connection.cursor() as cursor:
         cursor.execute('CALL delete_utensilios(%s)', [id_utensilio])
 
 
 # Fornecedores
-def get_fornecedores(id_fornecedor=None):
+def get_fornecedores(id_fornecedor=None): #✅
     if id_fornecedor:
         return Fornecedores.objects.get(id_fornecedor=id_fornecedor)
     return Fornecedores.objects.all()
 
-def create_fornecedores(fornecedor):
+def create_fornecedores(fornecedor): #✅
     with connection.cursor() as cursor:
-        cursor.execute('CALL create_fornecedor(%s, %s, %s, %s, %s, %s)', [
+        cursor.execute('CALL create_fornecedores(%s, %s, %s, %s, %s, %s, %s)', [
             fornecedor['nome'],
             fornecedor['vende_ingredientes'],
             fornecedor['vende_utensilios'],
             fornecedor['morada'],
             fornecedor['email'],
-            fornecedor['telefone']
+            fornecedor['telemovel'],
+            None
         ])
+        return cursor.fetchone()[0] 
 
-def update_fornecedores(id_fornecedor, fornecedor):
+def update_fornecedores(id_fornecedor, fornecedor): #✅
     with connection.cursor() as cursor:
-        cursor.execute('CALL update_fornecedor(%s, %s, %s, %s, %s, %s, %s)', [
+        cursor.execute('CALL update_fornecedores(%s, %s, %s, %s, %s, %s, %s)', [
             id_fornecedor,
             fornecedor['nome'],
             fornecedor['vende_ingredientes'],
             fornecedor['vende_utensilios'],
             fornecedor['morada'],
             fornecedor['email'],
-            fornecedor['telefone']
+            fornecedor['telemovel']
         ])
 
-def delete_fornecedores(id_fornecedor):
+def delete_fornecedores(id_fornecedor): #✅
     with connection.cursor() as cursor:
-        cursor.execute('CALL delete_fornecedor(%s)', [id_fornecedor])
+        cursor.execute('CALL delete_fornecedores(%s)', [id_fornecedor])
 
 
 # Carrinhos
-def get_carrinhos(id_carrinho=None):
+def get_carrinhos(id_carrinho=None): #✅
     if id_carrinho:
         return Carrinhos.objects.get(id_carrinho=id_carrinho)
     return Carrinhos.objects.all()
 
 def create_carrinhos(carrinho):
     with connection.cursor() as cursor:
-        cursor.execute('CALL create_carrinho(%s, %s)', [
+        cursor.execute('CALL create_carrinhos(%s, %s, %s)', [
             carrinho['preco_total'],
-            carrinho['data_compra']
+            carrinho['data_compra'],
+            None
         ])
+        return cursor.fetchone()[0]
 
 def update_carrinhos(id_carrinho, carrinho):
     with connection.cursor() as cursor:
-        cursor.execute('CALL update_carrinho(%s, %s, %s)', [
+        cursor.execute('CALL update_carrinhos(%s, %s, %s)', [
             id_carrinho,
             carrinho['preco_total'],
             carrinho['data_compra']
@@ -128,7 +138,7 @@ def update_carrinhos(id_carrinho, carrinho):
 
 def delete_carrinhos(id_carrinho):
     with connection.cursor() as cursor:
-        cursor.execute('CALL delete_carrinho(%s)', [id_carrinho])
+        cursor.execute('CALL delete_carrinhos(%s)', [id_carrinho])
 
 
 # IngredientesCarrinhos

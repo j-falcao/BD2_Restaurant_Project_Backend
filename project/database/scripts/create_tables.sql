@@ -83,7 +83,8 @@ CREATE TABLE IF NOT EXISTS ingredientescarrinhos (
 	id_carrinho INT REFERENCES carrinhos(id_carrinho) ON DELETE CASCADE,
 	quantidade INT NOT NULL,
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	CONSTRAINT unique_ingrediente_carrinho UNIQUE (id_ingrediente, id_administrador, id_carrinho)
 );
 
 CREATE TABLE IF NOT EXISTS utensilios (
@@ -106,7 +107,8 @@ CREATE TABLE IF NOT EXISTS utensilioscarrinhos (
 	id_carrinho INT REFERENCES carrinhos(id_carrinho) ON DELETE CASCADE,
 	quantidade INT NOT NULL,
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	CONSTRAINT unique_utensilio_carrinho UNIQUE (id_utensilio, id_administrador, id_carrinho)
 );
 
 CREATE TABLE IF NOT EXISTS receitas (

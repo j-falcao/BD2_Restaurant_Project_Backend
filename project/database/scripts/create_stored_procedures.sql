@@ -211,7 +211,7 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_ingredientescarrinhos(_new_id_ingrediente INT, _new_id_administrador INT, _new_id_carrinho INT, _new_quantidade INT, OUT _new_ingrediente_carrinho JSON)
+CREATE OR REPLACE PROCEDURE create_ingredientescarrinhos(_new_id_carrinho INT, _new_id_ingrediente INT, _new_id_administrador INT, _new_quantidade INT, OUT _new_ingrediente_carrinho JSON)
 LANGUAGE plpgsql
 AS $$
 BEGIN
@@ -221,12 +221,12 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE update_ingredientescarrinhos(id_ingrediente_carrinho_in INT, _new_id_ingrediente INT, _new_id_administrador INT, _new_id_carrinho INT, _new_quantidade INT, OUT _new_ingrediente_carrinho JSON)
+CREATE OR REPLACE PROCEDURE update_ingredientescarrinhos(id_ingrediente_carrinho_in INT, _new_quantidade INT, OUT _new_ingrediente_carrinho JSON)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     UPDATE ingredientescarrinhos
-    SET id_ingrediente = _new_id_ingrediente, id_administrador = _new_id_administrador, id_carrinho = _new_id_carrinho, quantidade = _new_quantidade
+    SET quantidade = _new_quantidade
     WHERE id_ingrediente_carrinho = id_ingrediente_carrinho_in
     RETURNING row_to_json(ingredientescarrinhos) INTO _new_ingrediente_carrinho;
 END;
@@ -271,7 +271,7 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_utensilioscarrinhos(_new_id_utensilio INT, _new_id_administrador INT, _new_id_carrinho INT, _new_quantidade INT, OUT _new_utensilio_carrinho JSON)
+CREATE OR REPLACE PROCEDURE create_utensilioscarrinhos(_new_id_carrinho INT, _new_id_utensilio INT, _new_id_administrador INT, _new_quantidade INT, OUT _new_utensilio_carrinho JSON)
 LANGUAGE plpgsql
 AS $$
 BEGIN
@@ -281,12 +281,12 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE update_utensilioscarrinhos(id_utensilio_carrinho_in INT, _new_id_utensilio INT, _new_id_administrador INT, _new_id_carrinho INT, _new_quantidade INT, OUT _new_utensilio_carrinho JSON)
+CREATE OR REPLACE PROCEDURE update_utensilioscarrinhos(id_utensilio_carrinho_in INT, _new_quantidade INT, OUT _new_utensilio_carrinho JSON)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     UPDATE utensilioscarrinhos
-    SET id_utensilio = _new_id_utensilio, id_administrador = _new_id_administrador, id_carrinho = _new_id_carrinho, quantidade = _new_quantidade
+    SET quantidade = _new_quantidade
     WHERE id_utensilio_carrinho = id_utensilio_carrinho_in
     RETURNING row_to_json(utensilioscarrinhos) INTO _new_utensilio_carrinho;
 END;
@@ -331,22 +331,22 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_ingredientesreceitas(_new_id_ingrediente INT, _new_id_receita INT, OUT _new_ingrediente_receita JSON)
+CREATE OR REPLACE PROCEDURE create_ingredientesreceitas(_new_id_receita INT, _new_id_ingrediente INT, _new_quantidade INT, OUT _new_ingrediente_receita JSON)
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    INSERT INTO ingredientesreceitas (id_ingrediente, id_receita)
-    VALUES (_new_id_ingrediente, _new_id_receita)
+    INSERT INTO ingredientesreceitas (id_receita, id_ingrediente, quantidade)
+    VALUES (_new_id_receita, _new_id_ingrediente, _new_quantidade)
     RETURNING row_to_json(ingredientesreceitas) INTO _new_ingrediente_receita;
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE update_ingredientesreceitas(id_ingrediente_receita_in INT, _new_id_ingrediente INT, _new_id_receita INT, OUT _new_ingrediente_receita JSON)
+CREATE OR REPLACE PROCEDURE update_ingredientesreceitas(id_ingrediente_receita_in INT, _new_quantidade INT, OUT _new_ingrediente_receita JSON)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     UPDATE ingredientesreceitas
-    SET id_ingrediente = _new_id_ingrediente, id_receita = _new_id_receita
+    SET quantidade = _new_quantidade
     WHERE id_ingrediente_receita = id_ingrediente_receita_in
     RETURNING row_to_json(ingredientesreceitas) INTO _new_ingrediente_receita;
 END;
@@ -361,22 +361,22 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_utensiliosreceitas(_new_id_utensilio INT, _new_id_receita INT, OUT _new_utensilio_receita JSON)
+CREATE OR REPLACE PROCEDURE create_utensiliosreceitas(_new_id_receita INT, _new_id_utensilio INT, _new_quantidade INT, OUT _new_utensilio_receita JSON)
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    INSERT INTO utensiliosreceitas (id_utensilio, id_receita)
-    VALUES (_new_id_utensilio, _new_id_receita)
+    INSERT INTO utensiliosreceitas (id_receita, id_utensilio, quantidade)
+    VALUES (_new_id_receita, _new_id_utensilio, _new_quantidade)
     RETURNING row_to_json(utensiliosreceitas) INTO _new_utensilio_receita;
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE update_utensiliosreceitas(id_utensilio_receita_in INT, _new_id_utensilio INT, _new_id_receita INT, OUT _new_utensilio_receita JSON)
+CREATE OR REPLACE PROCEDURE update_utensiliosreceitas(id_utensilio_receita_in INT, _new_quantidade INT, OUT _new_utensilio_receita JSON)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     UPDATE utensiliosreceitas
-    SET id_utensilio = _new_id_utensilio, id_receita = _new_id_receita
+    SET quantidade = _new_quantidade
     WHERE id_utensilio_receita = id_utensilio_receita_in
     RETURNING row_to_json(utensiliosreceitas) INTO _new_utensilio_receita;
 END;
@@ -391,22 +391,22 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_instrucoes(_new_id_receita INT, _new_numero_sequencia INT, _new_descricao TEXT, OUT _new_instrucao JSON)
+CREATE OR REPLACE PROCEDURE create_instrucoes(_new_id_receita INT, _new_descricao TEXT, OUT _new_instrucao JSON)
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    INSERT INTO instrucoes (id_receita, numero_sequencia, descricao)
-    VALUES (_new_id_receita, _new_numero_sequencia, _new_descricao)
+    INSERT INTO instrucoes (id_receita, descricao) -- Trigger 'set_next_numero_sequencia_trigger' define o numero_sequencia antes de inserir
+    VALUES (_new_id_receita, _new_descricao)
     RETURNING row_to_json(instrucoes) INTO _new_instrucao;
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE update_instrucoes(id_instrucao_in INT, _new_id_receita INT, _new_numero_sequencia INT, _new_descricao TEXT, OUT _new_instrucao JSON)
+CREATE OR REPLACE PROCEDURE update_instrucoes(id_instrucao_in INT, _new_numero_sequencia INT, _new_descricao TEXT, OUT _new_instrucao JSON)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     UPDATE instrucoes
-    SET id_receita = _new_id_receita, numero_sequencia = _new_numero_sequencia, descricao = _new_descricao
+    SET numero_sequencia = _new_numero_sequencia, descricao = _new_descricao
     WHERE id_instrucao = id_instrucao_in
     RETURNING row_to_json(instrucoes) INTO _new_instrucao;
 END;
@@ -418,66 +418,6 @@ AS $$
 BEGIN
     DELETE FROM instrucoes
     WHERE id_instrucao = id_instrucao_in;
-END;
-$$;
-
-CREATE OR REPLACE PROCEDURE create_instrucoesingredientes(_new_id_instrucao INT, _new_id_ingrediente INT, OUT _new_instrucao_ingrediente JSON)
-LANGUAGE plpgsql
-AS $$
-BEGIN
-    INSERT INTO instrucoesingredientes (id_instrucao, id_ingrediente)
-    VALUES (_new_id_instrucao, _new_id_ingrediente)
-    RETURNING row_to_json(instrucoesingredientes) INTO _new_instrucao_ingrediente;
-END;
-$$;
-
-CREATE OR REPLACE PROCEDURE update_instrucoesingredientes(id_instrucao_ingrediente_in INT, _new_id_instrucao INT, _new_id_ingrediente INT, OUT _new_instrucao_ingrediente JSON)
-LANGUAGE plpgsql
-AS $$
-BEGIN
-    UPDATE instrucoesingredientes
-    SET id_instrucao = _new_id_instrucao, id_ingrediente = _new_id_ingrediente
-    WHERE id_instrucao_ingrediente = id_instrucao_ingrediente_in
-    RETURNING row_to_json(instrucoesingredientes) INTO _new_instrucao_ingrediente;
-END;
-$$;
-
-CREATE OR REPLACE PROCEDURE delete_instrucoesingredientes(id_instrucao_ingrediente_in INT)
-LANGUAGE plpgsql
-AS $$
-BEGIN
-    DELETE FROM instrucoesingredientes
-    WHERE id_instrucao_ingrediente = id_instrucao_ingrediente_in;
-END;
-$$;
-
-CREATE OR REPLACE PROCEDURE create_instrucoesutensilios(_new_id_instrucao INT, _new_id_utensilio INT, OUT _new_instrucao_utensilio JSON)
-LANGUAGE plpgsql
-AS $$
-BEGIN
-    INSERT INTO instrucoesutensilios (id_instrucao,  id_utensilio)
-    VALUES (_new_id_instrucao, _new_id_utensilio)
-    RETURNING row_to_json(instrucoesutensilios) INTO _new_instrucao_utensilio;
-END;
-$$;
-
-CREATE OR REPLACE PROCEDURE update_instrucoesutensilios(id_instrucao_utensilio_in INT, _new_id_instrucao INT, _new_id_utensilio INT, OUT _new_instrucao_utensilio JSON)
-LANGUAGE plpgsql
-AS $$
-BEGIN
-    UPDATE instrucoesutensilios
-    SET id_instrucao = _new_id_instrucao, id_utensilio = _new_id_utensilio
-    WHERE id_instrucao_utensilio = id_instrucao_utensilio_in
-    RETURNING row_to_json(instrucoesutensilios) INTO _new_instrucao_utensilio;
-END;
-$$;
-
-CREATE OR REPLACE PROCEDURE delete_instrucoesutensilios(id_instrucao_utensilio_in INT)
-LANGUAGE plpgsql
-AS $$
-BEGIN
-    DELETE FROM instrucoesutensilios
-    WHERE id_instrucao_utensilio = id_instrucao_utensilio_in;
 END;
 $$;
 

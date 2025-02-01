@@ -1,13 +1,9 @@
+from project.utils.db_utils import fetch_from_view
 from django.db import connection
 from .models import *
 
 # Ingredientes
-def get_ingredientes(id_ingrediente=None): #✅
-    if id_ingrediente:
-        return Ingredientes.objects.get(id_ingrediente=id_ingrediente)
-    return Ingredientes.objects.all()
-
-def create_ingredientes(ingrediente): #✅
+def create_ingredientes(ingrediente):  # ✅
     with connection.cursor() as cursor:
         cursor.execute('CALL create_ingredientes(%s, %s, %s, %s, %s, %s, %s, %s)', [
             ingrediente['id_fornecedor'],
@@ -21,7 +17,8 @@ def create_ingredientes(ingrediente): #✅
         ])
         return cursor.fetchone()[0]
 
-def update_ingredientes(id_ingrediente, ingrediente): #✅
+
+def update_ingredientes(id_ingrediente, ingrediente):  # ✅
     with connection.cursor() as cursor:
         cursor.execute('CALL update_ingredientes(%s, %s, %s, %s, %s, %s, %s, %s, %s)', [
             id_ingrediente,
@@ -36,18 +33,14 @@ def update_ingredientes(id_ingrediente, ingrediente): #✅
         ])
         return cursor.fetchone()[0]
 
-def delete_ingredientes(id_ingrediente): #✅
+
+def delete_ingredientes(id_ingrediente):  # ✅
     with connection.cursor() as cursor:
         cursor.execute('CALL delete_ingredientes(%s)', [id_ingrediente])
 
 
 # Utensílios
-def get_utensilios(id_utensilio=None): #✅
-    if id_utensilio:
-        return Utensilios.objects.get(id_utensilio=id_utensilio)
-    return Utensilios.objects.all()
-
-def create_utensilios(utensilio): #✅
+def create_utensilios(utensilio):  # ✅
     with connection.cursor() as cursor:
         cursor.execute('CALL create_utensilios(%s, %s, %s, %s, %s, %s, %s, %s)', [
             utensilio['id_fornecedor'],
@@ -61,7 +54,8 @@ def create_utensilios(utensilio): #✅
         ])
         return cursor.fetchone()[0]
 
-def update_utensilios(id_utensilio, utensilio): #✅
+
+def update_utensilios(id_utensilio, utensilio):  # ✅
     with connection.cursor() as cursor:
         cursor.execute('CALL update_utensilios(%s, %s, %s, %s, %s, %s, %s, %s, %s)', [
             id_utensilio,
@@ -76,18 +70,14 @@ def update_utensilios(id_utensilio, utensilio): #✅
         ])
         return cursor.fetchone()[0]
 
-def delete_utensilios(id_utensilio): #✅
+
+def delete_utensilios(id_utensilio):  # ✅
     with connection.cursor() as cursor:
         cursor.execute('CALL delete_utensilios(%s)', [id_utensilio])
 
 
 # Fornecedores
-def get_fornecedores(id_fornecedor=None): #✅
-    if id_fornecedor:
-        return Fornecedores.objects.get(id_fornecedor=id_fornecedor)
-    return Fornecedores.objects.all()
-
-def create_fornecedores(fornecedor): #✅
+def create_fornecedores(fornecedor):  # ✅
     with connection.cursor() as cursor:
         cursor.execute('CALL create_fornecedores(%s, %s, %s, %s, %s, %s, %s)', [
             fornecedor['nome'],
@@ -98,9 +88,10 @@ def create_fornecedores(fornecedor): #✅
             fornecedor['telemovel'],
             None
         ])
-        return cursor.fetchone()[0] 
+        return cursor.fetchone()[0]
 
-def update_fornecedores(id_fornecedor, fornecedor): #✅
+
+def update_fornecedores(id_fornecedor, fornecedor):  # ✅
     with connection.cursor() as cursor:
         cursor.execute('CALL update_fornecedores(%s, %s, %s, %s, %s, %s, %s, %s)', [
             id_fornecedor,
@@ -112,206 +103,173 @@ def update_fornecedores(id_fornecedor, fornecedor): #✅
             fornecedor['telemovel'],
             None
         ])
+        return cursor.fetchone()[0]
 
-def delete_fornecedores(id_fornecedor): #✅
+
+def delete_fornecedores(id_fornecedor):  # ✅
     with connection.cursor() as cursor:
         cursor.execute('CALL delete_fornecedores(%s)', [id_fornecedor])
 
 
 # Carrinhos
-def get_carrinhos(id_carrinho=None, atual=None): #✅
-    if atual:
-        return Carrinhos.objects.all().order_by('created_at').last()
-    if id_carrinho:
-        return Carrinhos.objects.get(id_carrinho=id_carrinho)
-    return Carrinhos.objects.all()
-
-def create_carrinhos(carrinho):
+def create_ingredientesCarrinhos(id_carrinho, data):  # ✅
     with connection.cursor() as cursor:
-        cursor.execute('CALL create_carrinhos(%s, %s, %s)', [
-            carrinho['preco_total'],
-            carrinho['data_compra'],
+        cursor.execute('CALL create_ingredientescarrinhos(%s, %s, %s, %s, %s)', [
+            id_carrinho,
+            data['id_ingrediente'],
+            data['id_administrador'],
+            data['quantidade'],
             None
         ])
         return cursor.fetchone()[0]
 
-def update_carrinhos(id_carrinho, carrinho):
+
+def update_ingredientesCarrinhos(id_ingrediente_carrinho, data):  # ✅
     with connection.cursor() as cursor:
-        cursor.execute('CALL update_carrinhos(%s, %s, %s, %s)', [
-            id_carrinho,
-            carrinho['preco_total'],
-            carrinho['data_compra']
-        ])
-
-def delete_carrinhos(id_carrinho):
-    with connection.cursor() as cursor:
-        cursor.execute('CALL delete_carrinhos(%s)', [id_carrinho])
-
-
-# IngredientesCarrinhos
-def get_ingredientesCarrinhos(id_ingrediente_administrador=None):
-    if id_ingrediente_administrador:
-        return IngredientesCarrinhos.objects.get(id_ingrediente_administrador=id_ingrediente_administrador)
-    return IngredientesCarrinhos.objects.all()
-
-def create_ingredientesCarrinhos(data):
-    with connection.cursor() as cursor:
-        cursor.execute('CALL create_ingrediente_carrinho(%s, %s, %s, %s, %s)', [
-            data['id_ingrediente'],
-            data['id_administrador'],
-            data['id_carrinho'],
+        cursor.execute('CALL update_ingredientescarrinhos(%s, %s, %s)', [
+            id_ingrediente_carrinho,
             data['quantidade'],
             None
         ])
+        return cursor.fetchone()[0]
 
-def update_ingredientesCarrinhos(id_ingrediente_administrador, data):
-    with connection.cursor() as cursor:
-        cursor.execute('CALL update_ingrediente_carrinho(%s, %s, %s, %s, %s, %s)', [
-            id_ingrediente_administrador,
-            data['id_ingrediente'],
-            data['id_administrador'],
-            data['id_carrinho'],
-            data['quantidade'],
-            None
-        ])
 
-def delete_ingredientesCarrinhos(id_ingrediente_administrador):
+def delete_ingredientesCarrinhos(id_ingrediente_carrinho):  # ✅
     with connection.cursor() as cursor:
-        cursor.execute('CALL delete_ingrediente_carrinho(%s)', [id_ingrediente_administrador])
+        cursor.execute('CALL delete_ingredientescarrinhos(%s)', [id_ingrediente_carrinho])
 
 
 # UtensiliosCarrinhos
-def get_utensiliosCarrinhos(id_utensilio_carrinho=None):
-    if id_utensilio_carrinho:
-        return UtensiliosCarrinhos.objects.get(id_utensilio_carrinho=id_utensilio_carrinho)
-    return UtensiliosCarrinhos.objects.all()
-
-def create_utensiliosCarrinhos(data):
+def create_utensiliosCarrinhos(id_carrinho, data):  # ✅
     with connection.cursor() as cursor:
-        cursor.execute('CALL create_utensilio_carrinho(%s, %s, %s, %s)', [
+        cursor.execute('CALL create_utensilioscarrinhos(%s, %s, %s, %s, %s)', [
+            id_carrinho,
             data['id_utensilio'],
             data['id_administrador'],
-            data['id_carrinho'],
-            data['quantidade']
+            data['quantidade'],
+            None
         ])
+        return cursor.fetchone()[0]
 
-def update_utensiliosCarrinhos(id_utensilio_carrinho, data):
+
+def update_utensiliosCarrinhos(id_utensilio_carrinho, data):  # ✅
     with connection.cursor() as cursor:
-        cursor.execute('CALL update_utensilio_carrinho(%s, %s, %s, %s, %s)', [
+        cursor.execute('CALL update_utensilioscarrinhos(%s, %s, %s)', [
             id_utensilio_carrinho,
-            data['id_utensilio'],
-            data['id_administrador'],
-            data['id_carrinho'],
-            data['quantidade']
+            data['quantidade'],
+            None
         ])
+        return cursor.fetchone()[0]
 
-def delete_utensiliosCarrinhos(id_utensilio_carrinho):
+
+def delete_utensiliosCarrinhos(id_utensilio_carrinho):  # ✅
     with connection.cursor() as cursor:
-        cursor.execute('CALL delete_utensilio_carrinho(%s)', [id_utensilio_carrinho])
+        cursor.execute('CALL delete_utensilioscarrinhos(%s)', [id_utensilio_carrinho])
 
 
 # Instrucoes
-def get_instrucoes(id_instrucao=None):
-    if id_instrucao:
-        return Instrucoes.objects.get(id_instrucao=id_instrucao)
-    return Instrucoes.objects.all()
-
-def create_instrucoes(instrucao):
+def create_instrucoes(id_receita, data):
     with connection.cursor() as cursor:
-        cursor.execute('CALL create_instrucao(%s, %s, %s)', [
-            instrucao['numero_sequencia'],
-            instrucao['id_receita'],
-            instrucao['descricao']
+        cursor.execute('CALL create_instrucoes(%s, %s, %s)', [
+            id_receita,
+            data['descricao'],
+            None
         ])
+        return cursor.fetchone()[0]
 
-def update_instrucoes(id_instrucao, instrucao):
+
+def update_instrucoes(id_instrucao, data):
     with connection.cursor() as cursor:
-        cursor.execute('CALL update_instrucao(%s, %s, %s, %s)', [
+        cursor.execute('CALL update_instrucoes(%s, %s, %s, %s)', [
             id_instrucao,
-            instrucao['numero_sequencia'],
-            instrucao['id_receita'],
-            instrucao['descricao']
+            data['numero_sequencia'],
+            data['descricao'],
+            None
         ])
+        return cursor.fetchone()[0]
+
 
 def delete_instrucoes(id_instrucao):
     with connection.cursor() as cursor:
-        cursor.execute('CALL delete_instrucao(%s)', [id_instrucao])
+        cursor.execute('CALL delete_instrucoes(%s)', [id_instrucao])
 
 
 # Receitas
-def get_receitas(id_receita=None):
-    if id_receita:
-        return Receitas.objects.get(id_receita=id_receita)
-    return Receitas.objects.all()
-
 def create_receitas(receita):
     with connection.cursor() as cursor:
-        cursor.execute('CALL create_receita(%s, %s)', [
+        cursor.execute('CALL create_receitas(%s, %s, %s)', [
             receita['nome'],
-            receita['duracao']
+            receita['duracao'],
+            None
         ])
+        return cursor.fetchone()[0]
+
 
 def update_receitas(id_receita, receita):
     with connection.cursor() as cursor:
-        cursor.execute('CALL update_receita(%s, %s, %s)', [
+        cursor.execute('CALL update_receitas(%s, %s, %s, %s)', [
             id_receita,
             receita['nome'],
-            receita['duracao']
+            receita['duracao'],
+            None
         ])
+        return cursor.fetchone()[0]
+
 
 def delete_receitas(id_receita):
     with connection.cursor() as cursor:
-        cursor.execute('CALL delete_receita(%s)', [id_receita])
-
-
-# UtensiliosReceitas
-def get_utensiliosReceitas(id_utensilio_receita=None):
-    if id_utensilio_receita:
-        return UtensiliosReceitas.objects.get(id_utensilio_receita=id_utensilio_receita)
-    return UtensiliosReceitas.objects.all()
-
-def create_utensiliosReceitas(data):
-    with connection.cursor() as cursor:
-        cursor.execute('CALL create_utensilio_receita(%s, %s)', [
-            data['id_utensilio'],
-            data['id_receita']
-        ])
-
-def update_utensiliosReceitas(id_utensilio_receita, data):
-    with connection.cursor() as cursor:
-        cursor.execute('CALL update_utensilio_receita(%s, %s, %s)', [
-            id_utensilio_receita,
-            data['id_utensilio'],
-            data['id_receita']
-        ])
-
-def delete_utensiliosReceitas(id_utensilio_receita):
-    with connection.cursor() as cursor:
-        cursor.execute('CALL delete_utensilio_receita(%s)', [id_utensilio_receita])
+        cursor.execute('CALL delete_receitas(%s)', [id_receita])
 
 
 # IngredientesReceitas
-def get_ingredientesReceitas(id_ingrediente_receita=None):
-    if id_ingrediente_receita:
-        return IngredientesReceitas.objects.get(id_ingrediente_receita=id_ingrediente_receita)
-    return IngredientesReceitas.objects.all()
-
-def create_ingredientesReceitas(data):
+def create_ingredientesReceitas(id_receita, data):
     with connection.cursor() as cursor:
-        cursor.execute('CALL create_ingrediente_receita(%s, %s)', [
+        cursor.execute('CALL create_ingredientesreceitas(%s, %s, %s, %s)', [
+            id_receita,
             data['id_ingrediente'],
-            data['id_receita']
+            data['quantidade'],
+            None
         ])
+        return cursor.fetchone()[0]
+
 
 def update_ingredientesReceitas(id_ingrediente_receita, data):
     with connection.cursor() as cursor:
-        cursor.execute('CALL update_ingrediente_receita(%s, %s, %s)', [
+        cursor.execute('CALL update_ingredientesreceitas(%s, %s, %s)', [
             id_ingrediente_receita,
-            data['id_ingrediente'],
-            data['id_receita']
+            data['quantidade'],
+            None
         ])
+        return cursor.fetchone()[0]
+
 
 def delete_ingredientesReceitas(id_ingrediente_receita):
     with connection.cursor() as cursor:
-        cursor.execute('CALL delete_ingrediente_receita(%s)', [id_ingrediente_receita])
+        cursor.execute('CALL delete_ingredientesreceitas(%s)', [id_ingrediente_receita])
 
+
+# UtensiliosReceitas
+def create_utensiliosReceitas(id_receita, data):
+    with connection.cursor() as cursor:
+        cursor.execute('CALL create_utensiliosreceitas(%s, %s, %s, %s)', [
+            id_receita,
+            data['id_utensilio'],
+            data['quantidade'],
+            None
+        ])
+        return cursor.fetchone()[0]
+
+
+def update_utensiliosReceitas(id_utensilio_receita, data):
+    with connection.cursor() as cursor:
+        cursor.execute('CALL update_utensiliosreceitas(%s, %s, %s)', [
+            id_utensilio_receita,
+            data['quantidade'],
+            None
+        ])
+        return cursor.fetchone()[0]
+
+
+def delete_utensiliosReceitas(id_utensilio_receita):
+    with connection.cursor() as cursor:
+        cursor.execute('CALL delete_utensiliosreceitas(%s)', [id_utensilio_receita])

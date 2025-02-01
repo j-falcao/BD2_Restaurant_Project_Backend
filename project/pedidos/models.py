@@ -3,7 +3,7 @@ from autenticacao.models import Utilizadores
 
 
 class EstadosMesas(models.Model):
-    id_estado_mesa = models.AutoField(primary_key=True, unique=True)
+    id_estado_mesa = models.AutoField(primary_key=True)
     designacao = models.CharField(max_length=20)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
@@ -17,7 +17,7 @@ class EstadosMesas(models.Model):
 
 
 class Mesas(models.Model):
-    id_mesa = models.AutoField(primary_key=True, unique=True)
+    id_mesa = models.AutoField(primary_key=True)
     id_estado_mesa = models.ForeignKey(
         EstadosMesas, on_delete=models.CASCADE, db_column='id_estado_mesa')
     numero = models.IntegerField()
@@ -35,7 +35,7 @@ class Mesas(models.Model):
 
 
 class Servicos(models.Model):
-    id_servico = models.AutoField(primary_key=True, unique=True)
+    id_servico = models.AutoField(primary_key=True)
     id_mesa = models.ForeignKey(Mesas, on_delete=models.CASCADE, null=True,
                                 blank=True, related_name="servicos", db_column='id_mesa')
     id_garcom = models.ForeignKey(Utilizadores, on_delete=models.CASCADE,
@@ -55,7 +55,7 @@ class Servicos(models.Model):
 
 
 class Reservas(models.Model):
-    id_reserva = models.AutoField(primary_key=True, unique=True)
+    id_reserva = models.AutoField(primary_key=True)
     id_mesa = models.ForeignKey(
         Mesas, on_delete=models.CASCADE, db_column='id_mesa')
     data_hora = models.DateTimeField(auto_now_add=True)
@@ -75,7 +75,7 @@ class Reservas(models.Model):
 
 
 class Pedidos(models.Model):
-    id_pedido = models.AutoField(primary_key=True, unique=True)
+    id_pedido = models.AutoField(primary_key=True)
     id_servico = models.ForeignKey(Servicos, on_delete=models.CASCADE,
                                    null=True, blank=True, related_name="pedidos", db_column='id_servico')
     produtos = models.ManyToManyField(
@@ -99,7 +99,7 @@ class Pedidos(models.Model):
 
 
 class PedidosProdutos(models.Model):
-    id_pedido_produto = models.AutoField(primary_key=True, unique=True)
+    id_pedido_produto = models.AutoField(primary_key=True)
     id_pedido = models.ForeignKey(
         Pedidos, on_delete=models.CASCADE, db_column='id_pedido')
     id_produto = models.ForeignKey(
@@ -120,7 +120,7 @@ class PedidosProdutos(models.Model):
 
 
 class PedidosProdutosItensOpcoes(models.Model):
-    id_pedido_produto_item_opcao = models.AutoField(primary_key=True, unique=True)
+    id_pedido_produto_item_opcao = models.AutoField(primary_key=True)
     id_item_opcao = models.ForeignKey(
         'produtos.ItensOpcoes', on_delete=models.CASCADE, db_column='id_item_opcao')
     id_pedido_produto = models.ForeignKey(
@@ -134,5 +134,3 @@ class PedidosProdutosItensOpcoes(models.Model):
 
     def __str__(self):
         return f"Opção {self.id_item_opcao} no Produto do Pedido {self.id_pedido_produto}"
-    
-

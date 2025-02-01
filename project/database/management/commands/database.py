@@ -47,19 +47,23 @@ class Command(BaseCommand):
     def _reset_db(self):
         self.stdout.write(self.style.WARNING("Resetting the database..."))
 
+        self.stdout.write(self.style.SUCCESS("Dropping triggers..."))
+        self._run_sql_file(os.getcwd() + '/database/scripts/drop_triggers.sql')
+        self.stdout.write(self.style.SUCCESS("Dropping stored procedures..."))
+        self._run_sql_file(os.getcwd() + '/database/scripts/drop_stored_procedures.sql')
+        self.stdout.write(self.style.SUCCESS("Dropping indexes..."))
+        self._run_sql_file(os.getcwd() + '/database/scripts/drop_indexes.sql')
         self.stdout.write(self.style.SUCCESS("Dropping views..."))
         self._run_sql_file(os.getcwd() + '/database/scripts/drop_views.sql')
         self.stdout.write(self.style.SUCCESS("Dropping tables..."))
         self._run_sql_file(os.getcwd() + '/database/scripts/drop_tables.sql')
-        self.stdout.write(self.style.SUCCESS("Dropping stored procedures..."))
-        self._run_sql_file(os.getcwd() + '/database/scripts/drop_stored_procedures.sql')
-        self.stdout.write(self.style.SUCCESS("Dropping triggers..."))
-        self._run_sql_file(os.getcwd() + '/database/scripts/drop_triggers.sql')
 
         self.stdout.write(self.style.SUCCESS("Creating tables..."))
         self._run_sql_file(os.getcwd() + '/database/scripts/create_tables.sql')
         self.stdout.write(self.style.SUCCESS("Creating views..."))
         self._run_sql_file(os.getcwd() + '/database/scripts/create_views.sql')
+        self.stdout.write(self.style.SUCCESS("Creating indexes..."))
+        self._run_sql_file(os.getcwd() + '/database/scripts/create_indexes.sql')
         self.stdout.write(self.style.SUCCESS("Creating stored procedures..."))
         self._run_sql_file(os.getcwd() + '/database/scripts/create_stored_procedures.sql')
         self.stdout.write(self.style.SUCCESS("Creating triggers..."))
@@ -91,6 +95,9 @@ class Command(BaseCommand):
 
             self.stdout.write(self.style.SUCCESS("Seeding utensilios"))
             self.seed_utensilios(num_entries)
+            
+            self.stdout.write(self.style.SUCCESS("Seeding tipos_carrinhos"))
+            self.seed_tipos_carrinhos()
 
             self.stdout.write(self.style.SUCCESS("Seeding carrinhos"))
             self.seed_carrinhos()
@@ -104,20 +111,11 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS("Seeding receitas"))
             self.seed_receitas(num_entries)
 
-            self.stdout.write(self.style.SUCCESS("Seeding ingredientesreceitas"))
-            self.seed_ingredientesreceitas(num_entries)
+            # self.stdout.write(self.style.SUCCESS("Seeding instrucoesingredientes"))
+            # self.seed_instrucoesingredientes(num_entries)
 
-            self.stdout.write(self.style.SUCCESS("Seeding utensiliosreceitas"))
-            self.seed_utensiliosreceitas(num_entries)
-
-            self.stdout.write(self.style.SUCCESS("Seeding instrucoes"))
-            self.seed_instrucoes(num_entries)
-
-            self.stdout.write(self.style.SUCCESS("Seeding instrucoesingredientes"))
-            self.seed_instrucoesingredientes(num_entries)
-
-            self.stdout.write(self.style.SUCCESS("Seeding instrucoesutensilios"))
-            self.seed_instrucoesutensilios(num_entries)
+            # self.stdout.write(self.style.SUCCESS("Seeding instrucoesutensilios"))
+            # self.seed_instrucoesutensilios(num_entries)
 
             self.stdout.write(self.style.SUCCESS("Seeding mesas"))
             self.seed_mesas(num_entries)
@@ -281,24 +279,25 @@ class Command(BaseCommand):
                 utensilios_data
             )
 
-    def seed_carrinhos(self):
-        with connection.cursor() as cursor:
-            cursor.execute(
-                "INSERT INTO carrinhos (preco_total, data_compra) VALUES (%s, %s)", (0, None)
-            )
-
-    def seed_receitas(self, num_entries):
-        receitas = [
-            (
-                fake.word(),
-                f"{fake.random_int(min=1, max=300)} minutes",
-            )
-            for _ in range(num_entries)
+    def seed_tipos_carrinhos(self):
+        tipos = [
+            "Ingredientes",
+            "Utensilios"
         ]
         with transaction.atomic(), connection.cursor() as cursor:
             cursor.executemany(
-            "INSERT INTO receitas (nome, duracao) VALUES (%s, %s)", receitas
-        )
+                """
+                INSERT INTO tipos_carrinhos (designacao) VALUES (%s)
+                """,
+                [(tipo,) for tipo in tipos]
+            )
+
+
+    def seed_carrinhos(self):
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "INSERT INTO carrinhos (preco_total, id_tipo_carrinho, data_compra) VALUES (%s, %s, %s)", (0, 1, None)
+            )
 
     def seed_estadosmesas(self):
         data = [
@@ -400,7 +399,7 @@ class Command(BaseCommand):
         data = [(categoria,) for categoria in categorias]
         with transaction.atomic(), connection.cursor() as cursor:
             cursor.executemany(
-                "INSERT INTO categorias (designacao) VALUES (%s) ON CONFLICT DO NOTHING",
+                "INSERT INTO categorias(designacao) VALUES(%s)",
                 data,
             )
 
@@ -436,76 +435,36 @@ class Command(BaseCommand):
                 "INSERT INTO diassemana (designacao) VALUES (%s)", data
             )
 
-    def seed_ingredientesreceitas(self, num_entries):
-        data = [
-            (fake.random_int(min=1, max=100), fake.random_int(min=1, max=500))
-            for _ in range(num_entries)
-        ]
-
+    def seed_receitas(self, num_receitas, max_ingredientes=5, max_utensilios=3, max_instrucoes=10):
+        ingredientes = []
+        utensilios = []
+        instrucoes = []
+        
         with transaction.atomic(), connection.cursor() as cursor:
-            cursor.executemany(
-                "INSERT INTO ingredientesreceitas(id_receita, id_ingrediente) VALUES (%s, %s)",
-                data
-            )
-
-    def seed_utensiliosreceitas(self, num_entries):
-        data = [
-            (fake.random_int(min=1, max=10000), fake.random_int(min=1, max=10000))
-            for _ in range(num_entries)
-        ]
-
-        with transaction.atomic(), connection.cursor() as cursor:
-            cursor.executemany(
-                "INSERT INTO utensiliosreceitas(id_receita, id_utensilio) VALUES (%s, %s)",
-                data
-            )
-
-    def seed_instrucoes(self, num_entries):
-        data = []
-        for _ in range(num_entries):
-            id_receita = fake.random_int(min=1, max=100)
-            total_instrucoes = fake.random_int(min=3, max=10)
-            for numero_sequencia in range(1, total_instrucoes + 1):
-                descricao = fake.sentence(nb_words=12)
-                data.append((id_receita, numero_sequencia, descricao))
-
-        with transaction.atomic(), connection.cursor() as cursor:
-            cursor.executemany(
-                "INSERT INTO instrucoes (id_receita, numero_sequencia, descricao) VALUES (%s, %s, %s)",
-                data
-            )
-
-    def seed_instrucoesingredientes(self, num_entries):
-        data = []
-        for _ in range(num_entries):
-            id_instrucao = fake.random_int(min=1, max=500)
-            total_ingredientes = fake.random_int(min=1, max=5)
-            data.extend(
-                (id_instrucao, fake.random_int(min=1, max=1000))
-                for _ in range(total_ingredientes)
-            )
-
-        with transaction.atomic(), connection.cursor() as cursor:
-            cursor.executemany(
-                "INSERT INTO instrucoesingredientes (id_instrucao, id_ingrediente) VALUES (%s, %s)",
-                data
-            )
-
-    def seed_instrucoesutensilios(self, num_entries):
-        data = []
-        for _ in range(num_entries):
-            id_instrucao = fake.random_int(min=1, max=500)
-            total_utensilios = fake.random_int(min=1, max=5)
-            data.extend(
-                (id_instrucao, fake.random_int(min=1, max=1000))
-                for _ in range(total_utensilios)
-            )
-
-        with transaction.atomic(), connection.cursor() as cursor:
-            cursor.executemany(
-                "INSERT INTO instrucoesutensilios (id_instrucao, id_utensilio) VALUES (%s, %s)",
-                data
-            )
+            for _ in range(num_receitas):
+                nome = fake.word()
+                duracao = f"{fake.random_int(min=1, max=300)} minutes"
+                cursor.execute("INSERT INTO receitas (nome, duracao) VALUES (%s, %s) RETURNING id_receita", (nome, duracao))
+                id_receita = cursor.fetchone()[0]
+                
+                num_ingredientes = fake.random_int(min=1, max=max_ingredientes)
+                for _ in range(num_ingredientes):
+                    ingredientes.append((id_receita, fake.random_int(min=1, max=500), fake.random_int(min=1, max=100)))
+        
+                num_utensilios = fake.random_int(min=1, max=max_utensilios)
+                for _ in range(num_utensilios):
+                    utensilios.append((id_receita, fake.random_int(min=1, max=10000), fake.random_int(min=1, max=100)))
+        
+                num_instrucoes = fake.random_int(min=3, max=max_instrucoes)
+                for numero_sequencia in range(1, num_instrucoes + 1):
+                    instrucoes.append((id_receita, numero_sequencia, fake.sentence(nb_words=12)))
+        
+            if ingredientes:
+                cursor.executemany("INSERT INTO ingredientesreceitas (id_receita, id_ingrediente, quantidade) VALUES (%s, %s, %s)", ingredientes)
+            if utensilios:
+                cursor.executemany("INSERT INTO utensiliosreceitas (id_receita, id_utensilio, quantidade) VALUES (%s, %s, %s)", utensilios)
+            if instrucoes:
+                cursor.executemany("INSERT INTO instrucoes (id_receita, numero_sequencia, descricao) VALUES (%s, %s, %s)", instrucoes)
 
     def seed_tipos(self):
         tipos = [

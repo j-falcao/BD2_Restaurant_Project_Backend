@@ -2,18 +2,20 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 
+
 class Cargos(models.Model):
-    id_cargo = models.AutoField(primary_key=True, unique=True)
+    id_cargo = models.AutoField(primary_key=True)
     designacao = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
 
     class Meta:
         managed = False
-        db_table = 'cargos_view'
+        db_table = 'cargos'
 
     def __str__(self):
         return self.designacao
+
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, username, password=None, **extra_fields):
@@ -31,8 +33,9 @@ class CustomUserManager(BaseUserManager):
     def get_by_natural_key(self, username):
         return self.get(username=username)
 
+
 class Utilizadores(AbstractBaseUser, PermissionsMixin):
-    id = models.AutoField(primary_key=True, unique=True)
+    id = models.AutoField(primary_key=True)
     is_superuser = models.BooleanField(default=False)
     cargos = models.ManyToManyField(Cargos, through='UtilizadoresCargos')
     username = models.CharField(max_length=30, unique=True)
@@ -50,13 +53,14 @@ class Utilizadores(AbstractBaseUser, PermissionsMixin):
 
     class Meta:
         managed = False
-        db_table = 'utilizadores_view'
+        db_table = 'utilizadores'
 
     def __str__(self):
         return self.username
 
+
 class UtilizadoresCargos(models.Model):
-    id_utilizador_cargo = models.AutoField(primary_key=True, unique=True)
+    id_utilizador_cargo = models.AutoField(primary_key=True)
     id_utilizador = models.ForeignKey(
         Utilizadores,
         on_delete=models.CASCADE,
@@ -72,7 +76,7 @@ class UtilizadoresCargos(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'utilizadorescargos_view'
+        db_table = 'utilizadorescargos'
 
     def __str__(self):
         return f"{self.id_utilizador} - {self.id_cargo}"

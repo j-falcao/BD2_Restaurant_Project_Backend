@@ -123,6 +123,7 @@ CREATE TABLE IF NOT EXISTS ingredientesreceitas (
 	id_ingrediente_receita SERIAL PRIMARY KEY,
 	id_ingrediente INT REFERENCES ingredientes(id_ingrediente) ON DELETE CASCADE,
 	id_receita INT REFERENCES receitas(id_receita) ON DELETE CASCADE,
+	quantidade INT NOT NULL,
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -131,6 +132,7 @@ CREATE TABLE IF NOT EXISTS utensiliosreceitas (
 	id_utensilio_receita SERIAL PRIMARY KEY,
 	id_utensilio INT REFERENCES utensilios(id_utensilio) ON DELETE CASCADE,
 	id_receita INT REFERENCES receitas(id_receita) ON DELETE CASCADE,
+	quantidade INT NOT NULL,
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -138,26 +140,11 @@ CREATE TABLE IF NOT EXISTS utensiliosreceitas (
 CREATE TABLE IF NOT EXISTS instrucoes (
 	id_instrucao SERIAL PRIMARY KEY,
 	id_receita INT REFERENCES receitas(id_receita) ON DELETE CASCADE,
-	numero_sequencia INT,
+	numero_sequencia INT NOT NULL,
 	descricao TEXT NOT NULL,
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS instrucoesingredientes (
-	id_instrucao_ingrediente SERIAL PRIMARY KEY,
-	id_instrucao INT REFERENCES instrucoes(id_instrucao) ON DELETE CASCADE,
-	id_ingrediente INT REFERENCES ingredientes(id_ingrediente) ON DELETE CASCADE,
-	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS instrucoesutensilios (
-	id_instrucao_utensilio SERIAL PRIMARY KEY,
-	id_instrucao INT REFERENCES instrucoes(id_instrucao) ON DELETE CASCADE,
-	id_utensilio INT REFERENCES utensilios(id_utensilio) ON DELETE CASCADE,
-	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	CONSTRAINT unique_instrucao UNIQUE (id_receita, numero_sequencia)
 );
 
 CREATE TABLE IF NOT EXISTS mesas (

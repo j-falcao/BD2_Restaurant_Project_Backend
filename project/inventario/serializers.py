@@ -1,4 +1,4 @@
-from rest_framework import serializers
+""" from rest_framework import serializers
 from .models import *
 from .db import *
 
@@ -37,6 +37,10 @@ class FornecedoresSerializer(serializers.ModelSerializer):  #✅
     def update(self, instance, validated_data):
         return update_fornecedores(instance.id_fornecedor, validated_data)
 
+class TiposCarrinhosSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TiposCarrinhos
+        fields = '__all__'
 
 class CarrinhosSerializer(serializers.ModelSerializer):
     class Meta:
@@ -85,3 +89,4 @@ class IngredientesReceitasSerializer(serializers.ModelSerializer):
     class Meta: 
         model = IngredientesReceitas
         fields = '__all__'
+ """

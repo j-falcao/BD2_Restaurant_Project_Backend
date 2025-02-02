@@ -2,21 +2,36 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [
-    path('produtos/', get_produtos, name='produtos'),
-    path('produtos/<int:id_produto>/', get_produto, name='produto'),
+    # Tipos
+    path('tipos/', get_post_tipos),
+    path('tipos/<int:id_tipo>/', update_delete_tipos),
 
-    path('itens/', get_itens, name='itens'),
-    path('itens/<int:id_item>/', get_item, name='item'),
+    # Categorias
+    path('categorias/', get_post_categorias),
+    path('categorias/<int:id_categoria>/', update_delete_categorias),
 
-    path('tipos/', get_tipos, name='tipos'),
-    path('tipos/<int:id_tipo>/', get_tipo, name='tipo'),
+    # Opcoes
+    path('opcoes/', get_post_opcoes),
+    path('opcoes/<int:id_opcao>/', update_delete_opcoes),
 
-    path('categorias/', get_categorias, name='categorias'),
-    path('categorias/<int:id_categoria>/', get_categoria, name='categoria'),
+    # Itens
+    path('itens/', get_post_itens),
+    path('itens/<int:id_item>/', update_delete_itens),
+    path('itens/<int:id_item>/opcoes', get_post_itensOpcoes),
+    path('itensopcoes/<int:id_item_opcao>/', delete_itensOpcoes),
+    path('itens/<int:id_item>/tipos', get_post_itensTipos),
+    path('itenstipos/<int:id_item_tipo>/', delete_itensTipos),
+    path('itens/<int:id_item>/categorias', get_post_itensCategorias),
+    path('itenscategorias/<int:id_item_categoria>/', delete_itensCategorias),
+    path('itens/<int:id_item>/menus', get_post_itensMenus),
+    
+    # Menus
+    path('menus/', get_post_menus),
+    path('menus/<int:id_menu>/', update_delete_menus),
+    path('menus/<int:id_menu>/itens', get_post_itensMenus),
+    path('itensmenus/<int:id_item_menu>/', update_delete_itensMenus),
+    path('menus/<int:id_menu>/diassemana/', get_post_menusDiasSemana),
+    path('menusdiassemana/<int:id_menu_dia_semana>/', update_delete_menusDiasSemana),
+    path('diassemana/<int:id_dia_semana>/menus', get_menus_by_dia_semana),
 
-    path('opcoes/', get_opcoes, name='opcoes'),
-    path('opcoes/<int:id_opcao>/', get_opcao, name='opcao'),
-
-    path('menus/', get_menus, name='menus'),
-    path('menus/<int:id_menu>/', get_menu, name='menu'),
 ]

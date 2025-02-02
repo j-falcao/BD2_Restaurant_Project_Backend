@@ -1,4 +1,4 @@
-from rest_framework import serializers
+""" from rest_framework import serializers
 from .models import *
 
 class ProdutosSerializer(serializers.ModelSerializer):
@@ -71,3 +71,4 @@ class MenusDiasSemanaSerializer(serializers.ModelSerializer):
     class Meta:
         model = MenusDiasSemana
         fields = '__all__'
+ """

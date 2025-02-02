@@ -5,9 +5,9 @@ from faker import Faker
 from tqdm import tqdm
 from django.db import connection, transaction
 from django.contrib.auth.hashers import make_password
-from produtos import db as produtos_db
 from pedidos import db as pedidos_db
 from autenticacao import db as autenticacao_db
+from produtos.models import *
 import random
 
 fake = Faker()
@@ -150,8 +150,8 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS("Seeding servicos/pedidos/pedidosprodutos"))
             self.seed_servicos_pedidos_pedidosprodutos(num_entries)
 
-            self.stdout.write(self.style.SUCCESS("Seeding pedidosprodutositensopcoes"))
-            self.seed_pedidosprodutositensopcoes(num_entries)
+            # self.stdout.write(self.style.SUCCESS("Seeding pedidosprodutositensopcoes"))
+            # self.seed_pedidosprodutositensopcoes(num_entries)
 
             self.stdout.write(self.style.SUCCESS("Seeding reservas"))
             self.seed_reservas(num_entries)
@@ -332,7 +332,7 @@ class Command(BaseCommand):
         menus_data = []
         itensmenus_data = []
 
-        categorias = produtos_db.get_all_categorias()
+        categorias = Categorias.fetch_all()
 
         for i in range(num_entries):
             item = i > num_entries * 0.75
@@ -369,10 +369,10 @@ class Command(BaseCommand):
             else:  # If menu
                 menus_data.append((id_produto,))
                 for categoria in categorias:
-                    itens = produtos_db.get_itens_by_categoria(categoria)
+                    itens = ItensCategorias.fetch_by_categoria(categoria['id_categoria'])
                     if itens:
                         random_item = random.choice(itens)
-                        itensmenus_data.append((random_item.id_item, id_produto))
+                        itensmenus_data.append((random_item['id_item'], id_produto))
 
         with transaction.atomic(), connection.cursor() as cursor:
             cursor.executemany(
@@ -491,26 +491,26 @@ class Command(BaseCommand):
             cursor.executemany(query, data)
 
     def seed_itenstipos(self, num_entries):
-        itens = produtos_db.get_all_itens()
+        itens = Itens.fetch_all()
         data = [
-            (itens[fake.random_int(min=0, max=len(itens) - 1)].id_item_id, fake.random_int(min=1, max=7))
+            (itens[fake.random_int(min=0, max=len(itens) - 1)]['id_item'], fake.random_int(min=1, max=7))
             for _ in range(num_entries)
         ]
 
         self.seed_generic_table("itenstipos", ["id_item", "id_tipo"], data)
 
     def seed_itenscategorias(self, num_entries):
-        itens = produtos_db.get_all_itens()
+        itens = Itens.fetch_all()
         data = [
-            (itens[fake.random_int(min=0, max=len(itens) - 1)].id_item_id, fake.random_int(min=1, max=7))
+            (itens[fake.random_int(min=0, max=len(itens) - 1)]['id_item'], fake.random_int(min=1, max=7))
             for _ in range(num_entries)
         ]
 
         self.seed_generic_table("itenscategorias", ["id_item", "id_categoria"], data)
 
     def seed_itensopcoes(self, num_entries):
-        itens = produtos_db.get_all_itens()
-        id_itens = [item.id_item_id for item in itens]
+        itens = Itens.fetch_all()
+        id_itens = [item['id_item'] for item in itens]
         data = [
             (fake.random_element(id_itens), fake.random_int(min=1, max=7))
             for _ in range(num_entries)
@@ -541,7 +541,7 @@ class Command(BaseCommand):
         with transaction.atomic(), connection.cursor() as cursor:
             id_garcons = [garcom.id for garcom in autenticacao_db.get_all_garcons()]
             id_mesas = [mesa.id_mesa for mesa in pedidos_db.get_all_mesas()]
-            id_produtos = [produto.id_produto for produto in produtos_db.get_all_produtos()]
+            id_produtos = [produto['id_produto'] for produto in Produtos.fetch_all()]
             id_cozinheiros = [cozinheiro.id for cozinheiro in autenticacao_db.get_all_cozinheiros()]
 
             servicos_data = []
@@ -607,23 +607,23 @@ class Command(BaseCommand):
             cursor.execute(query_pedidosprodutos % values_pedidosprodutos)
 
 
-    def seed_pedidosprodutositensopcoes(self, num_entries):
-        with transaction.atomic(), connection.cursor() as cursor:
-            id_pedidosprodutos = [pedido_produto.id_pedido_produto for pedido_produto in pedidos_db.get_all_pedidos_produtos()]
-            id_itensopcoes = [item_opcao.id_item_opcao for item_opcao in produtos_db.get_all_itens_opcoes()]
+    # def seed_pedidosprodutositensopcoes(self, num_entries):
+    #     with transaction.atomic(), connection.cursor() as cursor:
+    #         id_pedidosprodutos = [pedido_produto.id_pedido_produto for pedido_produto in pedidos_db.get_all_pedidos_produtos()]
+    #         id_itensopcoes = [item_opcao.id_item_opcao for item_opcao in produtos_db.get_all_itens_opcoes()]
 
-            pedidosprodutositensopcoes_data = [
-                (
-                    fake.random_element(elements=id_itensopcoes),
-                    fake.random_element(elements=id_pedidosprodutos)
-                )
-                for _ in range(num_entries)
-            ]
+    #         pedidosprodutositensopcoes_data = [
+    #             (
+    #                 fake.random_element(elements=id_itensopcoes),
+    #                 fake.random_element(elements=id_pedidosprodutos)
+    #             )
+    #             for _ in range(num_entries)
+    #         ]
 
-            cursor.executemany(
-                "INSERT INTO pedidosprodutositensopcoes (id_item_opcao, id_pedido_produto) VALUES (%s, %s)",
-                pedidosprodutositensopcoes_data
-            )
+    #         cursor.executemany(
+    #             "INSERT INTO pedidosprodutositensopcoes (id_item_opcao, id_pedido_produto) VALUES (%s, %s)",
+    #             pedidosprodutositensopcoes_data
+    #         )
 
     def seed_reservas(self, num_entries):
         with transaction.atomic(), connection.cursor() as cursor:

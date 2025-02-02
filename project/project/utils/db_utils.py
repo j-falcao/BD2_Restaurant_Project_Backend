@@ -11,7 +11,7 @@ def fetch_from_view(view_name, filters=None):
             for column, value in filters.items():
                 if value is not None:
                     filter_clauses.append(f"{column} = %s")
-                    params.append(int(value) if value.isdigit() else value)
+                    params.append(value)
 
             if filter_clauses:
                 query += " WHERE " + " AND ".join(filter_clauses)

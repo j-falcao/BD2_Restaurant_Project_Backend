@@ -451,35 +451,35 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_produtos(_new_item BOOLEAN, _new_menu BOOLEAN, _new_nome VARCHAR(100), _new_url_imagem VARCHAR(2048), _new_preco DECIMAL(10, 2), OUT _new_produto JSON)
-LANGUAGE plpgsql
-AS $$
-BEGIN
-    INSERT INTO produtos (item, menu, nome, url_imagem, preco)
-    VALUES (_new_item, _new_menu, _new_nome, _new_url_imagem, _new_preco)
-    RETURNING row_to_json(produtos) INTO _new_produto;
-END;
-$$;
+-- CREATE OR REPLACE PROCEDURE create_produtos(_new_item BOOLEAN, _new_menu BOOLEAN, _new_nome VARCHAR(100), _new_url_imagem VARCHAR(2048), _new_preco DECIMAL(10, 2), OUT _new_produto JSON)
+-- LANGUAGE plpgsql
+-- AS $$
+-- BEGIN
+--     INSERT INTO produtos (item, menu, nome, url_imagem, preco)
+--     VALUES (_new_item, _new_menu, _new_nome, _new_url_imagem, _new_preco)
+--     RETURNING row_to_json(produtos) INTO _new_produto;
+-- END;
+-- $$;
 
-CREATE OR REPLACE PROCEDURE update_produtos(id_produto_in INT, _new_item BOOLEAN, _new_menu BOOLEAN, _new_nome VARCHAR(100), _new_url_imagem VARCHAR(2048), _new_preco DECIMAL(10, 2), OUT _new_produto JSON)
-LANGUAGE plpgsql
-AS $$
-BEGIN
-    UPDATE produtos
-    SET item = _new_item, menu = _new_menu, nome = _new_nome, url_imagem = _new_url_imagem, preco = _new_preco
-    WHERE id_produto = id_produto_in
-    RETURNING row_to_json(produtos) INTO _new_produto;
-END;
-$$;
+-- CREATE OR REPLACE PROCEDURE update_produtos(id_produto_in INT, _new_item BOOLEAN, _new_menu BOOLEAN, _new_nome VARCHAR(100), _new_url_imagem VARCHAR(2048), _new_preco DECIMAL(10, 2), OUT _new_produto JSON)
+-- LANGUAGE plpgsql
+-- AS $$
+-- BEGIN
+--     UPDATE produtos
+--     SET item = _new_item, menu = _new_menu, nome = _new_nome, url_imagem = _new_url_imagem, preco = _new_preco
+--     WHERE id_produto = id_produto_in
+--     RETURNING row_to_json(produtos) INTO _new_produto;
+-- END;
+-- $$;
 
-CREATE OR REPLACE PROCEDURE delete_produtos(id_produto_in INT)
-LANGUAGE plpgsql
-AS $$
-BEGIN
-    DELETE FROM produtos
-    WHERE id_produto = id_produto_in;
-END;
-$$;
+-- CREATE OR REPLACE PROCEDURE delete_produtos(id_produto_in INT)
+-- LANGUAGE plpgsql
+-- AS $$
+-- BEGIN
+--     DELETE FROM produtos
+--     WHERE id_produto = id_produto_in;
+-- END;
+-- $$;
 
 CREATE OR REPLACE PROCEDURE create_tipos(_new_designacao VARCHAR(100), OUT _new_tipo JSON)
 LANGUAGE plpgsql
@@ -511,35 +511,63 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_itens(_new_id_item INT, _new_porcao_unidade_medida VARCHAR(50), _new_porcao INT, OUT _new_item JSON)
+CREATE OR REPLACE PROCEDURE create_itens(_new_nome VARCHAR(100), _new_url_imagem VARCHAR(2048), _new_preco DECIMAL(10,2), _new_porcao_unidade_medida VARCHAR(50), _new_porcao INT, OUT _new_item JSON)
 LANGUAGE plpgsql
 AS $$
+DECLARE _new_id_produto INT;
 BEGIN
+    -- Cria o produto
+    INSERT INTO produtos (item, menu, nome, url_imagem, preco)
+    VALUES (TRUE, FALSE, _new_nome, _new_url_imagem, _new_preco)
+    RETURNING id_produto INTO _new_id_produto;
+
+    -- Cria o item com o id do produto
     INSERT INTO itens (id_item, porcao_unidade_medida, porcao)
-    VALUES (_new_id_item, _new_porcao_unidade_medida, _new_porcao)
-    RETURNING row_to_json(itens) INTO _new_item;
+    VALUES (_new_id_produto, _new_porcao_unidade_medida, _new_porcao);
+
+    SELECT row_to_json(item_completo) INTO _new_item FROM (
+        SELECT * 
+        FROM itens 
+        JOIN produtos ON produtos.id_produto = itens.id_item 
+        WHERE id_item = _new_id_produto
+    ) item_completo;
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE update_itens(id_item_in INT, _new_porcao_unidade_medida VARCHAR(50), _new_porcao INT, OUT _new_item JSON)
+
+CREATE OR REPLACE PROCEDURE update_itens(_id_item_in INT, _new_nome VARCHAR(100), _new_url_imagem VARCHAR(2048), _new_preco DECIMAL(10,2), _new_porcao_unidade_medida VARCHAR(50), _new_porcao INT, OUT _updated_item JSON)
 LANGUAGE plpgsql
 AS $$
 BEGIN
+    -- Update produto
+    UPDATE produtos
+    SET nome = _new_nome, url_imagem = _new_url_imagem, preco = _new_preco
+    WHERE id_produto = _id_item_in;
+
+    -- Update item
     UPDATE itens
     SET porcao_unidade_medida = _new_porcao_unidade_medida, porcao = _new_porcao
-    WHERE id_item = id_item_in
-    RETURNING row_to_json(itens) INTO _new_item;
+    WHERE id_item = _id_item_in;
+
+    SELECT row_to_json(item_completo) INTO _updated_item FROM (
+        SELECT * 
+        FROM itens 
+        JOIN produtos ON produtos.id_produto = itens.id_item 
+        WHERE id_item = _id_item_in
+    ) item_completo;
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE delete_itens(id_item_in INT)
+
+CREATE OR REPLACE PROCEDURE delete_itens(_id_item INT)
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    DELETE FROM itens
-    WHERE id_item = id_item_in;
+    DELETE FROM produtos WHERE id_produto = _id_item; -- Delete produto
+    -- o item é apagado junto com o produto (CASCADE)
 END;
 $$;
+
 
 CREATE OR REPLACE PROCEDURE create_itenstipos(_new_id_item INT, _new_id_tipo INT, OUT _new_item_tipo JSON)
 LANGUAGE plpgsql
@@ -691,56 +719,78 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_menus(_new_id_menu INT, OUT _new_menu JSON)
+CREATE OR REPLACE PROCEDURE create_menus(_new_nome VARCHAR(100), _new_url_imagem VARCHAR(2048), _new_preco DECIMAL(10,2), OUT _new_menu JSON)
 LANGUAGE plpgsql
 AS $$
+DECLARE _new_id_produto INT;
 BEGIN
+    -- Cria o produto
+    INSERT INTO produtos (item, menu, nome, url_imagem, preco)
+    VALUES (FALSE, TRUE, _new_nome, _new_url_imagem, _new_preco)
+    RETURNING id_produto INTO _new_id_produto;
+
+    -- Cria o menu com o id do produto
     INSERT INTO menus (id_menu)
-    VALUES (_new_id_menu)
-    RETURNING row_to_json(menus) INTO _new_menu;
+    VALUES (_new_id_produto);
+
+    SELECT row_to_json(menu_completo) INTO _new_menu FROM (
+        SELECT * 
+        FROM menus
+        JOIN produtos ON produtos.id_produto = menus.id_menu
+        WHERE id_menu = _new_id_produto
+    ) menu_completo;
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE update_menus(id_menu_in INT, OUT _new_menu JSON)
+
+CREATE OR REPLACE PROCEDURE update_menus(_id_menu INT, _new_nome VARCHAR(100), _new_url_imagem VARCHAR(2048), _new_preco DECIMAL(10,2), OUT _updated_menu JSON)
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    --UPDATE menus
-    --SET created_at = _new_created_at, updated_at = _new_updated_at
-    --WHERE id_menu = id_menu_in
-    --RETURNING row_to_json(menus) INTO _new_menu;
+    -- Update produto
+    UPDATE produtos
+    SET nome = _new_nome, url_imagem = _new_url_imagem, preco = _new_preco
+    WHERE id_produto = _id_menu;
+
+    -- update menu
+    SELECT row_to_json(menu_completo) INTO _updated_menu FROM (
+        SELECT * 
+        FROM menus
+        JOIN produtos ON produtos.id_produto = menus.id_menu
+        WHERE id_menu = _id_menu
+    ) menu_completo;
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE delete_menus(id_menu_in INT)
+CREATE OR REPLACE PROCEDURE delete_menus(_id_menu INT)
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    DELETE FROM menus
-    WHERE id_menu = id_menu_in;
+    DELETE FROM produtos WHERE id_produto = _id_menu; -- delete produto
+    -- o menu é apagado junto com o produto (CASCADE)
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_itensmenus(_new_id_item INT, _new_id_menu INT, OUT _new_item_menu JSON)
+CREATE OR REPLACE PROCEDURE create_itensmenus(_new_id_menu INT, _new_id_item INT, OUT _new_item_menu JSON)
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    INSERT INTO itensmenus (id_item, id_menu)
-    VALUES (_new_id_item, _new_id_menu)
+    INSERT INTO itensmenus (id_menu, id_item)
+    VALUES (_new_id_menu, _new_id_item)
     RETURNING row_to_json(itensmenus) INTO _new_item_menu;
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE update_itensmenus(id_item_menu_in INT, _new_id_item INT, _new_id_menu INT, OUT _new_item_menu JSON)
-LANGUAGE plpgsql
-AS $$
-BEGIN
-    UPDATE itensmenus
-    SET id_item = _new_id_item, id_menu = _new_id_menu
-    WHERE id_item_menu = id_item_menu_in
-    RETURNING row_to_json(itensmenus) INTO _new_item_menu;
-END;
-$$;
+-- CREATE OR REPLACE PROCEDURE update_itensmenus(id_item_menu_in INT, _new_id_item INT, _new_id_menu INT, OUT _new_item_menu JSON)
+-- LANGUAGE plpgsql
+-- AS $$
+-- BEGIN
+--     UPDATE itensmenus
+--     SET id_item = _new_id_item, id_menu = _new_id_menu
+--     WHERE id_item_menu = id_item_menu_in
+--     RETURNING row_to_json(itensmenus) INTO _new_item_menu;
+-- END;
+-- $$;
 
 CREATE OR REPLACE PROCEDURE delete_itensmenus(id_item_menu_in INT)
 LANGUAGE plpgsql
@@ -791,12 +841,12 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE update_menusdiassemana(id_menu_dia_semana_in INT, _new_id_menu INT, _new_id_dia_semana INT, _new_almoco BOOLEAN, _new_jantar BOOLEAN, OUT _new_menu_dia_semana JSON)
+CREATE OR REPLACE PROCEDURE update_menusdiassemana(id_menu_dia_semana_in INT, _new_almoco BOOLEAN, _new_jantar BOOLEAN, OUT _new_menu_dia_semana JSON)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     UPDATE menusdiassemana
-    SET id_menu = _new_id_menu, id_dia_semana = _new_id_dia_semana, almoco = _new_almoco, jantar = _new_jantar
+    SET almoco = _new_almoco, jantar = _new_jantar
     WHERE id_menu_dia_semana = id_menu_dia_semana_in
     RETURNING row_to_json(menusdiassemana) INTO _new_menu_dia_semana;
 END;

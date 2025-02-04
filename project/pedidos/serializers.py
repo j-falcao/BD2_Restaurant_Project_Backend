@@ -1,4 +1,4 @@
-from rest_framework import serializers
+""" from rest_framework import serializers
 from .models import *
 
 
@@ -42,3 +42,4 @@ class PedidosProdutosOpcoesItensSerializer(serializers.ModelSerializer):
     class Meta:
         model = PedidosProdutosItensOpcoes
         fields = '__all__'
+ """

@@ -1,4 +1,4 @@
-DROP VIEW IF EXISTS pedidosprodutositensopcoes_view;
+-- DROP VIEW IF EXISTS pedidosprodutositensopcoes_view;
 DROP VIEW IF EXISTS pedidosprodutos_view;
 DROP VIEW IF EXISTS pedidos_view;
 DROP VIEW IF EXISTS utensiliosreceitas_view;
@@ -26,6 +26,7 @@ DROP VIEW IF EXISTS categorias_view;
 DROP VIEW IF EXISTS produtos_view;
 DROP VIEW IF EXISTS mesas_view;
 DROP VIEW IF EXISTS reservas_view;
+DROP VIEW IF EXISTS estadosreservas_view;
 DROP VIEW IF EXISTS servicos_view;
 DROP VIEW IF EXISTS instrucoes_view;
 DROP VIEW IF EXISTS estadosmesas_view;

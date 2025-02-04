@@ -1,4 +1,4 @@
-CREATE OR REPLACE VIEW estadosmesas_view AS 
+/* CREATE OR REPLACE VIEW estadosmesas_view AS 
 SELECT * FROM estadosmesas;
 
 CREATE OR REPLACE VIEW utilizadores_view AS 
@@ -127,4 +127,4 @@ JOIN utensiliosreceitas ur ON ur.id_receita = r.id_receita
 JOIN utensilios u ON u.id_utensilio = ur.id_utensilio
 JOIN ingredientesreceitas ir ON ir.id_receita = r.id_receita
 JOIN ingredientes i ON i.id_ingrediente = ir.id_ingrediente
-JOIN instrucoes ins ON ins.id_receita = r.id_receita;
+JOIN instrucoes ins ON ins.id_receita = r.id_receita; */

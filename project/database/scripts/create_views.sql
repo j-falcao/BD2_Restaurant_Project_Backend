@@ -124,6 +124,9 @@ WHERE carrinhos.data_compra = NULL;
 CREATE OR REPLACE VIEW mesas_view AS 
 SELECT * FROM mesas;
 
+CREATE OR REPLACE VIEW estadosreservas_view AS 
+SELECT * FROM estadosreservas;
+
 CREATE OR REPLACE VIEW reservas_view AS 
 SELECT * FROM reservas;
 
@@ -136,8 +139,8 @@ SELECT * FROM pedidos;
 CREATE OR REPLACE VIEW pedidosprodutos_view AS 
 SELECT * FROM pedidosprodutos;
 
-CREATE OR REPLACE VIEW pedidosprodutositensopcoes_view AS 
-SELECT * FROM pedidosprodutositensopcoes;
+-- CREATE OR REPLACE VIEW pedidosprodutositensopcoes_view AS 
+-- SELECT * FROM pedidosprodutositensopcoes;
 
 CREATE OR REPLACE VIEW instrucoes_view AS
 SELECT * FROM instrucoes;

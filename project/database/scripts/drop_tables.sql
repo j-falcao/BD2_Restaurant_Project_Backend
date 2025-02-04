@@ -1,5 +1,6 @@
 DROP TABLE IF EXISTS reservas;
-DROP TABLE IF EXISTS pedidosprodutositensopcoes;
+DROP TABLE IF EXISTS estadosreservas;
+-- DROP TABLE IF EXISTS pedidosprodutositensopcoes;
 DROP TABLE IF EXISTS pedidosprodutos;
 DROP TABLE IF EXISTS pedidos;
 DROP TABLE IF EXISTS servicos;

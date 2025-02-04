@@ -30,5 +30,5 @@ DROP TRIGGER IF EXISTS set_updated_at_menusdiassemana ON menusdiassemana;
 DROP TRIGGER IF EXISTS set_updated_at_servicos ON servicos;
 DROP TRIGGER IF EXISTS set_updated_at_pedidos ON pedidos;
 DROP TRIGGER IF EXISTS set_updated_at_pedidosprodutos ON pedidosprodutos;
-DROP TRIGGER IF EXISTS set_updated_at_pedidosprodutositensopcoes ON pedidosprodutositensopcoes;
+-- DROP TRIGGER IF EXISTS set_updated_at_pedidosprodutositensopcoes ON pedidosprodutositensopcoes;
 DROP TRIGGER IF EXISTS set_updated_at_reservas ON reservas;

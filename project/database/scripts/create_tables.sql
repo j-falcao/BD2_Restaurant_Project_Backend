@@ -150,9 +150,8 @@ CREATE TABLE IF NOT EXISTS instrucoes (
 CREATE TABLE IF NOT EXISTS mesas (
 	id_mesa SERIAL PRIMARY KEY,
 	id_estado_mesa INT REFERENCES estadosmesas(id_estado_mesa) ON DELETE CASCADE,
-	numero INT NOT NULL,
+	numero INT NOT NULL UNIQUE,
 	capacidade_maxima INT NOT NULL,
-	quantidade_clientes INT NOT NULL,
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -258,7 +257,7 @@ CREATE TABLE IF NOT EXISTS servicos (
 	id_mesa INT REFERENCES mesas(id_mesa) ON DELETE CASCADE,
 	data_hora_inicio TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	data_hora_fim TIMESTAMP,
-	preco_total DECIMAL(10, 2) NOT NULL,
+	preco_total DECIMAL(10, 2) NOT NULL DEFAULT 0,
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -272,17 +271,24 @@ CREATE TABLE IF NOT EXISTS pedidos (
 
 CREATE TABLE IF NOT EXISTS pedidosprodutos (
 	id_pedido_produto SERIAL PRIMARY KEY,
-	id_pedido INT REFERENCES pedidos(id_pedido) ON DELETE CASCADE,
-	id_produto INT REFERENCES produtos(id_produto) ON DELETE CASCADE,
-	id_cozinheiro INT REFERENCES utilizadores(id) ON DELETE CASCADE,
+	id_pedido INT NOT NULL REFERENCES pedidos(id_pedido) ON DELETE CASCADE,
+	id_produto INT NOT NULL REFERENCES produtos(id_produto) ON DELETE CASCADE,
+	id_cozinheiro INT REFERENCES utilizadores(id) ON DELETE CASCADE, -- NULLABLE, porque podemos ter pedidos que estejam a aguardar cozinheiro
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS pedidosprodutositensopcoes (
-	id_pedido_produto_item_opcao SERIAL PRIMARY KEY,
-	id_item_opcao INT REFERENCES itensopcoes(id_item_opcao) ON DELETE CASCADE,
-	id_pedido_produto INT REFERENCES pedidosprodutos(id_pedido_produto) ON DELETE CASCADE,
+-- CREATE TABLE IF NOT EXISTS pedidosprodutositensopcoes (
+-- 	id_pedido_produto_item_opcao SERIAL PRIMARY KEY,
+-- 	id_item_opcao INT REFERENCES itensopcoes(id_item_opcao) ON DELETE CASCADE,
+-- 	id_pedido_produto INT REFERENCES pedidosprodutos(id_pedido_produto) ON DELETE CASCADE,
+-- 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+-- 	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+-- );
+
+CREATE TABLE IF NOT EXISTS estadosreservas (
+	id_estado_reserva SERIAL PRIMARY KEY,
+	designacao VARCHAR(100) NOT NULL,
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -290,10 +296,12 @@ CREATE TABLE IF NOT EXISTS pedidosprodutositensopcoes (
 CREATE TABLE IF NOT EXISTS reservas (
 	id_reserva SERIAL PRIMARY KEY,
 	id_mesa INT REFERENCES mesas(id_mesa) ON DELETE CASCADE,
+	id_estado_reserva INT REFERENCES estadosreservas(id_estado_reserva) ON DELETE CASCADE,
+	quantidade_pessoas INT NOT NULL CHECK (quantidade_pessoas > 0),
+	id_garcom INT NOT NULL REFERENCES utilizadores(id) ON DELETE CASCADE, -- garcom que fez a reserva
 	data_hora TIMESTAMP NOT NULL,
-	minutos_antes INT NOT NULL CHECK (minutos_antes >= 0 AND minutos_antes <= 120),
-	minutos_depois INT NOT NULL CHECK (minutos_depois >= 0 AND minutos_depois <= 120),
-	id_servico INT REFERENCES servicos(id_servico) ON DELETE CASCADE,
+	observacoes TEXT,
+	id_servico INT REFERENCES servicos(id_servico) ON DELETE CASCADE, -- servico associado a reserva, se houver
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

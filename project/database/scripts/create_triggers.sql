@@ -156,10 +156,10 @@ BEFORE UPDATE ON pedidosprodutos
 FOR EACH ROW
 EXECUTE FUNCTION update_updated_at_column();
 
-CREATE TRIGGER set_updated_at_pedidosprodutositensopcoes
-BEFORE UPDATE ON pedidosprodutositensopcoes
-FOR EACH ROW
-EXECUTE FUNCTION update_updated_at_column();
+-- CREATE TRIGGER set_updated_at_pedidosprodutositensopcoes
+-- BEFORE UPDATE ON pedidosprodutositensopcoes
+-- FOR EACH ROW
+-- EXECUTE FUNCTION update_updated_at_column();
 
 CREATE TRIGGER set_updated_at_reservas
 BEFORE UPDATE ON reservas
@@ -332,5 +332,15 @@ EXECUTE FUNCTION set_next_numero_sequencia();
 -- AFTER INSERT OR UPDATE ON carrinhos
 -- FOR EACH ROW
 -- EXECUTE FUNCTION refresh_carrinho_atual_related_views();
+
+
+
+
+-- Servicos
+-- CREATE OR REPLACE FUNCTION set_preco_servico()
+-- RETURNS TRIGGER AS $$
+-- BEGIN
+    
+
 
 

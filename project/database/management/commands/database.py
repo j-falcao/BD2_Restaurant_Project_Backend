@@ -5,9 +5,10 @@ from faker import Faker
 from tqdm import tqdm
 from django.db import connection, transaction
 from django.contrib.auth.hashers import make_password
-from pedidos import db as pedidos_db
 from autenticacao import db as autenticacao_db
 from produtos.models import *
+from pedidos.models import *
+from autenticacao.models import *
 import random
 
 fake = Faker()
@@ -153,8 +154,11 @@ class Command(BaseCommand):
             # self.stdout.write(self.style.SUCCESS("Seeding pedidosprodutositensopcoes"))
             # self.seed_pedidosprodutositensopcoes(num_entries)
 
-            self.stdout.write(self.style.SUCCESS("Seeding reservas"))
-            self.seed_reservas(num_entries)
+            self.stdout.write(self.style.SUCCESS("Seeding estadosreservas"))
+            self.seed_estadosreservas()
+
+            # self.stdout.write(self.style.SUCCESS("Seeding reservas"))
+            # self.seed_reservas(num_entries)
 
             self.stdout.write(self.style.SUCCESS("Data seeding completed successfully."))
         except Exception as e:
@@ -316,13 +320,12 @@ class Command(BaseCommand):
                 fake.random_int(min=1, max=3),
                 i + 1,
                 fake.random_int(min=2, max=12),
-                0,
             )
             for i in range(num_entries)
         ]
         with transaction.atomic(), connection.cursor() as cursor:
             cursor.executemany(
-            "INSERT INTO mesas (id_estado_mesa, numero, capacidade_maxima, quantidade_clientes) VALUES (%s, %s, %s, %s)",
+            "INSERT INTO mesas (id_estado_mesa, numero, capacidade_maxima) VALUES (%s, %s, %s)",
             data,
         )
 
@@ -540,7 +543,7 @@ class Command(BaseCommand):
     def seed_servicos_pedidos_pedidosprodutos(self, num_entries):
         with transaction.atomic(), connection.cursor() as cursor:
             id_garcons = [garcom.id for garcom in autenticacao_db.get_all_garcons()]
-            id_mesas = [mesa.id_mesa for mesa in pedidos_db.get_all_mesas()]
+            id_mesas = [mesa['id_mesa'] for mesa in Mesas.fetch_all()]
             id_produtos = [produto['id_produto'] for produto in Produtos.fetch_all()]
             id_cozinheiros = [cozinheiro.id for cozinheiro in autenticacao_db.get_all_cozinheiros()]
 
@@ -625,26 +628,45 @@ class Command(BaseCommand):
     #             pedidosprodutositensopcoes_data
     #         )
 
+    def seed_estadosreservas(self):
+        with transaction.atomic(), connection.cursor() as cursor:
+            data = [
+                ('Aguarda clientes',),
+                ('Em andamento',),
+                ('Cancelada',),
+                ('Concluída',)
+            ]
+            cursor.executemany(
+                "INSERT INTO estadosreservas (designacao) VALUES (%s)",
+                data
+            )
+
     def seed_reservas(self, num_entries):
         with transaction.atomic(), connection.cursor() as cursor:
-            id_mesas = [mesa.id_mesa for mesa in pedidos_db.get_all_mesas()]
-            id_servicos = [servico.id_servico for servico in pedidos_db.get_all_servicos()]
+            id_mesas = [mesa['id_mesa'] for mesa in Mesas.fetch_all()]
+            id_estadosreservas = [estado['id_estado_reserva'] for estado in EstadosReservas.fetch_all()]
+            id_garcons = [garcom['id_utilizador'] for garcom in UtilizadoresCargos.fetch_by_cargo(1)]
+
+            print('OLALAA')
 
             reservas_data = [
                 (
-                    fake.random_element(elements=id_mesas),
-                    fake.date_time_this_year(),
+                    fake.random_element(elements=id_mesas), # mesa
+                    fake.random_element(elements=id_estadosreservas), # estado
+                    fake.random_int(min=1), # quantidade_pessoas
+                    fake.catch_phrase(), # Observacoes
+                    fake.random_element(elements=id_garcons), # garcom que fez a reserva
+                    fake.date_time_this_year(), # data_hora
                     fake.random_int(min=30, max=120), # minutos_antes
                     fake.random_int(min=30, max=120), # minutos_depois
-                    fake.random_element(elements=id_servicos)
                 )
                 for _ in range(num_entries)
             ]
 
             cursor.executemany(
                 """
-                INSERT INTO reservas (id_mesa, data_hora, minutos_antes, minutos_depois, id_servico)
-                VALUES (%s, %s, %s, %s, %s)
+                INSERT INTO reservas (id_mesa, id_estado_reserva, quantidade_pessoas, id_garcom, observacoes, data_hora, minutos_antes, minutos_depois)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
                 """,
                 reservas_data
             )

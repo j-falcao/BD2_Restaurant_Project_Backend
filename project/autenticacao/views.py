@@ -1,66 +1,49 @@
-from django.http import JsonResponse, Http404
+from rest_framework.decorators import api_view
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.decorators import api_view, permission_classes
-from django.contrib.auth import authenticate
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
-from . import db
-from .serializers import UtilizadoresSerializer, CargosSerializer, UtilizadoresCargosSerializer, SignupSerializer, LoginSerializer
+from .serializers import *
+from .models import *
+from .auth_backends import CustomAuthBackend
 
 
 @api_view(['POST'])
-@permission_classes([AllowAny])
 def signup_view(request):
     serializer = SignupSerializer(data=request.data)
     if serializer.is_valid():
-        serializer.save()
-        return Response({"message": "User created successfully"}, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        new_user = serializer.save()
+        return Response({"message": "User created successfully"}, status=201)
+    return Response(serializer.errors, status=400)
 
-@api_view(['POST'])
-@permission_classes([AllowAny])
+@api_view(["POST"])
 def login_view(request):
     serializer = LoginSerializer(data=request.data)
     if serializer.is_valid():
-        user = authenticate(
-            username=serializer.validated_data['username'],
-            password=serializer.validated_data['password'],
-        )
+        username = serializer.validated_data["username"]
+        password = serializer.validated_data["password"]
 
-    if user:
-        refresh = RefreshToken.for_user(user)
-        access_token = str(refresh.access_token)
-        refresh_token = str(refresh)
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT id_utilizador, password FROM utilizadores WHERE username = %s", [username])
+            user = cursor.fetchone()
 
-        response = Response({"message": "Login successful"}, status=200)
-
-        response.set_cookie(
-            key="access_token",
-            value=access_token,
-            httponly=True,
-            secure=True,
-        )
-        response.set_cookie(
-            key="refresh_token",
-            value=refresh_token,
-            httponly=True,
-            secure=True,
-        )
-
-        return response
+        if user and check_password(password, user[1]):
+            request.session["user_id"] = user[0]  # Guardar o ID do utilizador na sessão
+            return Response({"message": "Login successful"}, status=200)
 
     return Response({"error": "Invalid credentials"}, status=401)
 
 
+@api_view(["POST"])
+def logout_view(request):
+    request.session.flush() 
+    return Response({"message": "Logged out"}, status=200)
+
+
+
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def get_user_info(request):
+def whoami_view(request):
     user = request.user
     return Response({
-        "id": user.id,
+        "id": user.id_utilizador,
         "username": user.username,
         "first_name": user.first_name,
         "last_name": user.last_name,
@@ -68,11 +51,9 @@ def get_user_info(request):
 
 @api_view(['GET'])
 def get_all_utilizadores_view(request):
-    utilizadores = db.get_all_utilizadores()
-    serializer = UtilizadoresSerializer(utilizadores, many=True)
-    return JsonResponse(serializer.data, safe=False)
+    return Response(Utilizadores.fetch_all())
 
-
+""" 
 @api_view(['GET'])
 def get_utilizador_by_username_view(request, username):
     utilizador = db.get_utilizador_by_username(username)
@@ -175,4 +156,4 @@ def get_utilizadores_cargos_by_id_utilizador_view(request, id_utilizador):
 def get_utilizadores_cargos_by_id_cargo_view(request, id_cargo):
     utilizadores_cargos = db.get_utilizadores_cargos_by_id_cargo(id_cargo)
     serializer = UtilizadoresCargosSerializer(utilizadores_cargos, many=True)
-    return JsonResponse(serializer.data, safe=False)
+    return JsonResponse(serializer.data, safe=False) """

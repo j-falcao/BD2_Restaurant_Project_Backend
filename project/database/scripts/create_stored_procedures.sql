@@ -29,23 +29,23 @@ END;
 $$;
 
 
-CREATE OR REPLACE PROCEDURE create_utilizadores(_new_username VARCHAR(50), _new_first_name VARCHAR(100), _new_last_name VARCHAR(100), _new_is_superuser BOOLEAN, _new_url_imagem VARCHAR(2048), _new_password VARCHAR(255), OUT _new_utilizador JSON)
+CREATE OR REPLACE PROCEDURE create_utilizadores(_new_username VARCHAR(50), _new_id_cargo INT, _new_first_name VARCHAR(100), _new_last_name VARCHAR(100), _new_is_superuser BOOLEAN, _new_url_imagem VARCHAR(2048), _new_password VARCHAR(255), OUT _new_utilizador JSON)
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    INSERT INTO utilizadores (username, first_name, last_name, is_superuser, url_imagem, password)
-    VALUES (_new_username, _new_first_name, _new_last_name, _new_is_superuser, _new_url_imagem, _new_password)
+    INSERT INTO utilizadores (username, id_cargo, first_name, last_name, is_superuser, url_imagem, password)
+    VALUES (_new_username, _new_id_cargo, _new_first_name, _new_last_name, _new_is_superuser, _new_url_imagem, _new_password)
     RETURNING row_to_json(utilizadores) INTO _new_utilizador;
 END;
 $$;
 
 
-CREATE OR REPLACE PROCEDURE update_utilizadores(id_in INT, _new_first_name VARCHAR(100), _new_last_name VARCHAR(100), _new_is_superuser BOOLEAN, _new_username VARCHAR(50), _new_url_imagem VARCHAR(2048), _new_password VARCHAR(255), OUT _new_utilizador JSON)
+CREATE OR REPLACE PROCEDURE update_utilizadores(id_in INT, _new_id_cargo INT, _new_first_name VARCHAR(100), _new_last_name VARCHAR(100), _new_is_superuser BOOLEAN, _new_username VARCHAR(50), _new_url_imagem VARCHAR(2048), _new_password VARCHAR(255), OUT _new_utilizador JSON)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     UPDATE utilizadores
-    SET first_name = _new_first_name, last_name = _new_last_name, is_superuser = _new_is_superuser, username = _new_username, url_imagem = _new_url_imagem, password = _new_password
+    SET id_cargo = _new_id_cargo, first_name = _new_first_name, last_name = _new_last_name, is_superuser = _new_is_superuser, username = _new_username, url_imagem = _new_url_imagem, password = _new_password
     WHERE id = id_in
     RETURNING row_to_json(utilizadores) INTO _new_utilizador;
 END;
@@ -61,35 +61,35 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_utilizadorescargos(_new_id_utilizador INT, _new_id_cargo INT, OUT _new_utilizador_cargo JSON)
-LANGUAGE plpgsql
-AS $$
-BEGIN
-    INSERT INTO utilizadorescargos (id_utilizador, id_cargo)
-    VALUES (_new_id_utilizador, _new_id_cargo)
-    RETURNING row_to_json(utilizadorescargos) INTO _new_utilizador_cargo;
-END;
-$$;
+-- CREATE OR REPLACE PROCEDURE create_utilizadorescargos(_new_id_utilizador INT, _new_id_cargo INT, OUT _new_utilizador_cargo JSON)
+-- LANGUAGE plpgsql
+-- AS $$
+-- BEGIN
+--     INSERT INTO utilizadorescargos (id_utilizador, id_cargo)
+--     VALUES (_new_id_utilizador, _new_id_cargo)
+--     RETURNING row_to_json(utilizadorescargos) INTO _new_utilizador_cargo;
+-- END;
+-- $$;
 
-CREATE OR REPLACE PROCEDURE update_utilizadorescargos(id_utilizador_cargo_in INT, _new_id_utilizador INT, _new_id_cargo INT, OUT _new_utilizador_cargo JSON)
-LANGUAGE plpgsql
-AS $$
-BEGIN
-    UPDATE utilizadorescargos
-    SET id_utilizador = _new_id_utilizador, id_cargo = _new_id_cargo
-    WHERE id_utilizador_cargo = id_utilizador_cargo_in
-    RETURNING row_to_json(utilizadorescargos) INTO _new_utilizador_cargo;
-END;
-$$;
+-- CREATE OR REPLACE PROCEDURE update_utilizadorescargos(id_utilizador_cargo_in INT, _new_id_utilizador INT, _new_id_cargo INT, OUT _new_utilizador_cargo JSON)
+-- LANGUAGE plpgsql
+-- AS $$
+-- BEGIN
+--     UPDATE utilizadorescargos
+--     SET id_utilizador = _new_id_utilizador, id_cargo = _new_id_cargo
+--     WHERE id_utilizador_cargo = id_utilizador_cargo_in
+--     RETURNING row_to_json(utilizadorescargos) INTO _new_utilizador_cargo;
+-- END;
+-- $$;
 
-CREATE OR REPLACE PROCEDURE delete_utilizadorescargos(id_utilizador_cargo_in INT)
-LANGUAGE plpgsql
-AS $$
-BEGIN
-    DELETE FROM utilizadorescargos
-    WHERE id_utilizador_cargo = id_utilizador_cargo_in;
-END;
-$$;
+-- CREATE OR REPLACE PROCEDURE delete_utilizadorescargos(id_utilizador_cargo_in INT)
+-- LANGUAGE plpgsql
+-- AS $$
+-- BEGIN
+--     DELETE FROM utilizadorescargos
+--     WHERE id_utilizador_cargo = id_utilizador_cargo_in;
+-- END;
+-- $$;
 
 CREATE OR REPLACE PROCEDURE create_estadosmesas(_new_designacao VARCHAR(100), OUT _new_estado_mesa JSON)
 LANGUAGE plpgsql

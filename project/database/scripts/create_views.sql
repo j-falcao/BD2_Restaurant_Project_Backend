@@ -4,11 +4,24 @@ SELECT * FROM estadosmesas;
 CREATE OR REPLACE VIEW utilizadores_view AS 
 SELECT * FROM utilizadores;
 
+CREATE OR REPLACE VIEW garcons_view AS 
+SELECT * FROM utilizadores
+WHERE id_cargo = 1;
+
+CREATE OR REPLACE VIEW cozinheiros_view AS 
+SELECT * FROM utilizadores
+WHERE id_cargo = 2;
+
+CREATE OR REPLACE VIEW administradores_view AS 
+SELECT * FROM utilizadores
+WHERE id_cargo = 3;
+
+CREATE OR REPLACE VIEW superusers_view AS
+SELECT * FROM utilizadores
+WHERE is_superuser IS TRUE;
+
 CREATE OR REPLACE VIEW cargos_view AS 
 SELECT * FROM cargos;
-
-CREATE OR REPLACE VIEW utilizadorescargos_view AS
-SELECT * FROM utilizadorescargos;
 
 CREATE OR REPLACE VIEW produtos_view AS
 SELECT * FROM produtos;
@@ -65,13 +78,13 @@ SELECT
     ingredientes.id_ingrediente,
     ingredientes.nome AS nome_ingrediente,
     ingredientes.url_imagem AS url_imagem_ingrediente,
-    utilizadores.id AS id_administrador,
+    utilizadores.id_utilizador AS id_administrador,
     utilizadores.username AS username,
     utilizadores.url_imagem AS url_imagem_administrador
 FROM carrinhos
 INNER JOIN ingredientescarrinhos ON ingredientescarrinhos.id_carrinho = carrinhos.id_carrinho
 INNER JOIN ingredientes ON ingredientes.id_ingrediente = ingredientescarrinhos.id_ingrediente
-INNER JOIN utilizadores ON utilizadores.id = ingredientescarrinhos.id_administrador;
+INNER JOIN utilizadores ON utilizadores.id_utilizador = ingredientescarrinhos.id_administrador;
 
 CREATE OR REPLACE VIEW utensilioscarrinhos_view AS
 SELECT 
@@ -83,13 +96,13 @@ SELECT
     utensilios.id_utensilio,
     utensilios.nome AS nome_utensilio,
     utensilios.url_imagem AS url_imagem_utensilio,
-    utilizadores.id AS id_administrador,
+    utilizadores.id_utilizador AS id_administrador,
     utilizadores.username AS username_administrador,
     utilizadores.url_imagem AS url_imagem_administrador
 FROM carrinhos
 INNER JOIN utensilioscarrinhos ON utensilioscarrinhos.id_carrinho = carrinhos.id_carrinho
 INNER JOIN utensilios ON utensilios.id_utensilio = utensilioscarrinhos.id_utensilio
-INNER JOIN utilizadores ON utilizadores.id = utensilioscarrinhos.id_administrador;
+INNER JOIN utilizadores ON utilizadores.id_utilizador = utensilioscarrinhos.id_administrador;
 
 CREATE OR REPLACE VIEW carrinho_atual_view AS
 SELECT * FROM carrinhos
@@ -105,7 +118,7 @@ SELECT
 FROM carrinhos
 INNER JOIN ingredientescarrinhos ON ingredientescarrinhos.id_carrinho = carrinhos.id_carrinho
 INNER JOIN ingredientes ON ingredientes.id_ingrediente = ingredientescarrinhos.id_ingrediente
-INNER JOIN utilizadores ON utilizadores.id = ingredientescarrinhos.id_administrador
+INNER JOIN utilizadores ON utilizadores.id_utilizador = ingredientescarrinhos.id_administrador
 WHERE carrinhos.data_compra = NULL;
 
 CREATE OR REPLACE VIEW utensilioscarrinho_atual_view AS
@@ -118,7 +131,7 @@ SELECT
 FROM carrinhos
 INNER JOIN utensilioscarrinhos ON utensilioscarrinhos.id_carrinho = carrinhos.id_carrinho
 INNER JOIN utensilios ON utensilios.id_utensilio = utensilioscarrinhos.id_utensilio
-INNER JOIN utilizadores ON utilizadores.id = utensilioscarrinhos.id_administrador
+INNER JOIN utilizadores ON utilizadores.id_utilizador = utensilioscarrinhos.id_administrador
 WHERE carrinhos.data_compra = NULL;
 
 CREATE OR REPLACE VIEW mesas_view AS 

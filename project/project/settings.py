@@ -13,11 +13,8 @@ ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
 
 # Application definition
 INSTALLED_APPS = [
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
     'django.contrib.staticfiles',
     'rest_framework',
-    'rest_framework_simplejwt',
     'corsheaders',
     'autenticacao',
     'estatisticas',
@@ -89,6 +86,7 @@ REST_FRAMEWORK = {
     ),
 }
 
+AUTHENTICATION_BACKENDS = ['yourapp.auth_backends.BackendAuntenticacao']
 
 """ 'mongo': {
     'ENGINE': 'django.db.backends.XXX',

@@ -16,10 +16,10 @@ BEFORE UPDATE ON utilizadores
 FOR EACH ROW
 EXECUTE FUNCTION update_updated_at_column();
 
-CREATE TRIGGER set_updated_at_utilizadorescargos
-BEFORE UPDATE ON utilizadorescargos
-FOR EACH ROW
-EXECUTE FUNCTION update_updated_at_column();
+-- CREATE TRIGGER set_updated_at_utilizadorescargos
+-- BEFORE UPDATE ON utilizadorescargos
+-- FOR EACH ROW
+-- EXECUTE FUNCTION update_updated_at_column();
 
 CREATE TRIGGER set_updated_at_estadosmesas
 BEFORE UPDATE ON estadosmesas

@@ -20,7 +20,7 @@ def fetch_from_view(view_name, filters=None):
             cursor.execute(query, params)
             columns = [col[0] for col in cursor.description]
             results = [dict(zip(columns, row)) for row in cursor.fetchall()]
-            return results[0] if len(results) == 1 else results
+            return results
 
     except Exception as e:
         print(

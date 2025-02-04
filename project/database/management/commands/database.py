@@ -5,7 +5,6 @@ from faker import Faker
 from tqdm import tqdm
 from django.db import connection, transaction
 from django.contrib.auth.hashers import make_password
-from autenticacao import db as autenticacao_db
 from produtos.models import *
 from servicos.models import *
 from autenticacao.models import *
@@ -82,8 +81,8 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS("Seeding utilizadores"))
             self.seed_utilizadores()
 
-            self.stdout.write(self.style.SUCCESS("Seeding utilizadorescargos"))
-            self.seed_utilizadorescargos()
+            # self.stdout.write(self.style.SUCCESS("Seeding utilizadorescargos"))
+            # self.seed_utilizadorescargos()
 
             self.stdout.write(self.style.SUCCESS("Seeding estados mesas"))
             self.seed_estadosmesas()
@@ -103,11 +102,11 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS("Seeding carrinhos"))
             self.seed_carrinhos()
 
-            """ self.stdout.write(self.style.SUCCESS("Seeding ingredientescarrinhos"))
-            self.seed_ingredientescarrinhos(num_entries)
+            # self.stdout.write(self.style.SUCCESS("Seeding ingredientescarrinhos"))
+            # self.seed_ingredientescarrinhos(num_entries)
 
-            self.stdout.write(self.style.SUCCESS("Seeding utensilioscarrinhos"))
-            self.seed_utensilioscarrinhos(num_entries) """
+            # self.stdout.write(self.style.SUCCESS("Seeding utensilioscarrinhos"))
+            # self.seed_utensilioscarrinhos(num_entries)
 
             self.stdout.write(self.style.SUCCESS("Seeding receitas"))
             self.seed_receitas(num_entries)
@@ -180,6 +179,7 @@ class Command(BaseCommand):
     def seed_utilizadores(self):
         utilizadores_data = []
         for _ in range(10):
+            id_cargo = random.randint(1, 3)
             first_name = fake.first_name()
             last_name = fake.last_name()
             is_superuser = _ == 0
@@ -188,7 +188,7 @@ class Command(BaseCommand):
             raw_password = 'password' if _ == 0 else fake.password()
             password_hash = make_password(raw_password)  # Hash the password
             utilizadores_data.append((
-                first_name, last_name, is_superuser, username, url_imagem,
+                id_cargo, first_name, last_name, is_superuser, username, url_imagem,
                 password_hash
             ))
 
@@ -196,28 +196,28 @@ class Command(BaseCommand):
             cursor.executemany(
                 """
                 INSERT INTO utilizadores(
-                    first_name, last_name, is_superuser, username, url_imagem, password
-                ) VALUES (%s, %s, %s, %s, %s, %s)
+                    id_cargo, first_name, last_name, is_superuser, username, url_imagem, password
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s)
                 """,
                 utilizadores_data
             )
 
-    def seed_utilizadorescargos(self):
-        utilizadorescargos_data = []
-        for id_utilizador in range(1, 11):
-            if id_utilizador == 1:
-                id_cargo = 1
-            elif id_utilizador < 6:
-                id_cargo = 2
-            else:
-                id_cargo = 3
-            utilizadorescargos_data.append((id_utilizador, id_cargo))
+    # def seed_utilizadorescargos(self):
+    #     utilizadorescargos_data = []
+    #     for id_utilizador in range(1, 11):
+    #         if id_utilizador == 1:
+    #             id_cargo = 1
+    #         elif id_utilizador < 6:
+    #             id_cargo = 2
+    #         else:
+    #             id_cargo = 3
+    #         utilizadorescargos_data.append((id_utilizador, id_cargo))
 
-        with transaction.atomic(), connection.cursor() as cursor:
-            cursor.executemany(
-                "INSERT INTO utilizadorescargos(id_utilizador, id_cargo) VALUES (%s, %s)",
-                utilizadorescargos_data
-            )
+    #     with transaction.atomic(), connection.cursor() as cursor:
+    #         cursor.executemany(
+    #             "INSERT INTO utilizadorescargos(id_utilizador, id_cargo) VALUES (%s, %s)",
+    #             utilizadorescargos_data
+    #         )
 
     def seed_fornecedores(self, num_entries):
         fornecedores_data = []
@@ -542,10 +542,10 @@ class Command(BaseCommand):
 
     def seed_servicos_pedidos_pedidosprodutos(self, num_entries):
         with transaction.atomic(), connection.cursor() as cursor:
-            id_garcons = [garcom.id for garcom in autenticacao_db.get_all_garcons()]
+            id_garcons = [garcom['id_utilizador'] for garcom in Utilizadores.fetch_all_garcons()]
             id_mesas = [mesa['id_mesa'] for mesa in Mesas.fetch_all()]
             id_produtos = [produto['id_produto'] for produto in Produtos.fetch_all()]
-            id_cozinheiros = [cozinheiro.id for cozinheiro in autenticacao_db.get_all_cozinheiros()]
+            id_cozinheiros = [cozinheiro['id_utilizador'] for cozinheiro in Utilizadores.fetch_all_cozinheiros()]
 
             servicos_data = []
             pedidos_data = []
@@ -645,7 +645,7 @@ class Command(BaseCommand):
         with transaction.atomic(), connection.cursor() as cursor:
             id_mesas = [mesa['id_mesa'] for mesa in Mesas.fetch_all()]
             id_estadosreservas = [estado['id_estado_reserva'] for estado in EstadosReservas.fetch_all()]
-            id_garcons = [garcom['id_utilizador'] for garcom in UtilizadoresCargos.fetch_by_cargo(1)]
+            id_garcons = [garcom['id_utilizador'] for garcom in Utilizadores.fetch_all_garcons()]
 
             print('OLALAA')
 

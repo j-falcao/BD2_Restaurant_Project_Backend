@@ -7,7 +7,7 @@ from django.db import connection, transaction
 from django.contrib.auth.hashers import make_password
 from autenticacao import db as autenticacao_db
 from produtos.models import *
-from pedidos.models import *
+from servicos.models import *
 from autenticacao.models import *
 import random
 

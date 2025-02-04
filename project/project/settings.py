@@ -22,7 +22,7 @@ INSTALLED_APPS = [
     'autenticacao',
     'estatisticas',
     'inventario',
-    'pedidos',
+    'servicos',
     'produtos',
     'database',
 ]

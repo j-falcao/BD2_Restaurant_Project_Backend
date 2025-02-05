@@ -42,6 +42,11 @@ CORS_ALLOWED_HEADERS = [
     'x-requested-with',
 ]
 
+MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    "django.middleware.common.CommonMiddleware",
+]
+
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7)
@@ -54,6 +59,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     )
 }
+
 
 """ 'mongo': {
     'ENGINE': 'django.db.backends.XXX',

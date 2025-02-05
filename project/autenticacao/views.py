@@ -1,45 +1,64 @@
-from rest_framework.decorators import api_view
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
+from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import *
 from .models import *
-from .auth_backends import CustomAuthBackend
 
 
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def signup_view(request):
     serializer = SignupSerializer(data=request.data)
     if serializer.is_valid():
-        new_user = serializer.save()
-        return Response({"message": "User created successfully"}, status=201)
+        serializer.save()
+        return Response(serializer.data, status=201)
     return Response(serializer.errors, status=400)
 
+
 @api_view(["POST"])
+@permission_classes([AllowAny])
 def login_view(request):
     serializer = LoginSerializer(data=request.data)
     if serializer.is_valid():
         username = serializer.validated_data["username"]
         password = serializer.validated_data["password"]
 
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT id_utilizador, password FROM utilizadores WHERE username = %s", [username])
-            user = cursor.fetchone()
+        utilizador = Utilizadores.objects.filter(username=username).first()
 
-        if user and check_password(password, user[1]):
-            request.session["user_id"] = user[0]  # Guardar o ID do utilizador na sessão
-            return Response({"message": "Login successful"}, status=200)
+        if utilizador and check_password(password, utilizador.password):
+            refresh = RefreshToken.for_user(utilizador) 
 
-    return Response({"error": "Invalid credentials"}, status=401)
+            response = Response({"message": "Login successful"}, status=200)
+
+            response.set_cookie(
+                "access_token", 
+                str(refresh.access_token),
+                httponly=True,
+                secure=True
+            )
+
+            response.set_cookie(
+                "refresh_token", 
+                str(refresh),
+                httponly=True, 
+                secure=True
+            )
+
+            return response
+
+    return Response({"error": "Credenciais inválidas"}, status=401)
 
 
 @api_view(["POST"])
+@permission_classes([AllowAny])
 def logout_view(request):
     request.session.flush() 
     return Response({"message": "Logged out"}, status=200)
 
 
-
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def whoami_view(request):
     user = request.user
     return Response({
@@ -50,6 +69,7 @@ def whoami_view(request):
     })
 
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def get_all_utilizadores_view(request):
     return Response(Utilizadores.fetch_all())
 

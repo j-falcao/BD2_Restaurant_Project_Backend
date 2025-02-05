@@ -78,13 +78,13 @@ SELECT
     ingredientes.id_ingrediente,
     ingredientes.nome AS nome_ingrediente,
     ingredientes.url_imagem AS url_imagem_ingrediente,
-    utilizadores.id_utilizador AS id_administrador,
+    utilizadores.id AS id_administrador,
     utilizadores.username AS username,
     utilizadores.url_imagem AS url_imagem_administrador
 FROM carrinhos
 INNER JOIN ingredientescarrinhos ON ingredientescarrinhos.id_carrinho = carrinhos.id_carrinho
 INNER JOIN ingredientes ON ingredientes.id_ingrediente = ingredientescarrinhos.id_ingrediente
-INNER JOIN utilizadores ON utilizadores.id_utilizador = ingredientescarrinhos.id_administrador;
+INNER JOIN utilizadores ON utilizadores.id = ingredientescarrinhos.id_administrador;
 
 CREATE OR REPLACE VIEW utensilioscarrinhos_view AS
 SELECT 
@@ -96,13 +96,13 @@ SELECT
     utensilios.id_utensilio,
     utensilios.nome AS nome_utensilio,
     utensilios.url_imagem AS url_imagem_utensilio,
-    utilizadores.id_utilizador AS id_administrador,
+    utilizadores.id AS id_administrador,
     utilizadores.username AS username_administrador,
     utilizadores.url_imagem AS url_imagem_administrador
 FROM carrinhos
 INNER JOIN utensilioscarrinhos ON utensilioscarrinhos.id_carrinho = carrinhos.id_carrinho
 INNER JOIN utensilios ON utensilios.id_utensilio = utensilioscarrinhos.id_utensilio
-INNER JOIN utilizadores ON utilizadores.id_utilizador = utensilioscarrinhos.id_administrador;
+INNER JOIN utilizadores ON utilizadores.id = utensilioscarrinhos.id_administrador;
 
 CREATE OR REPLACE VIEW carrinho_atual_view AS
 SELECT * FROM carrinhos
@@ -118,7 +118,7 @@ SELECT
 FROM carrinhos
 INNER JOIN ingredientescarrinhos ON ingredientescarrinhos.id_carrinho = carrinhos.id_carrinho
 INNER JOIN ingredientes ON ingredientes.id_ingrediente = ingredientescarrinhos.id_ingrediente
-INNER JOIN utilizadores ON utilizadores.id_utilizador = ingredientescarrinhos.id_administrador
+INNER JOIN utilizadores ON utilizadores.id = ingredientescarrinhos.id_administrador
 WHERE carrinhos.data_compra = NULL;
 
 CREATE OR REPLACE VIEW utensilioscarrinho_atual_view AS
@@ -131,7 +131,7 @@ SELECT
 FROM carrinhos
 INNER JOIN utensilioscarrinhos ON utensilioscarrinhos.id_carrinho = carrinhos.id_carrinho
 INNER JOIN utensilios ON utensilios.id_utensilio = utensilioscarrinhos.id_utensilio
-INNER JOIN utilizadores ON utilizadores.id_utilizador = utensilioscarrinhos.id_administrador
+INNER JOIN utilizadores ON utilizadores.id = utensilioscarrinhos.id_administrador
 WHERE carrinhos.data_compra = NULL;
 
 CREATE OR REPLACE VIEW mesas_view AS 

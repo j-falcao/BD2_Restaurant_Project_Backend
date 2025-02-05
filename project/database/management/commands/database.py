@@ -4,7 +4,7 @@ from django.core.management.base import BaseCommand
 from faker import Faker
 from tqdm import tqdm
 from django.db import connection, transaction
-from django.contrib.auth.hashers import make_password
+from autenticacao.utils import hash_password
 from produtos.models import *
 from servicos.models import *
 from autenticacao.models import *
@@ -186,7 +186,7 @@ class Command(BaseCommand):
             username = 'dev' if _ == 0 else fake.user_name()
             url_imagem = fake.image_url()
             raw_password = 'password' if _ == 0 else fake.password()
-            password_hash = make_password(raw_password)  # Hash the password
+            password_hash = hash_password(raw_password)  # Hash the password
             utilizadores_data.append((
                 id_cargo, first_name, last_name, is_superuser, username, url_imagem,
                 password_hash
@@ -542,10 +542,10 @@ class Command(BaseCommand):
 
     def seed_servicos_pedidos_pedidosprodutos(self, num_entries):
         with transaction.atomic(), connection.cursor() as cursor:
-            id_garcons = [garcom['id_utilizador'] for garcom in Utilizadores.fetch_all_garcons()]
+            id_garcons = [garcom['id'] for garcom in Utilizadores.fetch_all_garcons()]
             id_mesas = [mesa['id_mesa'] for mesa in Mesas.fetch_all()]
             id_produtos = [produto['id_produto'] for produto in Produtos.fetch_all()]
-            id_cozinheiros = [cozinheiro['id_utilizador'] for cozinheiro in Utilizadores.fetch_all_cozinheiros()]
+            id_cozinheiros = [cozinheiro['id'] for cozinheiro in Utilizadores.fetch_all_cozinheiros()]
 
             servicos_data = []
             pedidos_data = []

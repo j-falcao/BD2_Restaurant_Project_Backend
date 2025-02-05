@@ -1,12 +1,6 @@
 from rest_framework import serializers
 from .db import *
-import bcrypt
-
-def hash_password(password):
-    return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
-
-def check_password(password, hashed_password):
-    return bcrypt.checkpw(password.encode(), hashed_password.encode())
+from .utils import hash_password, check_password
 
 class SignupSerializer(serializers.Serializer):
     username = serializers.CharField()
@@ -31,13 +25,13 @@ class LoginSerializer(serializers.Serializer):
         password = data["password"]
 
         with connection.cursor() as cursor:
-            cursor.execute("SELECT id_utilizador, password FROM utilizadores WHERE username = %s", [username])
+            cursor.execute("SELECT id, password FROM utilizadores WHERE username = %s", [username])
             row = cursor.fetchone()
 
             if not row or not check_password(password, row[1]):
                 raise serializers.ValidationError("Invalid credentials")
 
-        return Utilizadores.fetch_by_id(row[0])
+        return data
 
 
 """ class CargosSerializer(serializers.ModelSerializer):

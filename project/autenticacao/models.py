@@ -19,6 +19,7 @@ class Cargos(models.Model):
         return fetch_from_view("cargos_view")
 
 class Utilizadores(models.Model):
+    id = models.AutoField(primary_key=True)
     username = models.CharField(max_length=50, unique=True)
     password = models.CharField(max_length=255)
     first_name = models.CharField(max_length=100)
@@ -26,9 +27,14 @@ class Utilizadores(models.Model):
     id_cargo = models.ForeignKey(Cargos, on_delete=models.CASCADE, db_column='id_cargo')
     url_imagem = models.CharField(max_length=2048, null=True, blank=True)
     is_active = models.BooleanField(default=True)
+    is_anonymous = models.BooleanField(default=False)
+    is_authenticated = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    REQUIRED_FIELDS = ['first_name', 'last_name']
+    USERNAME_FIELD = 'username'
 
     def __str__(self):
         return self.username
@@ -43,7 +49,7 @@ class Utilizadores(models.Model):
     
     @staticmethod
     def fetch_by_id(id_utilizador):
-        return fetch_from_view("utilizadores_view", {"id_utilizador": id_utilizador})
+        return fetch_from_view("utilizadores_view", {"id_utilizador": id_utilizador})[0]
     
     @staticmethod
     def fetch_all_garcons():
@@ -63,7 +69,7 @@ class Utilizadores(models.Model):
     
     @staticmethod
     def fetch_by_username(username):
-        return fetch_from_view("utilizadores_view", {"username": username})
+        return fetch_from_view("utilizadores_view", {"username": username})[0]
     
     @staticmethod
     def fetch_utilizadores_by_cargo(id_cargo):

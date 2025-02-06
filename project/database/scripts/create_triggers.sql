@@ -336,11 +336,76 @@ EXECUTE FUNCTION set_next_numero_sequencia();
 
 
 
--- Servicos
--- CREATE OR REPLACE FUNCTION set_preco_servico()
--- RETURNS TRIGGER AS $$
--- BEGIN
+-- SERVICOS
+-- Atualizar o preco_total do servico ao adicionar ou remover um pedido
+CREATE OR REPLACE FUNCTION atualizar_preco_servico() RETURNS TRIGGER AS $$
+BEGIN
+    UPDATE servicos
+    SET preco_total = (
+        SELECT COALESCE(SUM(produtos.preco), 0) 
+        FROM pedidosprodutos 
+        JOIN produtos ON pedidosprodutos.id_produto = produtos.id_produto
+        WHERE pedidosprodutos.id_pedido IN (
+            SELECT id_pedido FROM pedidos WHERE pedidos.id_servico = NEW.id_servico
+        )
+    )
+    WHERE id_servico = NEW.id_servico;
     
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER atualizar_preco_servico_trigger
+AFTER INSERT ON pedidosprodutos
+FOR EACH ROW EXECUTE FUNCTION atualizar_preco_servico();
 
 
+
+-- RESERVAS
+CREATE OR REPLACE FUNCTION verificar_garcom_reserva() RETURNS TRIGGER AS $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM utilizadores 
+        WHERE id = NEW.id_garcom 
+        AND id_cargo = (SELECT id_cargo FROM cargos WHERE designacao = 'Garcom')
+    ) THEN
+        RAISE EXCEPTION 'O utilizador não é um garçom válido';
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER verificar_garcom_reserva_trigger
+BEFORE INSERT OR UPDATE ON reservas
+FOR EACH ROW EXECUTE FUNCTION verificar_garcom_reserva();
+
+
+-- MESAS
+CREATE OR REPLACE FUNCTION verificar_capacidade_mesa() RETURNS TRIGGER AS $$
+BEGIN
+    IF (SELECT capacidade FROM mesas WHERE id_mesa = NEW.id_mesa) < NEW.quantidade_pessoas THEN
+        RAISE EXCEPTION 'Capacidade da mesa insuficiente para a reserva';
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER verificar_capacidade_mesa_trigger
+BEFORE INSERT OR UPDATE ON reservas
+FOR EACH ROW EXECUTE FUNCTION verificar_capacidade_mesa();
+
+
+CREATE OR REPLACE FUNCTION set_next_numero_mesa() RETURNS TRIGGER AS $$
+DECLARE
+    max_numero INT;
+BEGIN
+    SELECT COALESCE(MAX(numero), 0) + 1 INTO max_numero FROM mesas;
+    NEW.numero = max_numero;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER set_next_numero_mesa_trigger
+BEFORE INSERT ON mesas
+FOR EACH ROW EXECUTE FUNCTION set_next_numero_mesa();
 

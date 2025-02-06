@@ -32,23 +32,3 @@ class LoginSerializer(serializers.Serializer):
                 raise serializers.ValidationError("Invalid credentials")
 
         return data
-
-
-""" class CargosSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Cargos
-        fields = '__all__'
-
-class UtilizadoresSerializer(serializers.ModelSerializer):
-    class Meta: 
-        model = Utilizadores
-        fields = '__all__'
-
-class UtilizadoresCargosSerializer(serializers.ModelSerializer):
-    id_utilizador = UtilizadoresSerializer(read_only=True)
-    id_cargo = CargosSerializer(read_only=True)
-
-    class Meta:
-        model = UtilizadoresCargos
-        fields = '__all__'
- """

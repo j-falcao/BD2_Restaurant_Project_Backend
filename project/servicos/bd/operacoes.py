@@ -1,5 +1,5 @@
 from django.db import connection
-from .models import *
+from ..models import *
 
 
 def create_estadosMesas(data):

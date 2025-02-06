@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
 import os
 from django.core.management.base import BaseCommand
 from faker import Faker
@@ -48,26 +48,48 @@ class Command(BaseCommand):
         self.stdout.write(self.style.WARNING("Resetting the database..."))
 
         self.stdout.write(self.style.SUCCESS("Dropping triggers..."))
-        self._run_sql_file(os.getcwd() + '/database/scripts/drop_triggers.sql')
+        self._run_sql_file(os.getcwd() + '/database/scripts/drop_triggers_updated_at.sql')
+        self._run_sql_file(os.getcwd() + '/inventario/bd/drop_triggers.sql')
+        self._run_sql_file(os.getcwd() + '/servicos/bd/drop_triggers.sql')
         self.stdout.write(self.style.SUCCESS("Dropping stored procedures..."))
-        self._run_sql_file(os.getcwd() + '/database/scripts/drop_stored_procedures.sql')
+        self._run_sql_file(os.getcwd() + '/autenticacao/bd/drop_stored_procedures.sql')
+        self._run_sql_file(os.getcwd() + '/inventario/bd/drop_stored_procedures.sql')
+        self._run_sql_file(os.getcwd() + '/produtos/bd/drop_stored_procedures.sql')
+        self._run_sql_file(os.getcwd() + '/servicos/bd/drop_stored_procedures.sql')
         self.stdout.write(self.style.SUCCESS("Dropping indexes..."))
-        self._run_sql_file(os.getcwd() + '/database/scripts/drop_indexes.sql')
+        self._run_sql_file(os.getcwd() + '/inventario/bd/drop_indexes.sql')
         self.stdout.write(self.style.SUCCESS("Dropping views..."))
-        self._run_sql_file(os.getcwd() + '/database/scripts/drop_views.sql')
+        self._run_sql_file(os.getcwd() + '/autenticacao/bd/drop_views.sql')
+        self._run_sql_file(os.getcwd() + '/inventario/bd/drop_views.sql')
+        self._run_sql_file(os.getcwd() + '/produtos/bd/drop_views.sql')
+        self._run_sql_file(os.getcwd() + '/servicos/bd/drop_views.sql')
         self.stdout.write(self.style.SUCCESS("Dropping tables..."))
-        self._run_sql_file(os.getcwd() + '/database/scripts/drop_tables.sql')
+        self._run_sql_file(os.getcwd() + '/servicos/bd/drop_tables.sql')
+        self._run_sql_file(os.getcwd() + '/produtos/bd/drop_tables.sql')
+        self._run_sql_file(os.getcwd() + '/inventario/bd/drop_tables.sql')
+        self._run_sql_file(os.getcwd() + '/autenticacao/bd/drop_tables.sql')
 
         self.stdout.write(self.style.SUCCESS("Creating tables..."))
-        self._run_sql_file(os.getcwd() + '/database/scripts/create_tables.sql')
+        self._run_sql_file(os.getcwd() + '/autenticacao/bd/create_tables.sql')
+        self._run_sql_file(os.getcwd() + '/inventario/bd/create_tables.sql')
+        self._run_sql_file(os.getcwd() + '/produtos/bd/create_tables.sql')
+        self._run_sql_file(os.getcwd() + '/servicos/bd/create_tables.sql')
         self.stdout.write(self.style.SUCCESS("Creating views..."))
-        self._run_sql_file(os.getcwd() + '/database/scripts/create_views.sql')
+        self._run_sql_file(os.getcwd() + '/autenticacao/bd/create_views.sql')
+        self._run_sql_file(os.getcwd() + '/inventario/bd/create_views.sql')
+        self._run_sql_file(os.getcwd() + '/produtos/bd/create_views.sql')
+        self._run_sql_file(os.getcwd() + '/servicos/bd/create_views.sql')
         self.stdout.write(self.style.SUCCESS("Creating indexes..."))
-        self._run_sql_file(os.getcwd() + '/database/scripts/create_indexes.sql')
+        self._run_sql_file(os.getcwd() + '/inventario/bd/create_indexes.sql')
         self.stdout.write(self.style.SUCCESS("Creating stored procedures..."))
-        self._run_sql_file(os.getcwd() + '/database/scripts/create_stored_procedures.sql')
+        self._run_sql_file(os.getcwd() + '/autenticacao/bd/create_stored_procedures.sql')
+        self._run_sql_file(os.getcwd() + '/inventario/bd/create_stored_procedures.sql')
+        self._run_sql_file(os.getcwd() + '/produtos/bd/create_stored_procedures.sql')
+        self._run_sql_file(os.getcwd() + '/servicos/bd/create_stored_procedures.sql')
         self.stdout.write(self.style.SUCCESS("Creating triggers..."))
-        self._run_sql_file(os.getcwd() + '/database/scripts/create_triggers.sql')
+        self._run_sql_file(os.getcwd() + '/database/scripts/create_triggers_updated_at.sql')
+        self._run_sql_file(os.getcwd() + '/inventario/bd/create_triggers.sql')
+        self._run_sql_file(os.getcwd() + '/servicos/bd/create_triggers.sql')
 
         self._seed_all()
 
@@ -80,12 +102,6 @@ class Command(BaseCommand):
 
             self.stdout.write(self.style.SUCCESS("Seeding utilizadores"))
             self.seed_utilizadores()
-
-            # self.stdout.write(self.style.SUCCESS("Seeding utilizadorescargos"))
-            # self.seed_utilizadorescargos()
-
-            self.stdout.write(self.style.SUCCESS("Seeding estados mesas"))
-            self.seed_estadosmesas()
 
             self.stdout.write(self.style.SUCCESS("Seeding fornecedores"))
             self.seed_fornecedores(num_entries)
@@ -102,23 +118,8 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS("Seeding carrinhos"))
             self.seed_carrinhos()
 
-            # self.stdout.write(self.style.SUCCESS("Seeding ingredientescarrinhos"))
-            # self.seed_ingredientescarrinhos(num_entries)
-
-            # self.stdout.write(self.style.SUCCESS("Seeding utensilioscarrinhos"))
-            # self.seed_utensilioscarrinhos(num_entries)
-
             self.stdout.write(self.style.SUCCESS("Seeding receitas"))
             self.seed_receitas(num_entries)
-
-            # self.stdout.write(self.style.SUCCESS("Seeding instrucoesingredientes"))
-            # self.seed_instrucoesingredientes(num_entries)
-
-            # self.stdout.write(self.style.SUCCESS("Seeding instrucoesutensilios"))
-            # self.seed_instrucoesutensilios(num_entries)
-
-            self.stdout.write(self.style.SUCCESS("Seeding mesas"))
-            self.seed_mesas(num_entries)
 
             self.stdout.write(self.style.SUCCESS("Seeding produtos/itens/itens_menus"))
             self.seed_produtos_itens_menus(num_entries)
@@ -147,11 +148,14 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS("Seeding menusdiassemana"))
             self.seed_menusdiassemana(num_entries)
 
+            self.stdout.write(self.style.SUCCESS("Seeding estadosmesas"))
+            self.seed_estadosmesas()
+
+            self.stdout.write(self.style.SUCCESS("Seeding mesas"))
+            self.seed_mesas(num_entries)
+
             self.stdout.write(self.style.SUCCESS("Seeding servicos/pedidos/pedidosprodutos"))
             self.seed_servicos_pedidos_pedidosprodutos(num_entries)
-
-            # self.stdout.write(self.style.SUCCESS("Seeding pedidosprodutositensopcoes"))
-            # self.seed_pedidosprodutositensopcoes(num_entries)
 
             self.stdout.write(self.style.SUCCESS("Seeding estadosreservas"))
             self.seed_estadosreservas()
@@ -166,7 +170,7 @@ class Command(BaseCommand):
 
     def seed_cargos(self):
         cargos = [
-            "Garçom",
+            "Garcom",
             "Cozinheiro",
             "Administrador",
         ]
@@ -201,23 +205,6 @@ class Command(BaseCommand):
                 """,
                 utilizadores_data
             )
-
-    # def seed_utilizadorescargos(self):
-    #     utilizadorescargos_data = []
-    #     for id_utilizador in range(1, 11):
-    #         if id_utilizador == 1:
-    #             id_cargo = 1
-    #         elif id_utilizador < 6:
-    #             id_cargo = 2
-    #         else:
-    #             id_cargo = 3
-    #         utilizadorescargos_data.append((id_utilizador, id_cargo))
-
-    #     with transaction.atomic(), connection.cursor() as cursor:
-    #         cursor.executemany(
-    #             "INSERT INTO utilizadorescargos(id_utilizador, id_cargo) VALUES (%s, %s)",
-    #             utilizadorescargos_data
-    #         )
 
     def seed_fornecedores(self, num_entries):
         fornecedores_data = []
@@ -305,7 +292,7 @@ class Command(BaseCommand):
 
     def seed_estadosmesas(self):
         data = [
-            "Livre",
+            "Disponivel",
             "Ocupada",
             "Reservada",
         ]
@@ -542,91 +529,55 @@ class Command(BaseCommand):
 
     def seed_servicos_pedidos_pedidosprodutos(self, num_entries):
         with transaction.atomic(), connection.cursor() as cursor:
-            id_garcons = [garcom['id'] for garcom in Utilizadores.fetch_all_garcons()]
-            id_mesas = [mesa['id_mesa'] for mesa in Mesas.fetch_all()]
-            id_produtos = [produto['id_produto'] for produto in Produtos.fetch_all()]
-            id_cozinheiros = [cozinheiro['id'] for cozinheiro in Utilizadores.fetch_all_cozinheiros()]
+            id_garcons = [int(garcom["id"]) for garcom in Utilizadores.fetch_all_garcons()]
+            id_mesas = [int(mesa["id_mesa"]) for mesa in Mesas.fetch_disponiveis()]
 
-            servicos_data = []
+            servicos_ids = []
             pedidos_data = []
-            pedidosprodutos_data = []
 
             for _ in range(num_entries):
                 id_mesa = fake.random_element(elements=id_mesas)
                 id_garcom = fake.random_element(elements=id_garcons)
-                data_hora_inicio = fake.date_time_this_year()
-                data_hora_fim = data_hora_inicio + timedelta(minutes=fake.random_int(min=30, max=120))
-                preco_total = fake.random_number(digits=3) + fake.random_int(min=10, max=30)
+                data_hora_fim = datetime.now() + timedelta(minutes=fake.random_int(min=30, max=120))
+                preco_total = fake.random_int(min=10, max=100)
 
-                servicos_data.append((id_garcom, id_mesa, data_hora_inicio, data_hora_fim, preco_total))
-
-            query_servicos = """
-            INSERT INTO servicos (id_garcom, id_mesa, data_hora_inicio, data_hora_fim, preco_total)
-            VALUES %s RETURNING id_servico
-            """
-            values_servicos = ", ".join(
-                cursor.mogrify("(%s, %s, %s, %s, %s)", data).decode('utf-8')
-                for data in servicos_data
-            )
-            cursor.execute(query_servicos % values_servicos)
-            servicos_ids = [row[0] for row in cursor.fetchall()]
+                cursor.execute(
+                    "INSERT INTO servicos (id_garcom, id_mesa, data_hora_fim, preco_total) VALUES (%s, %s, %s, %s) RETURNING id_servico",
+                    (id_garcom, id_mesa, data_hora_fim, preco_total),
+                )
+                servicos_ids.append(cursor.fetchone()[0])
 
             for id_servico in servicos_ids:
                 num_pedidos = fake.random_int(min=1, max=5)
                 pedidos_data.extend([(id_servico,) for _ in range(num_pedidos)])
 
-            query_pedidos = """
-            INSERT INTO pedidos (id_servico)
-            VALUES %s RETURNING id_pedido
-            """
-            values_pedidos = ", ".join(
-                cursor.mogrify("(%s)", data).decode('utf-8')
-                for data in pedidos_data
-            )
-            cursor.execute(query_pedidos % values_pedidos)
-            pedidos_ids = [row[0] for row in cursor.fetchall()]
-
-            for id_pedido in pedidos_ids:
-                num_produtos = fake.random_int(min=1, max=5)
-                pedidosprodutos_data.extend(
-                    [
-                        (
-                            id_pedido,
-                            fake.random_element(elements=id_produtos),
-                            fake.random_element(elements=id_cozinheiros),
-                        )
-                        for _ in range(num_produtos)
-                    ]
+            pedidos_ids = []
+            for data in pedidos_data:
+                cursor.execute(
+                    "INSERT INTO pedidos (id_servico) VALUES (%s) RETURNING id_pedido",
+                    data,
                 )
+                pedidos_ids.append(cursor.fetchone()[0])
 
-            query_pedidosprodutos = """
-            INSERT INTO pedidosprodutos (id_pedido, id_produto, id_cozinheiro)
-            VALUES %s
-            """
-            values_pedidosprodutos = ", ".join(
-                cursor.mogrify("(%s, %s, %s)", data).decode('utf-8')
-                for data in pedidosprodutos_data
-            )
-            cursor.execute(query_pedidosprodutos % values_pedidosprodutos)
+            # for id_pedido in pedidos_ids:
+            #     num_produtos = fake.random_int(min=1, max=5)
+            #     pedidosprodutos_data.extend(
+            #         [
+            #             (
+            #                 id_pedido,
+            #                 fake.random_element(elements=id_produtos),
+            #                 fake.random_element(elements=id_cozinheiros),
+            #             )
+            #             for _ in range(num_produtos)
+            #         ]
+            #     )
+            
+            # cursor.executemany(
+            #     "INSERT INTO pedidosprodutos (id_pedido, id_produto, id_cozinheiro) VALUES (%s, %s, %s)",
+            #     pedidosprodutos_data,
+            # )
 
 
-    # def seed_pedidosprodutositensopcoes(self, num_entries):
-    #     with transaction.atomic(), connection.cursor() as cursor:
-    #         id_pedidosprodutos = [pedido_produto.id_pedido_produto for pedido_produto in pedidos_db.get_all_pedidos_produtos()]
-    #         id_itensopcoes = [item_opcao.id_item_opcao for item_opcao in produtos_db.get_all_itens_opcoes()]
-
-    #         pedidosprodutositensopcoes_data = [
-    #             (
-    #                 fake.random_element(elements=id_itensopcoes),
-    #                 fake.random_element(elements=id_pedidosprodutos)
-    #             )
-    #             for _ in range(num_entries)
-    #         ]
-
-    #         cursor.executemany(
-    #             "INSERT INTO pedidosprodutositensopcoes (id_item_opcao, id_pedido_produto) VALUES (%s, %s)",
-    #             pedidosprodutositensopcoes_data
-    #         )
 
     def seed_estadosreservas(self):
         with transaction.atomic(), connection.cursor() as cursor:
@@ -646,8 +597,6 @@ class Command(BaseCommand):
             id_mesas = [mesa['id_mesa'] for mesa in Mesas.fetch_all()]
             id_estadosreservas = [estado['id_estado_reserva'] for estado in EstadosReservas.fetch_all()]
             id_garcons = [garcom['id_utilizador'] for garcom in Utilizadores.fetch_all_garcons()]
-
-            print('OLALAA')
 
             reservas_data = [
                 (

@@ -1,0 +1,10 @@
+DROP VIEW IF EXISTS pedidosprodutos_view;
+DROP VIEW IF EXISTS pedidos_view;
+DROP VIEW IF EXISTS servicos_view;
+DROP VIEW IF EXISTS reservas_view;
+DROP VIEW IF EXISTS estadosreservas_view;
+DROP VIEW IF EXISTS mesas_view;
+DROP VIEW IF EXISTS mesas_disponiveis_view;
+DROP VIEW IF EXISTS mesas_ocupadas_view;
+DROP VIEW IF EXISTS mesas_reservadas_view;
+DROP VIEW IF EXISTS estadosmesas_view;

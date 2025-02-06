@@ -47,7 +47,15 @@ class Mesas(models.Model):
     
     @staticmethod
     def fetch_disponiveis():
-        return fetch_from_view("mesas_view", {"id_estado_mesa": 1})
+        return fetch_from_view("mesas_disponiveis_view")
+    
+    @staticmethod
+    def fetch_ocupadas():
+        return fetch_from_view("mesas_ocupadas_view")
+    
+    @staticmethod
+    def fetch_reservadas():
+        return fetch_from_view("mesas_reservadas_view")
 
 class Servicos(models.Model):
     id_servico = models.AutoField(primary_key=True)

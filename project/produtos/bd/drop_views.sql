@@ -1,0 +1,10 @@
+DROP VIEW IF EXISTS itensmenus_view;
+DROP VIEW IF EXISTS menus_view;
+DROP VIEW IF EXISTS itensopcoes_view;
+DROP VIEW IF EXISTS itenstipos_view;
+DROP VIEW IF EXISTS itenscategorias_view;
+DROP VIEW IF EXISTS itens_view;
+DROP VIEW IF EXISTS opcoes_view;
+DROP VIEW IF EXISTS tipos_view;
+DROP VIEW IF EXISTS categorias_view;
+DROP VIEW IF EXISTS produtos_view;

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .db import *
+from .bd.operacoes import *
 from .utils import hash_password, check_password
 
 class SignupSerializer(serializers.Serializer):

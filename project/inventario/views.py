@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import NotFound
 from rest_framework.permissions import AllowAny
-from . import db
+from .bd import operacoes
 
 # Ingredientes
 @api_view(['GET', 'POST'])
@@ -20,16 +20,16 @@ def get_post_ingredientes(request): #✅
             return Response(Ingredientes.fetch_all())
 
     elif request.method == 'POST':
-        return Response(db.create_ingredientes(request.data), status=201)
+        return Response(operacoes.create_ingredientes(request.data), status=201)
 
 @api_view(['PUT', 'DELETE'])
 @permission_classes([AllowAny])
 def update_delete_ingredientes(request, id_ingrediente): #✅
     if request.method == 'PUT':
-        return Response(db.update_ingredientes(id_ingrediente, request.data), status=200)
+        return Response(operacoes.update_ingredientes(id_ingrediente, request.data), status=200)
 
     elif request.method == 'DELETE':
-        db.delete_ingredientes(id_ingrediente)
+        operacoes.delete_ingredientes(id_ingrediente)
         return Response({"msg": "Ingrediente apagado"}, status=204)
 
 
@@ -48,16 +48,16 @@ def get_post_utensilios(request): #✅
             return Response(Utensilios.fetch_all())
 
     elif request.method == 'POST':
-        return Response(db.create_utensilios(request.data), status=201)
+        return Response(operacoes.create_utensilios(request.data), status=201)
 
 @api_view(['PUT', 'DELETE'])
 @permission_classes([AllowAny])
 def update_delete_utensilios(request, id_utensilio): #✅
     if request.method == 'PUT':
-        return Response(db.update_utensilios(id_utensilio, request.data), status=200)
+        return Response(operacoes.update_utensilios(id_utensilio, request.data), status=200)
 
     elif request.method == 'DELETE':
-        db.delete_utensilios(id_utensilio)
+        operacoes.delete_utensilios(id_utensilio)
         return Response({"msg": "Utensílio apagado"}, status=200)
 
 
@@ -76,16 +76,16 @@ def get_post_fornecedores(request): #✅
             return Response(Fornecedores.fetch_all())
 
     elif request.method == 'POST':
-        return Response(db.create_fornecedores(request.data), status=201)
+        return Response(operacoes.create_fornecedores(request.data), status=201)
 
 @api_view(['PUT', 'DELETE'])
 @permission_classes([AllowAny])
 def update_delete_fornecedores(request, id_fornecedor): #✅
     if request.method == 'PUT':
-        return Response(db.update_fornecedores(id_fornecedor, request.data), status=200)
+        return Response(operacoes.update_fornecedores(id_fornecedor, request.data), status=200)
 
     elif request.method == 'DELETE':
-        db.delete_fornecedores(id_fornecedor)
+        operacoes.delete_fornecedores(id_fornecedor)
         return Response({"msg": "Fornecedor apagado"}, status=200)
 
 
@@ -121,15 +121,15 @@ def get_post_ingredientesCarrinhos(request, id_carrinho):
     if request.method == 'GET':
         return Response(IngredientesCarrinhos.fetch_search(id_carrinho, request.GET.get('id_administrador'), request.GET.get('id_ingrediente')))
     elif request.method == 'POST':
-        return Response(db.create_ingredientesCarrinhos(id_carrinho, request.data), status=201)
+        return Response(operacoes.create_ingredientesCarrinhos(id_carrinho, request.data), status=201)
 
 @api_view(['PUT', 'DELETE'])
 @permission_classes([AllowAny])
 def update_delete_ingredientesCarrinhos(request, id_ingrediente_carrinho):
     if request.method == 'PUT':
-        return Response(db.update_ingredientesCarrinhos(id_ingrediente_carrinho, request.data))
+        return Response(operacoes.update_ingredientesCarrinhos(id_ingrediente_carrinho, request.data))
     elif request.method == 'DELETE':
-        db.delete_ingredientesCarrinhos(id_ingrediente_carrinho)
+        operacoes.delete_ingredientesCarrinhos(id_ingrediente_carrinho)
         return Response({"msg": "IngredienteCarrinho apagado"}, status=200)
 
 # UtensiliosCarrinhos
@@ -139,15 +139,15 @@ def get_post_utensiliosCarrinhos(request, id_carrinho):
     if request.method == 'GET':
         return Response(UtensiliosCarrinhos.fetch_search(id_carrinho, request.GET.get('id_administrador'), request.GET.get('id_utensilio')))     
     elif request.method == 'POST':
-        return Response(db.create_utensiliosCarrinhos(id_carrinho, request.data), status=201)
+        return Response(operacoes.create_utensiliosCarrinhos(id_carrinho, request.data), status=201)
     
 @api_view(['PUT', 'DELETE'])
 @permission_classes([AllowAny])
 def update_delete_utensiliosCarrinhos(request, id_utensilio_carrinho):
     if request.method == 'PUT':
-        return Response(db.update_utensiliosCarrinhos(id_utensilio_carrinho, request.data), status=200)
+        return Response(operacoes.update_utensiliosCarrinhos(id_utensilio_carrinho, request.data), status=200)
     elif request.method == 'DELETE':    
-        db.delete_utensiliosCarrinhos(id_utensilio_carrinho)
+        operacoes.delete_utensiliosCarrinhos(id_utensilio_carrinho)
         return Response({"msg": "UtensilioCarrinho apagado"}, status=200)
 
 
@@ -158,15 +158,15 @@ def get_post_instrucoes(request, id_receita):
     if request.method == 'GET':
         return Response(Instrucoes.fetch_search(id_receita, request.GET.get('numero_sequencia')))
     elif request.method == 'POST':        
-        return Response(db.create_instrucoes(id_receita, request.data), status=201)
+        return Response(operacoes.create_instrucoes(id_receita, request.data), status=201)
 
 @api_view(['PUT', 'DELETE'])
 @permission_classes([AllowAny])
 def update_delete_instrucoes(request, id_instrucao):
     if request.method == 'PUT':
-        return Response(db.update_instrucoes(id_instrucao, request.data), status=200)
+        return Response(operacoes.update_instrucoes(id_instrucao, request.data), status=200)
     elif request.method == 'DELETE':
-        db.delete_instrucoes(id_instrucao)
+        operacoes.delete_instrucoes(id_instrucao)
         return Response({"msg": "Instrucao apagada"}, status=200)
 
 
@@ -187,15 +187,15 @@ def get_post_receitas(request):
         return Response(Receitas.fetch_all())
     
     elif request.method == 'POST':
-        return Response(db.create_receitas(request.data), status=201)
+        return Response(operacoes.create_receitas(request.data), status=201)
 
 @api_view(['PUT', 'DELETE'])
 @permission_classes([AllowAny])
 def update_delete_receitas(request, id_receita):
     if request.method == 'PUT':
-        return Response(db.update_receitas(id_receita, request.data), status=200)
+        return Response(operacoes.update_receitas(id_receita, request.data), status=200)
     elif request.method == 'DELETE':
-        db.delete_receitas(id_receita)
+        operacoes.delete_receitas(id_receita)
         return Response({"msg": "Receita apagada"}, status=200)
 
 # IngredientesReceitas
@@ -205,15 +205,15 @@ def get_post_ingredientesReceitas(request, id_receita):
     if request.method == 'GET':
         return Response(IngredientesReceitas.fetch_search(id_receita, request.GET.get('id_ingrediente')))
     elif request.method == 'POST':
-        return Response(db.create_ingredientesReceitas(id_receita, request.data), status=201)
+        return Response(operacoes.create_ingredientesReceitas(id_receita, request.data), status=201)
 
 @api_view(['PUT', 'DELETE'])
 @permission_classes([AllowAny])
 def update_delete_ingredientesReceitas(request, id_ingrediente_receita):
     if request.method == 'PUT':
-        return Response(db.update_ingredientesReceitas(id_ingrediente_receita, request.data), status=200)
+        return Response(operacoes.update_ingredientesReceitas(id_ingrediente_receita, request.data), status=200)
     elif request.method == 'DELETE':    
-        db.delete_ingredientesReceitas(id_ingrediente_receita)
+        operacoes.delete_ingredientesReceitas(id_ingrediente_receita)
         return Response({"msg": "IngredienteReceita apagado"}, status=200)
 
 # UtensiliosReceitas
@@ -223,16 +223,16 @@ def get_post_utensiliosReceitas(request, id_receita):
     if request.method == 'GET':
         return Response(UtensiliosReceitas.fetch_search(id_receita, request.GET.get('id_utensilio')))
     elif request.method == 'POST':
-        return Response(db.create_utensiliosReceitas(id_receita, request.data), status=201)
+        return Response(operacoes.create_utensiliosReceitas(id_receita, request.data), status=201)
 
     
 @api_view(['PUT', 'DELETE'])
 @permission_classes([AllowAny])
 def update_delete_utensiliosReceitas(request, id_utensilio_receita):
     if request.method == 'PUT':            
-        return Response(db.update_utensiliosReceitas(id_utensilio_receita, request.data), status=200)
+        return Response(operacoes.update_utensiliosReceitas(id_utensilio_receita, request.data), status=200)
     elif request.method == 'DELETE':    
-        db.delete_utensiliosReceitas(id_utensilio_receita)
+        operacoes.delete_utensiliosReceitas(id_utensilio_receita)
         return Response({"msg": "UtensilioReceita apagado"}, status=200)
     
     

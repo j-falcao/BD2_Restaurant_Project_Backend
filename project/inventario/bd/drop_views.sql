@@ -1,0 +1,14 @@
+DROP VIEW IF EXISTS instrucoes_view;
+DROP VIEW IF EXISTS utensiliosreceitas_view;
+DROP VIEW IF EXISTS ingredientesreceitas_view;
+DROP VIEW IF EXISTS receitas_view;
+DROP VIEW IF EXISTS utensilioscarrinho_atual_view;
+DROP VIEW IF EXISTS ingredientescarrinho_atual_view;
+DROP VIEW IF EXISTS carrinho_atual_view;
+DROP VIEW IF EXISTS utensilioscarrinhos_view;
+DROP VIEW IF EXISTS ingredientescarrinhos_view;
+DROP VIEW IF EXISTS carrinhos_view;
+DROP VIEW IF EXISTS tiposcarrinhos_view;
+DROP VIEW IF EXISTS utensilios_view;
+DROP VIEW IF EXISTS ingredientes_view;
+DROP VIEW IF EXISTS fornecedores_view;

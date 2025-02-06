@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS utilizadores;
+DROP TABLE IF EXISTS cargos;

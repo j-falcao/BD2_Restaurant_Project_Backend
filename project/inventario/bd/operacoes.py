@@ -1,6 +1,6 @@
 from project.utils.db_utils import fetch_from_view
 from django.db import connection
-from .models import *
+from ..models import *
 
 # Ingredientes
 def create_ingredientes(ingrediente):  # ✅

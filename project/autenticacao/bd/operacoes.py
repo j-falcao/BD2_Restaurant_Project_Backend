@@ -1,4 +1,4 @@
-from .models import *
+from ..models import *
 from django.db import connection
 
 def create_utilizador(validated_data):

@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS servicos (
 	id_servico SERIAL PRIMARY KEY,
 	id_garcom INT REFERENCES utilizadores(id) ON DELETE CASCADE,
 	id_mesa INT REFERENCES mesas(id_mesa) ON DELETE CASCADE, -- trigger para impedir a criação de serviços se mesa estiver ocupada
-	data_hora_fim TIMESTAMP CHECK (data_hora_fim IS NULL OR (data_hora_fim > created_at AND data_hora_fim > updated_at)),
+	data_hora_fim TIMESTAMP,
 	preco_total DECIMAL(10, 2) NOT NULL DEFAULT 0 CHECK (preco_total >= 0),
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP

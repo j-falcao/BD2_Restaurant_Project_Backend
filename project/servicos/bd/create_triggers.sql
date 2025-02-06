@@ -1,5 +1,3 @@
-
-
 -- SERVICOS
 -- Atualizar o preco_total do servico ao adicionar ou remover um pedido
 CREATE OR REPLACE FUNCTION atualizar_preco_servico() RETURNS TRIGGER AS $$

@@ -86,7 +86,7 @@ LANGUAGE plpgsql
 AS $$
 BEGIN
     UPDATE servicos
-    SET data_hora_fim = NOW()
+    SET data_hora_fim = CURRENT_TIMESTAMP
     WHERE id_servico = id_servico_in
     RETURNING row_to_json(servicos) INTO _new_servico;
 END;

@@ -2,8 +2,8 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [
-    path('estadosmesa/', get_post_estados_mesas),
-    path('estadosmesa/<int:id_estado_mesa>/', update_delete_estados_mesas),
+    path('estadosmesas/', get_post_estados_mesas),
+    path('estadosmesas/<int:id_estado_mesa>/', update_delete_estados_mesas),
 
     path('mesas/', get_post_mesas),
     path('mesas/<int:id_mesa>/', update_delete_mesas),

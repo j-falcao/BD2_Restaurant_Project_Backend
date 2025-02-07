@@ -1,16 +1,16 @@
 -- SERVICOS
-DROP TRIGGER IF EXISTS atualizar_preco_servico_trigger ON pedidosprodutos;
-DROP TRIGGER IF EXISTS verificar_mesa_ocupada_trigger ON servicos;
-DROP TRIGGER IF EXISTS atualizar_estado_mesa_ocupada_trigger ON servicos;
-DROP TRIGGER IF EXISTS atualizar_estado_mesa_disponivel_trigger ON servicos;
+DROP FUNCTION IF EXISTS atualizar_preco_servico() CASCADE;
+DROP FUNCTION IF EXISTS verificar_mesa_ocupada() CASCADE;
+DROP FUNCTION IF EXISTS atualizar_estado_mesa_ocupada() CASCADE;
+DROP FUNCTION IF EXISTS atualizar_estado_mesa_disponivel() CASCADE;
 
 -- PEDIDOS
-DROP TRIGGER IF EXISTS verificar_servico_ativo_pedido_trigger ON pedidos;
-DROP TRIGGER IF EXISTS verificar_servico_ativo_pedidoproduto_trigger ON pedidoprodutos;
+DROP FUNCTION IF EXISTS verificar_servico_ativo_pedido() CASCADE;
+DROP FUNCTION IF EXISTS verificar_servico_ativo_pedidoproduto() CASCADE;
 
 -- RESERVAS
-DROP TRIGGER IF EXISTS verificar_garcom_reserva_trigger ON reservas;
+DROP FUNCTION IF EXISTS verificar_garcom_reserva() CASCADE;
 
 -- MESAS
-DROP TRIGGER IF EXISTS verificar_capacidade_mesa_trigger ON mesas;
-DROP TRIGGER IF EXISTS set_next_numero_mesa_trigger ON reservas;
+DROP FUNCTION IF EXISTS verificar_capacidade_mesa() CASCADE;
+DROP FUNCTION IF EXISTS set_next_numero_mesa() CASCADE;

@@ -47,8 +47,11 @@ class Command(BaseCommand):
     def _reset_db(self):
         self.stdout.write(self.style.WARNING("Resetting the database..."))
 
+        self.stdout.write(self.style.SUCCESS("Revoking privileges..."))
+        self._run_sql_file(os.getcwd() + '/core/bd/revoke_privileges.sql')
+        self._run_sql_file(os.getcwd() + '/inventario/bd/revoke_privileges.sql')
         self.stdout.write(self.style.SUCCESS("Dropping triggers..."))
-        self._run_sql_file(os.getcwd() + '/database/scripts/drop_triggers_updated_at.sql')
+        self._run_sql_file(os.getcwd() + '/core/bd/drop_triggers_updated_at.sql')
         self._run_sql_file(os.getcwd() + '/inventario/bd/drop_triggers.sql')
         self._run_sql_file(os.getcwd() + '/servicos/bd/drop_triggers.sql')
         self.stdout.write(self.style.SUCCESS("Dropping stored procedures..."))
@@ -68,7 +71,11 @@ class Command(BaseCommand):
         self._run_sql_file(os.getcwd() + '/produtos/bd/drop_tables.sql')
         self._run_sql_file(os.getcwd() + '/inventario/bd/drop_tables.sql')
         self._run_sql_file(os.getcwd() + '/autenticacao/bd/drop_tables.sql')
+        self.stdout.write(self.style.SUCCESS("Dropping roles..."))
+        self._run_sql_file(os.getcwd() + '/core/bd/drop_roles.sql')
 
+        self.stdout.write(self.style.SUCCESS("Creating roles..."))
+        self._run_sql_file(os.getcwd() + '/core/bd/create_roles.sql')
         self.stdout.write(self.style.SUCCESS("Creating tables..."))
         self._run_sql_file(os.getcwd() + '/autenticacao/bd/create_tables.sql')
         self._run_sql_file(os.getcwd() + '/inventario/bd/create_tables.sql')
@@ -87,9 +94,11 @@ class Command(BaseCommand):
         self._run_sql_file(os.getcwd() + '/produtos/bd/create_stored_procedures.sql')
         self._run_sql_file(os.getcwd() + '/servicos/bd/create_stored_procedures.sql')
         self.stdout.write(self.style.SUCCESS("Creating triggers..."))
-        self._run_sql_file(os.getcwd() + '/database/scripts/create_triggers_updated_at.sql')
+        self._run_sql_file(os.getcwd() + '/core/bd/create_triggers_updated_at.sql')
         self._run_sql_file(os.getcwd() + '/inventario/bd/create_triggers.sql')
         self._run_sql_file(os.getcwd() + '/servicos/bd/create_triggers.sql')
+        self.stdout.write(self.style.SUCCESS("Granting privileges..."))
+        self._run_sql_file(os.getcwd() + '/inventario/bd/grant_privileges.sql')
 
         self._seed_all()
 
@@ -112,8 +121,8 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS("Seeding utensilios"))
             self.seed_utensilios(num_entries)
             
-            self.stdout.write(self.style.SUCCESS("Seeding tipos_carrinhos"))
-            self.seed_tipos_carrinhos()
+            self.stdout.write(self.style.SUCCESS("Seeding tiposcarrinhos"))
+            self.seed_tiposcarrinhos()
 
             self.stdout.write(self.style.SUCCESS("Seeding carrinhos"))
             self.seed_carrinhos()
@@ -183,7 +192,7 @@ class Command(BaseCommand):
     def seed_utilizadores(self):
         utilizadores_data = []
         for _ in range(10):
-            id_cargo = random.randint(1, 3)
+            id_cargo = 3 if _ == 0 else random.randint(1, 3)
             first_name = fake.first_name()
             last_name = fake.last_name()
             is_superuser = _ == 0
@@ -270,7 +279,7 @@ class Command(BaseCommand):
                 utensilios_data
             )
 
-    def seed_tipos_carrinhos(self):
+    def seed_tiposcarrinhos(self):
         tipos = [
             "Ingredientes",
             "Utensilios"
@@ -278,16 +287,19 @@ class Command(BaseCommand):
         with transaction.atomic(), connection.cursor() as cursor:
             cursor.executemany(
                 """
-                INSERT INTO tipos_carrinhos (designacao) VALUES (%s)
+                INSERT INTO tiposcarrinhos (designacao) VALUES (%s)
                 """,
                 [(tipo,) for tipo in tipos]
             )
 
 
     def seed_carrinhos(self):
-        with connection.cursor() as cursor:
+        with transaction.atomic(), connection.cursor() as cursor:
             cursor.execute(
                 "INSERT INTO carrinhos (preco_total, id_tipo_carrinho, data_compra) VALUES (%s, %s, %s)", (0, 1, None)
+            )
+            cursor.execute(
+                "INSERT INTO carrinhos (preco_total, id_tipo_carrinho, data_compra) VALUES (%s, %s, %s)", (0, 2, None)
             )
 
     def seed_estadosmesas(self):

@@ -1,0 +1,4 @@
+-- Criar protecao para nao deixar fazer select diretamente na tabela, mas sim nas vistas
+-- Crair trigger para impedir a criacao de pedidoSprodutos para produtos cujos ingredientes ou utensilios necessarios para a sua preparacao, nao estejam em stock
+-- Criar trigger para sempre que um pedidoproduto e preparado, atualizar o stock dos ingredientes necessarios
+-- criar trigger para ver se id_administrador perten ce a admin ou garcom por exemplo

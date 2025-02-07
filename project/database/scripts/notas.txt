@@ -1,1 +1,0 @@
--- Criar protecao para nao deixar fazer select diretamente na tabela, mas sim nas vistas

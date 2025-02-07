@@ -9,10 +9,14 @@ class Cargos(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'cargos'
+        db_table = 'cargos_view'
 
     def __str__(self):
         return self.designacao
+    
+    @staticmethod
+    def fetch_by_id(id_cargo):
+        return fetch_from_view("cargos_view", {"id_cargo": id_cargo})[0]
     
     @staticmethod
     def fetch_all():
@@ -37,11 +41,11 @@ class Utilizadores(models.Model):
     USERNAME_FIELD = 'username'
 
     def __str__(self):
-        return self.username
+        return f'Utilizador: {self.id} - {self.first_name} {self.last_name} - Username: {self.username}'
 
     class Meta:
         managed = False
-        db_table = 'utilizadores'
+        db_table = 'utilizadores_view'
     
     @staticmethod
     def fetch_all():
@@ -49,7 +53,7 @@ class Utilizadores(models.Model):
     
     @staticmethod
     def fetch_by_id(id_utilizador):
-        return fetch_from_view("utilizadores_view", {"id_utilizador": id_utilizador})[0]
+        return fetch_from_view("utilizadores_view", {"id": id_utilizador})[0]
     
     @staticmethod
     def fetch_all_garcons():

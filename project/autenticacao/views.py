@@ -7,7 +7,6 @@ from .models import *
 
 
 @api_view(['POST'])
-@permission_classes([AllowAny])
 def signup_view(request):
     serializer = SignupSerializer(data=request.data)
     if serializer.is_valid():
@@ -17,7 +16,6 @@ def signup_view(request):
 
 
 @api_view(["POST"])
-@permission_classes([AllowAny])
 def login_view(request):
     serializer = LoginSerializer(data=request.data)
     if serializer.is_valid():
@@ -27,21 +25,21 @@ def login_view(request):
         utilizador = Utilizadores.objects.filter(username=username).first()
 
         if utilizador and check_password(password, utilizador.password):
-            refresh = RefreshToken.for_user(utilizador) 
+            refresh = RefreshToken.for_user(utilizador)
 
             response = Response({"message": "Login successful"}, status=200)
 
             response.set_cookie(
-                "access_token", 
+                "access_token",
                 str(refresh.access_token),
                 httponly=True,
                 secure=True
             )
 
             response.set_cookie(
-                "refresh_token", 
+                "refresh_token",
                 str(refresh),
-                httponly=True, 
+                httponly=True,
                 secure=True
             )
 
@@ -51,14 +49,12 @@ def login_view(request):
 
 
 @api_view(["POST"])
-@permission_classes([AllowAny])
 def logout_view(request):
-    request.session.flush() 
+    request.session.flush()
     return Response({"message": "Logged out"}, status=200)
 
 
 @api_view(['GET'])
-@permission_classes([AllowAny])
 def whoami_view(request):
     user = request.user
     return Response({
@@ -68,10 +64,11 @@ def whoami_view(request):
         "last_name": user.last_name,
     })
 
+
 @api_view(['GET'])
-@permission_classes([AllowAny])
 def get_all_utilizadores_view(request):
     return Response(Utilizadores.fetch_all())
+
 
 """ 
 @api_view(['GET'])

@@ -24,7 +24,7 @@ INSTALLED_APPS = [
     'inventario',
     'servicos',
     'produtos',
-    'database',
+    'core',
 ]
 
 ROOT_URLCONF = 'project.urls'
@@ -44,7 +44,8 @@ CORS_ALLOWED_HEADERS = [
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
-    "django.middleware.common.CommonMiddleware",
+    'django.middleware.common.CommonMiddleware',
+    'autenticacao.middlewares.DynamicDatabaseMiddleware',
 ]
 
 SIMPLE_JWT = {
@@ -54,9 +55,6 @@ SIMPLE_JWT = {
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'autenticacao.auth.CookieJWTAuthentication',
-    ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
     )
 }
 
@@ -79,7 +77,7 @@ DATABASES = {
         'USER': os.getenv('USER_DEV'),
         'PASSWORD': os.getenv('PASS_DEV')
     },
-    'admin': {
+    'administrador': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('DB_NAME'),
         'HOST': os.getenv('DB_HOST'),
@@ -104,6 +102,8 @@ DATABASES = {
         'PASSWORD': os.getenv('PASS_GARCOM')
     },
 }
+
+DATABASE_ROUTERS = ['autenticacao.middlewares.DatabaseRouter']
 
 # Logging
 LOGGING = {

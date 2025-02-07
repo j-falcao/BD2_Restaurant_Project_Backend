@@ -37,6 +37,9 @@ GRANT EXECUTE ON PROCEDURE get_ingredientes_by_receita TO administrador;
 GRANT EXECUTE ON PROCEDURE get_receitas_by_ingrediente TO administrador;
 GRANT EXECUTE ON PROCEDURE get_receitas_by_utensilio TO administrador;
 
+GRANT EXECUTE ON PROCEDURE comprar_carrinho_atual_ingredientes TO administrador;
+GRANT EXECUTE ON PROCEDURE comprar_carrinho_atual_utensilios TO administrador;
+
 
 -- COZINHEIRO
 GRANT SELECT ON

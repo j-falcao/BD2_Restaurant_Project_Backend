@@ -1,3 +1,15 @@
+CREATE OR REPLACE PROCEDURE mee(OUT e JSON) 
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    SELECT json_agg(row_to_json(t)) 
+    INTO e
+    FROM (
+        SELECT current_user AS user
+    ) t;
+END;
+$$;
+
 CREATE OR REPLACE PROCEDURE create_cargos(_new_designacao VARCHAR(100), OUT _new_cargo JSON)
 LANGUAGE plpgsql
 AS $$

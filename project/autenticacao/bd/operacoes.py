@@ -1,6 +1,11 @@
 from ..models import *
 from django.db import connection
 
+def mee_bd():
+    with connection.cursor() as cursor:
+        cursor.execute('CALL mee(%s)', [None])
+        return cursor.fetchone()[0]
+
 def create_utilizador(validated_data):
     with connection.cursor() as cursor:
         cursor.execute('CALL create_utilizadores(%s, %s, %s, %s, %s, %s, %s, %s)', [

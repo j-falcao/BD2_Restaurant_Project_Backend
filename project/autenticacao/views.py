@@ -1,9 +1,9 @@
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import *
 from .models import *
+from .bd.operacoes import *
 
 
 @api_view(['POST'])
@@ -68,6 +68,11 @@ def whoami_view(request):
 @api_view(['GET'])
 def get_all_utilizadores_view(request):
     return Response(Utilizadores.fetch_all())
+
+
+@api_view(['GET'])
+def mee_bd_view(request):
+    return Response(mee_bd())
 
 
 """ 

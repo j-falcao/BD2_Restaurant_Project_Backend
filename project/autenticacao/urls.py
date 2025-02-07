@@ -6,6 +6,7 @@ urlpatterns = [
     path('signup/', signup_view),
     path('whoami/', whoami_view),
     path('utilizadores/', get_all_utilizadores_view),
+    path('mee_bd/', mee_bd_view),
     # path('utilizador/username/<str:username>/', get_utilizador_by_username_view, name='get_utilizador_by_username'),
     # path('utilizador/id/<int:id_utilizador>/', get_utilizador_by_id_view, name='get_utilizador_by_id'),
     # path('utilizador/email/<str:email>/', get_utilizador_by_email_view, name='get_utilizador_by_email'),

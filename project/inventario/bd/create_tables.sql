@@ -11,16 +11,16 @@ CREATE TABLE IF NOT EXISTS fornecedores (
 	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS tipos_carrinhos ( -- Tipos: Ingredientes, Utensilios
+CREATE TABLE IF NOT EXISTS tiposcarrinhos ( -- Tipos: Ingredientes, Utensilios
 	id_tipo_carrinho SERIAL PRIMARY KEY,
-	designacao VARCHAR(100) NOT NULL,
+	designacao VARCHAR(100) NOT NULL CHECK (designacao IN ('Ingredientes', 'Utensilios')),
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS carrinhos (
 	id_carrinho SERIAL PRIMARY KEY,
-	id_tipo_carrinho INT REFERENCES tipos_carrinhos(id_tipo_carrinho) ON DELETE CASCADE,
+	id_tipo_carrinho INT REFERENCES tiposcarrinhos(id_tipo_carrinho) ON DELETE CASCADE,
 	preco_total DECIMAL(10, 2) NOT NULL DEFAULT 0,
 	data_compra TIMESTAMP,
 	qtd_artigos INT NOT NULL DEFAULT 0,

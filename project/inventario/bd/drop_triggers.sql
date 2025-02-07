@@ -1,9 +1,8 @@
 -- CARRINHOS
-DROP TRIGGER IF EXISTS update_preco_carrinho_ingredientescarrinhos_trigger ON ingredientescarrinhos;
-DROP TRIGGER IF EXISTS update_preco_carrinho_utensilioscarrinhos_trigger ON utensilioscarrinhos;
-DROP TRIGGER IF EXISTS update_preco_carrinho_ingredientes_trigger ON ingredientes;
-DROP TRIGGER IF EXISTS update_preco_carrinho_utensilios_trigger ON utensilios;
-DROP TRIGGER IF EXISTS auto_create_carrinho_trigger ON carrinhos;
+DROP FUNCTION IF EXISTS update_quantidade_stock_on_compra_carrinho() CASCADE;
+DROP FUNCTION IF EXISTS update_preco_carrinho_by_preco() CASCADE;
+DROP FUNCTION IF EXISTS update_preco_carrinho_by_content() CASCADE;
+DROP FUNCTION IF EXISTS auto_create_carrinho() CASCADE;
 
 -- INSTRUCOES
-DROP TRIGGER IF EXISTS set_next_numero_sequencia_trigger ON instrucoes;
+DROP FUNCTION IF EXISTS set_next_numero_sequencia() CASCADE;

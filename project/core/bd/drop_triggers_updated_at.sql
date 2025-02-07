@@ -1,0 +1,1 @@
+DROP FUNCTION IF EXISTS set_updated_at() CASCADE; -- Todos os triggers que dependam desta função serão apagados automaticamente (cascade)

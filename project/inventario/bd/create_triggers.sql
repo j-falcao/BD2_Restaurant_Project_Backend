@@ -1,4 +1,49 @@
--- Carrinhos
+-- CARRINHOS
+-- Atualizar o stock ao finalizar compra carrinho
+CREATE OR REPLACE FUNCTION update_quantidade_stock_on_compra_carrinho() RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.data_compra IS NULL THEN
+        RETURN NULL;
+    END IF;
+
+    IF NEW.id_tipo_carrinho = (SELECT id_tipo_carrinho FROM tiposcarrinhos WHERE designacao = 'Ingredientes') THEN
+        UPDATE ingredientes
+        SET quantidade_stock = quantidade_stock + (
+            SELECT COALESCE(SUM(quantidade), 0)
+            FROM ingredientescarrinhos
+            WHERE id_carrinho = NEW.id_carrinho
+            AND id_ingrediente = ingredientes.id_ingrediente
+        )
+        WHERE id_ingrediente IN (
+            SELECT id_ingrediente
+            FROM ingredientescarrinhos
+            WHERE id_carrinho = NEW.id_carrinho
+        );
+    ELSE
+        UPDATE utensilios
+        SET quantidade_stock = quantidade_stock + (
+            SELECT COALESCE(SUM(quantidade), 0)
+            FROM utensilioscarrinhos
+            WHERE id_carrinho = NEW.id_carrinho
+            AND id_utensilio = utensilios.id_utensilio
+        )
+        WHERE id_utensilio IN (
+            SELECT id_utensilio
+            FROM utensilioscarrinhos
+            WHERE id_carrinho = NEW.id_carrinho
+        );
+    END IF;
+
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_quantidade_stock_on_compra_carrinho_trigger
+AFTER UPDATE OF data_compra ON carrinhos
+FOR EACH ROW
+EXECUTE FUNCTION update_quantidade_stock_on_compra_carrinho();
+
+
 -- Atualizar carrinho ao atualizar a adicinar ou remover um ingrediente ou utensilio
 CREATE OR REPLACE FUNCTION update_preco_carrinho_by_content()
 RETURNS TRIGGER AS $$
@@ -12,7 +57,7 @@ BEGIN
             UNION ALL
             SELECT id_utensilio AS id_item, preco FROM utensilios
         ) item
-        INNER JOIN (
+        JOIN (
             SELECT id_ingrediente AS id_item, quantidade, id_carrinho FROM ingredientescarrinhos
             UNION ALL
             SELECT id_utensilio AS id_item, quantidade, id_carrinho FROM utensilioscarrinhos
@@ -53,7 +98,7 @@ BEGIN
             UNION ALL
             SELECT id_utensilio AS id_item, preco FROM utensilios
         ) item
-        INNER JOIN (
+        JOIN (
             SELECT id_ingrediente AS id_item, quantidade, id_carrinho FROM ingredientescarrinhos
             UNION ALL
             SELECT id_utensilio AS id_item, quantidade, id_carrinho FROM utensilioscarrinhos
@@ -90,25 +135,37 @@ FOR EACH ROW
 EXECUTE FUNCTION update_preco_carrinho_by_preco();
 
 -- Auto create carrinho
+-- Se apagarmos o carrinho atual ou atualizarmos o campo data_compra do carrinho atual, então criar um novo carrinho
 CREATE OR REPLACE FUNCTION auto_create_carrinho()
 RETURNS TRIGGER AS $$
+DECLARE _id_carrinho INT;
 BEGIN
-    -- Se apagarmos o carrinho atual ou atualizarmos o campo data_compra do carrinho atual, então criar um novo carrinho
-    IF (TG_OP = 'DELETE' AND OLD.id_carrinho = ((SELECT MAX(id_carrinho) FROM carrinhos))) OR (TG_OP = 'UPDATE' AND NEW.data_compra != OLD.data_compra) THEN
-        INSERT INTO carrinhos DEFAULT VALUES;
-    END IF;
+    SELECT id_carrinho 
+    INTO _id_carrinho 
+    FROM carrinhos 
+    WHERE data_compra IS NULL 
+    AND id_tipo_carrinho = OLD.id_tipo_carrinho;
 
-    RETURN NULL;
+    IF OLD.id_carrinho = _id_carrinho THEN
+        INSERT INTO carrinhos(id_tipo_carrinho) 
+        VALUES (OLD.id_tipo_carrinho);
+    END IF;
+    RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER auto_create_carrinho_trigger
-BEFORE DELETE OR UPDATE ON carrinhos
+CREATE TRIGGER auto_create_carrinho_trigger_delete
+BEFORE DELETE ON carrinhos
+FOR EACH ROW
+EXECUTE FUNCTION auto_create_carrinho();
+
+CREATE TRIGGER auto_create_carrinho_trigger_comprar
+BEFORE UPDATE OF data_compra ON carrinhos
 FOR EACH ROW
 EXECUTE FUNCTION auto_create_carrinho();
 
 
--- Instrucoes
+-- INSTRUCOES
 CREATE OR REPLACE FUNCTION set_next_numero_sequencia()
 RETURNS TRIGGER AS $$
 BEGIN

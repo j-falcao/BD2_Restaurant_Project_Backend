@@ -1,0 +1,3 @@
+DROP ROLE IF EXISTS administrador;
+DROP ROLE IF EXISTS cozinheiro;
+DROP ROLE IF EXISTS garcom;

@@ -22,7 +22,7 @@ class Produtos(models.Model):
     
     @staticmethod
     def fetch_all():
-        return fetch_from_view('produtos')
+        return fetch_from_view('produtos_view')
     
 
 class Instrucoes(models.Model):
@@ -131,11 +131,11 @@ class Categorias(models.Model):
     
     @staticmethod
     def fetch_by_id(id_categoria):
-        return fetch_from_view('categorias', {'id_categoria': id_categoria})
+        return fetch_from_view('categorias_view', {'id_categoria': id_categoria})
 
     @staticmethod
     def fetch_all():
-        return fetch_from_view('categorias')
+        return fetch_from_view('categorias_view')
 
     @staticmethod
     def fetch_by_item(id_item):
@@ -159,11 +159,11 @@ class Tipos(models.Model):
     
     @staticmethod
     def fetch_by_id(id_tipo):
-        return fetch_from_view('tipos', {'id_tipo': id_tipo})
+        return fetch_from_view('tipos_view', {'id_tipo': id_tipo})
 
     @staticmethod
     def fetch_all():
-        return fetch_from_view('tipos')
+        return fetch_from_view('tipos_view')
     
     @staticmethod
     def fetch_by_item(id_item):
@@ -187,11 +187,11 @@ class Opcoes(models.Model):
     
     @staticmethod
     def fetch_by_id(id_opcao):
-        return fetch_from_view('opcoes', {'id_opcao': id_opcao})
+        return fetch_from_view('opcoes_view', {'id_opcao': id_opcao})
     
     @staticmethod
     def fetch_all():
-        return fetch_from_view('opcoes')
+        return fetch_from_view('opcoes_view')
     
     @staticmethod
     def fetch_by_item(id_item):
@@ -217,11 +217,11 @@ class Itens(models.Model):
     
     @staticmethod
     def fetch_by_id(id_item):
-        return fetch_from_view('itens', {'id_item': id_item})
+        return fetch_from_view('itens_view', {'id_item': id_item})
 
     @staticmethod
     def fetch_all():
-        return fetch_from_view('itens')
+        return fetch_from_view('itens_view')
     
     @staticmethod
     def fetch_by_categoria(id_categoria):
@@ -312,11 +312,11 @@ class Menus(models.Model):
     
     @staticmethod
     def fetch_by_id(id_menu):
-        return fetch_from_view('menus', {'id_menu': id_menu})
+        return fetch_from_view('menus_view', {'id_menu': id_menu})
     
     @staticmethod
     def fetch_all():
-        return fetch_from_view('menus')
+        return fetch_from_view('menus_view')
     
     @staticmethod
     def fetch_by_item(id_item):
@@ -362,11 +362,11 @@ class DiasSemana(models.Model):
     
     @staticmethod
     def fetch_by_id(id_dia_semana):
-        return fetch_from_view('diassemana', {'id_dia_semana': id_dia_semana})
+        return fetch_from_view('diassemana_view', {'id_dia_semana': id_dia_semana})
     
     @staticmethod
     def fetch_all():
-        return fetch_from_view('diassemana')
+        return fetch_from_view('diassemana_view')
     
     @staticmethod
     def fetch_by_menu(id_menu):

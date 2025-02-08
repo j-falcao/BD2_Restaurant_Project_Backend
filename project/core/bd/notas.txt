@@ -2,3 +2,5 @@
 -- Crair trigger para impedir a criacao de pedidoSprodutos para produtos cujos ingredientes ou utensilios necessarios para a sua preparacao, nao estejam em stock
 -- Criar trigger para sempre que um pedidoproduto e preparado, atualizar o stock dos ingredientes necessarios
 -- criar trigger para ver se id_administrador perten ce a admin ou garcom por exemplo
+-- Criar trigger para impedir a criacao de pedidosprodutos para servicos que nao sejam geridos pelo garcom logado
+-- Criar trigger para impedir a criacao de revervas com data hora iguais ou muito proximas

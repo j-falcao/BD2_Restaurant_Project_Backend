@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS reservas (
     id_estado_reserva INT REFERENCES estadosreservas(id_estado_reserva) ON DELETE CASCADE,
     quantidade_pessoas INT NOT NULL CHECK (quantidade_pessoas > 0),
     id_garcom INT NOT NULL REFERENCES utilizadores(id) ON DELETE CASCADE, -- garçom que fez a reserva
-    data_hora TIMESTAMP NOT NULL,
+    data_hora TIMESTAMP NOT NULL UNIQUE,
     observacoes TEXT,
     id_servico INT REFERENCES servicos(id_servico) ON DELETE CASCADE, -- serviço associado à reserva, se houver
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

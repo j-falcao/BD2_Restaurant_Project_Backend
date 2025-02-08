@@ -1,33 +1,3 @@
--- CREATE OR REPLACE PROCEDURE create_produtos(_new_item BOOLEAN, _new_menu BOOLEAN, _new_nome VARCHAR(100), _new_url_imagem VARCHAR(2048), _new_preco DECIMAL(10, 2), OUT _new_produto JSON)
--- LANGUAGE plpgsql
--- AS $$
--- BEGIN
---     INSERT INTO produtos (item, menu, nome, url_imagem, preco)
---     VALUES (_new_item, _new_menu, _new_nome, _new_url_imagem, _new_preco)
---     RETURNING row_to_json(produtos) INTO _new_produto;
--- END;
--- $$;
-
--- CREATE OR REPLACE PROCEDURE update_produtos(id_produto_in INT, _new_item BOOLEAN, _new_menu BOOLEAN, _new_nome VARCHAR(100), _new_url_imagem VARCHAR(2048), _new_preco DECIMAL(10, 2), OUT _new_produto JSON)
--- LANGUAGE plpgsql
--- AS $$
--- BEGIN
---     UPDATE produtos
---     SET item = _new_item, menu = _new_menu, nome = _new_nome, url_imagem = _new_url_imagem, preco = _new_preco
---     WHERE id_produto = id_produto_in
---     RETURNING row_to_json(produtos) INTO _new_produto;
--- END;
--- $$;
-
--- CREATE OR REPLACE PROCEDURE delete_produtos(id_produto_in INT)
--- LANGUAGE plpgsql
--- AS $$
--- BEGIN
---     DELETE FROM produtos
---     WHERE id_produto = id_produto_in;
--- END;
--- $$;
-
 CREATE OR REPLACE PROCEDURE create_receitas(_new_nome VARCHAR(100), _new_duracao INTERVAL, OUT _new_receita JSON)
 LANGUAGE plpgsql
 AS $$

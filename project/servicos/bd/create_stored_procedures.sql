@@ -79,8 +79,6 @@ BEGIN
 END;
 $$;
 
--- preco e atualizdo atraves de triggers
-
 CREATE OR REPLACE PROCEDURE concluir_servicos(id_servico_in INT, OUT _new_servico JSON)
 LANGUAGE plpgsql
 AS $$

@@ -28,12 +28,12 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_mesas(_new_id_estado_mesa INT, _new_numero INT, _new_capacidade_maxima INT, OUT _new_mesa JSON)
+CREATE OR REPLACE PROCEDURE create_mesas(_new_numero INT, _new_capacidade_maxima INT, OUT _new_mesa JSON)
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    INSERT INTO mesas (id_estado_mesa, numero, capacidade_maxima)
-    VALUES (_new_id_estado_mesa, _new_numero, _new_capacidade_maxima)
+    INSERT INTO mesas (numero, capacidade_maxima)
+    VALUES (_new_numero, _new_capacidade_maxima)
     RETURNING row_to_json(mesas) INTO _new_mesa;
 END;
 $$;
@@ -206,12 +206,12 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_reservas(_new_id_mesa INT, _new_id_estado_reserva INT, _new_quantidade_pessoas INT, _new_observacoes TEXT, _new_id_garcom INT, _new_data_hora TIMESTAMP, OUT _new_reserva JSON)
+CREATE OR REPLACE PROCEDURE create_reservas(_new_id_mesa INT, _new_quantidade_pessoas INT, _new_observacoes TEXT, _new_id_garcom INT, _new_data_hora TIMESTAMP, OUT _new_reserva JSON)
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    INSERT INTO reservas (id_mesa, id_estado_reserva, quantidade_pessoas, id_garcom, observacoes, data_hora)
-    VALUES (_new_id_mesa, _new_id_estado_reserva, _new_quantidade_pessoas, _new_id_garcom, _new_observacoes, _new_data_hora)
+    INSERT INTO reservas (id_mesa, quantidade_pessoas, id_garcom, observacoes, data_hora)
+    VALUES (_new_id_mesa, _new_quantidade_pessoas, _new_id_garcom, _new_observacoes, _new_data_hora)
     RETURNING row_to_json(reservas) INTO _new_reserva;
 END;
 $$;

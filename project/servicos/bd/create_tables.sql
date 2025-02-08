@@ -42,20 +42,20 @@ CREATE TABLE IF NOT EXISTS pedidosprodutos ( -- trigger para impedir a criação
 
 CREATE TABLE IF NOT EXISTS estadosreservas (
 	id_estado_reserva SERIAL PRIMARY KEY,
-	designacao VARCHAR(100) NOT NULL,
+	designacao VARCHAR(100) NOT NULL UNIQUE CHECK (designacao IN ('Pendente', 'Confirmada', 'Cancelada')),
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS reservas (
-	id_reserva SERIAL PRIMARY KEY,
-	id_mesa INT REFERENCES mesas(id_mesa) ON DELETE CASCADE,
-	id_estado_reserva INT REFERENCES estadosreservas(id_estado_reserva) ON DELETE CASCADE,
-	quantidade_pessoas INT NOT NULL CHECK (quantidade_pessoas > 0),
-	id_garcom INT NOT NULL REFERENCES utilizadores(id) ON DELETE CASCADE, -- garcom que fez a reserva
-	data_hora TIMESTAMP NOT NULL,
-	observacoes TEXT,
-	id_servico INT REFERENCES servicos(id_servico) ON DELETE CASCADE, -- servico associado a reserva, se houver
-	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    id_reserva SERIAL PRIMARY KEY,
+    id_mesa INT REFERENCES mesas(id_mesa) ON DELETE CASCADE,
+    id_estado_reserva INT REFERENCES estadosreservas(id_estado_reserva) ON DELETE CASCADE,
+    quantidade_pessoas INT NOT NULL CHECK (quantidade_pessoas > 0),
+    id_garcom INT NOT NULL REFERENCES utilizadores(id) ON DELETE CASCADE, -- garçom que fez a reserva
+    data_hora TIMESTAMP NOT NULL,
+    observacoes TEXT,
+    id_servico INT REFERENCES servicos(id_servico) ON DELETE CASCADE, -- serviço associado à reserva, se houver
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

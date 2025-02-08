@@ -594,10 +594,9 @@ class Command(BaseCommand):
     def seed_estadosreservas(self):
         with transaction.atomic(), connection.cursor() as cursor:
             data = [
-                ('Aguarda clientes',),
-                ('Em andamento',),
-                ('Cancelada',),
-                ('Concluída',)
+                ('Pendente',),
+                ('Confirmada',), 
+                ('Cancelada',)
             ]
             cursor.executemany(
                 "INSERT INTO estadosreservas (designacao) VALUES (%s)",

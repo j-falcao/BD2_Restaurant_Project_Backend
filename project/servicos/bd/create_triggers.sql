@@ -117,6 +117,23 @@ FOR EACH ROW EXECUTE FUNCTION verificar_servico_ativo_pedidoproduto();
 
 
 -- RESERVAS
+CREATE OR REPLACE FUNCTION set_estado_reserva_pendente()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.id_estado_reserva IS NULL THEN
+        SELECT id_estado_reserva INTO NEW.id_estado_reserva
+        FROM estadosreservas 
+        WHERE designacao = 'Pendente';
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER set_estado_reserva_pendente_trigger
+BEFORE INSERT ON reservas
+FOR EACH ROW
+EXECUTE FUNCTION set_estado_reserva_pendente();
+
 CREATE OR REPLACE FUNCTION verificar_garcom_reserva() RETURNS TRIGGER AS $$
 BEGIN
     IF NOT EXISTS (
@@ -136,6 +153,22 @@ FOR EACH ROW EXECUTE FUNCTION verificar_garcom_reserva();
 
 
 -- MESAS
+CREATE OR REPLACE FUNCTION set_estado_mesa_disponivel() RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.id_estado_mesa IS NULL THEN
+        SELECT id_estado_mesa INTO NEW.id_estado_mesa
+        FROM estadosmesas 
+        WHERE designacao = 'Disponivel';
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER set_estado_mesa_disponivel_trigger
+BEFORE INSERT ON mesas
+FOR EACH ROW    
+EXECUTE FUNCTION set_estado_mesa_disponivel();
+
 CREATE OR REPLACE FUNCTION verificar_capacidade_mesa() RETURNS TRIGGER AS $$
 BEGIN
     IF (SELECT capacidade_maxima FROM mesas WHERE id_mesa = NEW.id_mesa) < NEW.quantidade_pessoas THEN

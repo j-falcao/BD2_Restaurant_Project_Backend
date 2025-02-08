@@ -27,8 +27,7 @@ def delete_estadosMesas(id_estados_mesa):
 # Mesas
 def create_mesas(data):
     with connection.cursor() as cursor:
-        cursor.execute('CALL create_mesas(%s, %s, %s, %s)', [
-            data['id_estado_mesa'],
+        cursor.execute('CALL create_mesas(%s, %s, %s)', [
             data['numero'],
             data['capacidade_maxima'],
             None
@@ -77,9 +76,8 @@ def delete_estadosReservas(id_estado_reserva):
 # Reservas
 def create_reservas(data):
     with connection.cursor() as cursor:
-        cursor.execute('CALL create_reservas(%s, %s, %s, %s, %s, %s, %s)', [
+        cursor.execute('CALL create_reservas(%s, %s, %s, %s, %s, %s)', [
             data['id_mesa'],
-            data['id_estado_reserva'],
             data['quantidade_pessoas'],
             data['observacoes'],
             data['id_garcom'],

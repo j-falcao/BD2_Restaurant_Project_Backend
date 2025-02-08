@@ -1,18 +1,18 @@
 -- ADMINISTRADOR
 GRANT SELECT ON
-    produtos_view
-    instrucoes_view
-    receitas_view
-    categorias_view
-    tipos_view
-    opcoes_view
-    itens_view
-    itenscategorias_view
-    itenstipos_view
-    itensopcoes_view
-    menus_view
-    itensmenus_view
-    diassemana_view
+    produtos_view,
+    instrucoes_view,
+    receitas_view,
+    categorias_view,
+    tipos_view,
+    opcoes_view,
+    itens_view,
+    itenscategorias_view,
+    itenstipos_view,
+    itensopcoes_view,
+    menus_view,
+    itensmenus_view,
+    diassemana_view,
     menusdiassemana_view
 TO administrador;
 
@@ -99,19 +99,19 @@ GRANT EXECUTE ON PROCEDURE delete_menusdiassemana TO administrador;
 
 -- COZINHEIRO
 GRANT SELECT ON
-    produtos_view
-    instrucoes_view
-    receitas_view
-    categorias_view
-    tipos_view
-    opcoes_view
-    itens_view
-    itenscategorias_view
-    itenstipos_view
-    itensopcoes_view
-    menus_view
-    itensmenus_view
-    diassemana_view
+    produtos_view,
+    instrucoes_view,
+    receitas_view,
+    categorias_view,
+    tipos_view,
+    opcoes_view,
+    itens_view,
+    itenscategorias_view,
+    itenstipos_view,
+    itensopcoes_view,
+    menus_view,
+    itensmenus_view,
+    diassemana_view,
     menusdiassemana_view
 TO cozinheiro;
 

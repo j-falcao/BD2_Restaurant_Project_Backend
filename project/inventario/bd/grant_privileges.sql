@@ -10,7 +10,7 @@ GRANT SELECT ON
     carrinho_atual_ingredientes_view,
     carrinho_atual_utensilios_view,
     utensilioscarrinho_atual_view,
-    ingredientescarrinho_atual_view,
+    ingredientescarrinho_atual_view
 TO administrador;
 
 GRANT INSERT, UPDATE, DELETE ON
@@ -19,7 +19,7 @@ GRANT INSERT, UPDATE, DELETE ON
     ingredientes,
     carrinhos,
     ingredientescarrinhos,
-    utensilioscarrinhos,
+    utensilioscarrinhos
 TO administrador;
 
 GRANT EXECUTE ON PROCEDURE get_ingredientes_by_fornecedor TO administrador;
@@ -55,7 +55,7 @@ GRANT EXECUTE ON PROCEDURE delete_utensilioscarrinhos_atual TO administrador;
 -- COZINHEIRO
 GRANT SELECT ON
     utensilios_view,
-    ingredientes_view,
+    ingredientes_view
 TO cozinheiro;
 
 GRANT EXECUTE ON PROCEDURE get_utensilios_by_receita TO cozinheiro;

@@ -1,7 +1,7 @@
 from django.db import connection
 from ..models import *
 
-
+# Estados Mesas
 def create_estadosMesas(data):
     with connection.cursor() as cursor:
         cursor.execute('CALL create_estadosmesas(%s, %s)', [
@@ -24,6 +24,7 @@ def delete_estadosMesas(id_estados_mesa):
         cursor.execute('CALL delete_estadosmesas(%s)', [id_estados_mesa])
     
 
+# Mesas
 def create_mesas(data):
     with connection.cursor() as cursor:
         cursor.execute('CALL create_mesas(%s, %s, %s, %s)', [
@@ -50,6 +51,30 @@ def delete_mesas(id_mesa):
         cursor.execute('CALL delete_mesas(%s)', [id_mesa])
 
 
+# Estados Reservas
+def create_estadosReservas(data):
+    with connection.cursor() as cursor:
+        cursor.execute('CALL create_estadosreservas(%s, %s)', [
+            data['designacao'],
+            None
+        ])
+        return cursor.fetchone()[0]
+    
+def update_estadosReservas(id_estado_reserva, data):
+    with connection.cursor() as cursor:
+        cursor.execute('CALL update_estadosreservas(%s, %s, %s)', [
+            id_estado_reserva,
+            data['designacao'],
+            None
+        ])
+        return cursor.fetchone()[0]
+    
+def delete_estadosReservas(id_estado_reserva):
+    with connection.cursor() as cursor:
+        cursor.execute('CALL delete_estadosreservas(%s)', [id_estado_reserva])
+
+
+# Reservas
 def create_reservas(data):
     with connection.cursor() as cursor:
         cursor.execute('CALL create_reservas(%s, %s, %s, %s, %s, %s, %s)', [
@@ -90,6 +115,7 @@ def delete_reservas(id_reserva):
         cursor.execute('CALL delete_reservas(%s)', [id_reserva])
 
 
+# Servicos
 def create_servicos(data):
     with connection.cursor() as cursor:
         cursor.execute('CALL create_servicos(%s, %s, %s)', [
@@ -129,6 +155,7 @@ def delete_servicos(id_servico):
         cursor.execute('CALL delete_servicos(%s)', [id_servico])
 
 
+# Pedidos
 def create_pedidos(id_servico):
     with connection.cursor() as cursor:
         cursor.execute('CALL create_pedidos(%s, %s)', [
@@ -142,6 +169,7 @@ def delete_pedidos(id_pedido):
         cursor.execute('CALL delete_pedidos(%s)', [id_pedido])
 
 
+# PedidosProdutos
 def create_pedidosProdutos(id_pedido, data):
     with connection.cursor() as cursor:
         cursor.execute('CALL create_pedidosprodutos(%s, %s, %s)', [

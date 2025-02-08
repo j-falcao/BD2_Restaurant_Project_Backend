@@ -1,5 +1,7 @@
-GRANT EXECUTE ON PROCEDURE get_utensilios_by_receita TO administrador;
-GRANT EXECUTE ON PROCEDURE get_ingredientes_by_receita TO administrador;
-
+-- ADMINISTRADOR
 GRANT EXECUTE ON PROCEDURE get_receitas_by_ingrediente TO administrador;
 GRANT EXECUTE ON PROCEDURE get_receitas_by_utensilio TO administrador;
+
+-- COZINHEIRO
+GRANT EXECUTE ON PROCEDURE get_receitas_by_ingrediente TO cozinheiro;
+GRANT EXECUTE ON PROCEDURE get_receitas_by_utensilio TO cozinheiro;

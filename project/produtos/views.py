@@ -1,9 +1,93 @@
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
-from rest_framework.permissions import AllowAny
 from .bd import operacoes
 from .models import *
+
+
+# INSTRUÇÕES
+@api_view(['GET', 'POST'])
+def get_post_instrucoes(request, id_receita):
+    if request.method == 'GET':
+        return Response(Instrucoes.fetch_by_receita(id_receita))
+    elif request.method == 'POST':
+        return Response(operacoes.create_instrucoes(id_receita, request.data), status=201)
+
+@api_view(['PUT', 'DELETE'])
+def update_delete_instrucoes(request, id_instrucao):
+    if request.method == 'PUT':
+        return Response(operacoes.update_instrucoes(id_instrucao, request.data), status=200)
+    elif request.method == 'DELETE':
+        operacoes.delete_instrucoes(id_instrucao)
+        return Response({"msg": "Instrucao apagada"}, status=200)
+
+
+# RECEITAS
+@api_view(['GET', 'POST'])
+def get_post_receitas(request):
+    if request.method == 'GET':
+        id_receita = request.GET.get('id_receita')
+        if id_receita:
+            try:
+                return Response(Receitas.fetch_by_id(id_receita))
+            except Receitas.DoesNotExist:
+                raise Response("Receita não encontrada", status=404)
+        else:
+            return Response(Receitas.fetch_all())
+
+    elif request.method == 'POST':
+        return Response(operacoes.create_receitas(request.data), status=201)
+
+@api_view(['PUT', 'DELETE'])
+def update_delete_receitas(request, id_receita):
+    if request.method == 'PUT':
+        return Response(operacoes.update_receitas(id_receita, request.data), status=200)
+    elif request.method == 'DELETE':
+        operacoes.delete_receitas(id_receita)
+        return Response({"msg": "Receita apagada"}, status=200)
+
+
+# INGREDIENTES RECEITAS
+@api_view(['GET'])
+def get_receitas_by_ingrediente(request, id_ingrediente):
+    return Response(Receitas.fetch_by_ingrediente(id_ingrediente))
+
+@api_view(['GET', 'POST'])
+def get_post_receitasIngredientes(request, id_receita):
+    if request.method == 'GET':
+        return Response(Ingredientes.fetch_by_receita(id_receita))
+    elif request.method == 'POST':
+        return Response(operacoes.create_ingredientesReceitas(id_receita, request.data), status=201)
+
+@api_view(['PUT', 'DELETE'])
+def update_delete_ingredientesReceitas(request, id_ingrediente_receita):
+    if request.method == 'PUT':
+        return Response(operacoes.update_ingredientesReceitas(id_ingrediente_receita, request.data), status=200)
+    elif request.method == 'DELETE':
+        operacoes.delete_ingredientesReceitas(id_ingrediente_receita)
+        return Response({"msg": "IngredienteReceita apagado"}, status=200)
+
+
+# UTENSILIOS RECEITAS
+@api_view(['GET'])
+def get_receitas_by_utensilio(request, id_utensilio):
+     return Response(Receitas.fetch_by_utensilio(id_utensilio))
+
+@api_view(['GET', 'POST'])
+def get_post_receitasUtensilios(request, id_receita):
+    if request.method == 'GET':
+        return Response(Utensilios.fetch_by_receita(id_receita))
+    elif request.method == 'POST':
+        return Response(operacoes.create_utensiliosReceitas(id_receita, request.data), status=201)
+
+@api_view(['PUT', 'DELETE'])
+def update_delete_utensiliosReceitas(request, id_utensilio_receita):
+    if request.method == 'PUT':
+        return Response(operacoes.update_utensiliosReceitas(id_utensilio_receita, request.data), status=200)
+    elif request.method == 'DELETE':
+        operacoes.delete_utensiliosReceitas(id_utensilio_receita)
+        return Response({"msg": "UtensilioReceita apagado"}, status=200)
+
 
 # TIPOS
 @api_view(['GET', 'POST'])

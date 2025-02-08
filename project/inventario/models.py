@@ -62,6 +62,12 @@ class Ingredientes(models.Model):
         with connection.cursor() as cursor:
             cursor.execute('CALL get_ingredientes_by_fornecedor(%s, %s)', [id_fornecedor, None])
             return cursor.fetchone()[0]
+       
+    @staticmethod
+    def fetch_by_receita(id_receita):
+        with connection.cursor() as cursor:
+            cursor.execute('CALL get_ingredientes_by_receita(%s, %s)', [id_receita, None])
+            return cursor.fetchone()[0]
 
 
 class Utensilios(models.Model):
@@ -95,6 +101,12 @@ class Utensilios(models.Model):
     def fetch_by_fornecedor(id_fornecedor):
         with connection.cursor() as cursor:
             cursor.execute('CALL get_utensilios_by_fornecedor(%s, %s)', [id_fornecedor, None])
+            return cursor.fetchone()[0]
+       
+    @staticmethod
+    def fetch_by_receita(id_receita):
+        with connection.cursor() as cursor:
+            cursor.execute('CALL get_utensilios_by_receita(%s, %s)', [id_receita, None])
             return cursor.fetchone()[0]
 
 class TiposCarrinhos(models.Model):
@@ -201,119 +213,3 @@ class UtensiliosCarrinhos(models.Model):
     @staticmethod
     def fetch_by_carrinho(id_carrinho):
         return fetch_from_view("utensilioscarrinho_view", {"id_carrinho": id_carrinho})
-    
-
-
-class Instrucoes(models.Model):
-    id_instrucao = models.AutoField(primary_key=True)
-    id_receita = models.ForeignKey('Receitas', on_delete=models.CASCADE, db_column='id_receita')
-    numero_sequencia = models.IntegerField()
-    descricao = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True, null=True)
-    updated_at = models.DateTimeField(auto_now=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'instrucoes'
-
-    def __str__(self):
-        return f"Instrução: {self.id_instrucao} - Receita {self.id_receita} - Passo {self.numero_sequencia}"
-    
-    @staticmethod
-    def fetch_by_receita(id_receita, numero_sequencia=None):
-        filters = {"id_receita": id_receita}
-        if numero_sequencia:
-            filters["numero_sequencia"] = numero_sequencia
-
-        return fetch_from_view("instrucoes_view", filters)
-
-
-class Receitas(models.Model):
-    id_receita = models.AutoField(primary_key=True)
-    nome = models.CharField(max_length=100)
-    duracao = models.DurationField()
-    created_at = models.DateTimeField(auto_now_add=True, null=True)
-    updated_at = models.DateTimeField(auto_now=True, null=True)
-    ingredientes = models.ManyToManyField(Ingredientes, through='IngredientesReceitas')
-    utensilios = models.ManyToManyField(Utensilios, through='UtensiliosReceitas')
-
-    class Meta:
-        managed = False
-        db_table = 'receitas'
-
-    def __str__(self):
-        return f"Receita - {self.nome}"
-
-    @staticmethod
-    def fetch_by_id(id_receita):
-        return fetch_from_view("receitas_view", {"id_receita": id_receita})
-    
-    @staticmethod
-    def fetch_all():
-        return fetch_from_view("receitas_view")
-
-
-class IngredientesReceitas(models.Model):
-    id_ingrediente_receita = models.AutoField(primary_key=True)
-    id_ingrediente = models.ForeignKey(
-        Ingredientes, on_delete=models.CASCADE, db_column='id_ingrediente')
-    id_receita = models.ForeignKey(
-        Receitas, on_delete=models.CASCADE, db_column='id_receita')
-    created_at = models.DateTimeField(auto_now_add=True, null=True)
-    updated_at = models.DateTimeField(auto_now=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'ingredientesreceitas'
-
-    def __str__(self):
-        return f"IngredienteReceita - Ingrediente: {self.id_ingrediente} - Receita: {self.id_receita}"
-    
-    @staticmethod
-    def fetch_by_ingrediente(id_ingrediente):
-        with connection.cursor() as cursor:
-            cursor.execute('CALL get_receitas_by_ingrediente(%s, %s)', [id_ingrediente, None])
-            return cursor.fetchone()[0]
-   
-    @staticmethod
-    def fetch_by_receita(id_receita):
-        with connection.cursor() as cursor:
-            cursor.execute('CALL get_ingredientes_by_receita(%s, %s)', [id_receita, None])
-            return cursor.fetchone()[0]
-    
-    @staticmethod
-    def fetch_all():
-        return fetch_from_view("ingredientesreceitas_view")
-
-
-class UtensiliosReceitas(models.Model):
-    id_utensilio_receita = models.AutoField(primary_key=True)
-    id_utensilio = models.ForeignKey(
-        Utensilios, on_delete=models.CASCADE, db_column='id_utensilio')
-    id_receita = models.ForeignKey(
-        Receitas, on_delete=models.CASCADE, db_column='id_receita')
-    created_at = models.DateTimeField(auto_now_add=True, null=True)
-    updated_at = models.DateTimeField(auto_now=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'utensiliosreceitas'
-
-    def __str__(self):
-        return f"UtensilioReceita - Utensilio: {self.id_utensilio} - Receita: {self.id_receita}"
-    
-    @staticmethod
-    def fetch_by_utensilio(id_utensilio):
-        with connection.cursor() as cursor:
-            cursor.execute('CALL get_receitas_by_utensilio(%s, %s)', [id_utensilio, None])
-            return cursor.fetchone()[0]
-   
-    @staticmethod
-    def fetch_by_receita(id_receita):
-        with connection.cursor() as cursor:
-            cursor.execute('CALL get_utensilios_by_receita(%s, %s)', [id_receita, None])
-            return cursor.fetchone()[0]
-    
-    @staticmethod
-    def fetch_all():
-        return fetch_from_view("utensiliosreceitas_view")

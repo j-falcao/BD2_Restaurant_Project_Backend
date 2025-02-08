@@ -35,38 +35,6 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE get_ingredientes_by_receita(_id_receita_in INT, OUT resultado JSON)
-LANGUAGE plpgsql
-AS $$
-BEGIN
-    SELECT json_agg(row_to_json(ingredientes)) INTO resultado
-    FROM (
-        SELECT
-            ir.*,
-            i.nome AS nome_ingrediente,
-            i.url_imagem AS url_imagem_ingrediente
-        FROM ingredientesreceitas ir
-        JOIN ingredientes i ON i.id_ingrediente = ir.id_ingrediente
-    ) ingredientes;
-END;
-$$;
-
-CREATE OR REPLACE PROCEDURE get_utensilios_by_receita(_id_receita_in INT, OUT resultado JSON)
-LANGUAGE plpgsql
-AS $$
-BEGIN
-    SELECT json_agg(row_to_json(utensilios)) INTO resultado
-    FROM (
-        SELECT
-            ur.*,
-            u.nome AS nome_utensilio,
-            u.url_imagem AS url_imagem_utensilio
-        FROM utensiliosreceitas ur
-        JOIN utensilios u ON u.id_utensilio = ur.id_utensilio
-    ) utensilios;
-END;
-$$;
-
 CREATE OR REPLACE VIEW categorias_view AS
 SELECT * FROM categorias;
 

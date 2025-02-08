@@ -1,5 +1,6 @@
 from django.db import connection, models
 from project.utils.db_utils import fetch_from_view
+from inventario.models import *
 
 
 class Produtos(models.Model):
@@ -22,6 +23,98 @@ class Produtos(models.Model):
     @staticmethod
     def fetch_all():
         return fetch_from_view('produtos')
+    
+
+class Instrucoes(models.Model):
+    id_instrucao = models.AutoField(primary_key=True)
+    id_receita = models.ForeignKey('Receitas', on_delete=models.CASCADE, db_column='id_receita')
+    numero_sequencia = models.IntegerField()
+    descricao = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'instrucoes_view'
+
+    def __str__(self):
+        return f"Instrução: {self.id_instrucao} - Receita {self.id_receita} - Passo {self.numero_sequencia}"
+    
+    @staticmethod
+    def fetch_by_receita(id_receita):
+        return fetch_from_view("instrucoes_view", {"id_receita": id_receita})
+
+
+class Receitas(models.Model):
+    id_receita = models.AutoField(primary_key=True)
+    nome = models.CharField(max_length=100)
+    duracao = models.DurationField()
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
+    ingredientes = models.ManyToManyField(Ingredientes, through='IngredientesReceitas')
+    utensilios = models.ManyToManyField(Utensilios, through='UtensiliosReceitas')
+
+    class Meta:
+        managed = False
+        db_table = 'receitas_view'
+
+    def __str__(self):
+        return f"Receita - {self.nome}"
+
+    @staticmethod
+    def fetch_by_id(id_receita):
+        return fetch_from_view("receitas_view", {"id_receita": id_receita})
+        
+    @staticmethod
+    def fetch_all():
+        return fetch_from_view("receitas_view")
+    
+    @staticmethod
+    def fetch_by_ingrediente(id_ingrediente):
+        with connection.cursor() as cursor:
+            cursor.execute('CALL get_receitas_by_ingrediente(%s, %s)', [id_ingrediente, None])
+            return cursor.fetchone()[0]
+
+    @staticmethod
+    def fetch_by_utensilio(id_utensilio):
+        with connection.cursor() as cursor:
+            cursor.execute('CALL get_receitas_by_utensilio(%s, %s)', [id_utensilio, None])
+            return cursor.fetchone()[0]
+
+
+class IngredientesReceitas(models.Model):
+    id_ingrediente_receita = models.AutoField(primary_key=True)
+    id_ingrediente = models.ForeignKey(
+        Ingredientes, on_delete=models.CASCADE, db_column='id_ingrediente')
+    id_receita = models.ForeignKey(
+        Receitas, on_delete=models.CASCADE, db_column='id_receita')
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'ingredientesreceitas_view'
+
+    def __str__(self):
+        return f"IngredienteReceita - Ingrediente: {self.id_ingrediente} - Receita: {self.id_receita}"
+
+
+class UtensiliosReceitas(models.Model):
+    id_utensilio_receita = models.AutoField(primary_key=True)
+    id_utensilio = models.ForeignKey(
+        Utensilios, on_delete=models.CASCADE, db_column='id_utensilio')
+    id_receita = models.ForeignKey(
+        Receitas, on_delete=models.CASCADE, db_column='id_receita')
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'utensiliosreceitas_view'
+
+    def __str__(self):
+        return f"UtensilioReceita - Utensilio: {self.id_utensilio} - Receita: {self.id_receita}"
+    
 
 class Categorias(models.Model):
     id_categoria = models.AutoField(primary_key=True)
@@ -50,6 +143,7 @@ class Categorias(models.Model):
             cursor.execute("CALL get_categorias_by_item(%s, %s)", [id_item, None])
             return cursor.fetchone()[0]
 
+
 class Tipos(models.Model):
     id_tipo = models.AutoField(primary_key=True)
     designacao = models.CharField(max_length=100)
@@ -77,6 +171,7 @@ class Tipos(models.Model):
             cursor.execute("CALL get_tipos_by_item(%s, %s)", [id_item, None])            
             return cursor.fetchone()[0]
 
+
 class Opcoes(models.Model):
     id_opcao = models.AutoField(primary_key=True)
     designacao = models.CharField(max_length=255)
@@ -103,6 +198,7 @@ class Opcoes(models.Model):
         with connection.cursor() as cursor:
             cursor.execute("CALL get_opcoes_by_item(%s, %s)", [id_item, None])            
             return cursor.fetchone()[0]
+
     
 class Itens(models.Model):
     id_item = models.OneToOneField(Produtos, on_delete=models.CASCADE, primary_key=True, related_name='produto_item', db_column='id_item')

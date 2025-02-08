@@ -2,6 +2,16 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [
+    # Receitas
+    path('receitas/', get_post_receitas),
+    path('receitas/<str:id_receita>/', update_delete_receitas),
+    path('receitas/<str:id_receita>/ingredientes/', get_post_receitasIngredientes),
+    path('ingredientesreceitas/<str:id_ingrediente_receita>/', update_delete_ingredientesReceitas),
+    path('receitas/<str:id_receita>/utensilios/', get_post_receitasUtensilios),
+    path('utensiliosreceitas/<str:id_utensilio_receita>/', update_delete_utensiliosReceitas),
+    path('receitas/<str:id_receita>/instrucoes/', get_post_instrucoes),
+    path('instrucoes/<str:id_instrucao>/', update_delete_instrucoes),
+
     # Tipos
     path('tipos/', get_post_tipos),
     path('tipos/<int:id_tipo>/', update_delete_tipos),

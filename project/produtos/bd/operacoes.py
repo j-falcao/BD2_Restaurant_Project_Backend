@@ -2,6 +2,116 @@ from ..models import *
 from django.db import connection
 
 
+# Instrucoes
+def create_instrucoes(id_receita, data):
+    with connection.cursor() as cursor:
+        cursor.execute('CALL create_instrucoes(%s, %s, %s)', [
+            id_receita,
+            data['descricao'],
+            None
+        ])
+        return cursor.fetchone()[0]
+
+
+def update_instrucoes(id_instrucao, data):
+    with connection.cursor() as cursor:
+        cursor.execute('CALL update_instrucoes(%s, %s, %s, %s)', [
+            id_instrucao,
+            data['numero_sequencia'],
+            data['descricao'],
+            None
+        ])
+        return cursor.fetchone()[0]
+
+
+def delete_instrucoes(id_instrucao):
+    with connection.cursor() as cursor:
+        cursor.execute('CALL delete_instrucoes(%s)', [id_instrucao])
+
+
+# Receitas
+def create_receitas(receita):
+    with connection.cursor() as cursor:
+        cursor.execute('CALL create_receitas(%s, %s, %s)', [
+            receita['nome'],
+            receita['duracao'],
+            None
+        ])
+        return cursor.fetchone()[0]
+
+
+def update_receitas(id_receita, receita):
+    with connection.cursor() as cursor:
+        cursor.execute('CALL update_receitas(%s, %s, %s, %s)', [
+            id_receita,
+            receita['nome'],
+            receita['duracao'],
+            None
+        ])
+        return cursor.fetchone()[0]
+
+
+def delete_receitas(id_receita):
+    with connection.cursor() as cursor:
+        cursor.execute('CALL delete_receitas(%s)', [id_receita])
+
+
+# IngredientesReceitas
+def create_ingredientesReceitas(id_receita, data):
+    with connection.cursor() as cursor:
+        cursor.execute('CALL create_ingredientesreceitas(%s, %s, %s, %s)', [
+            id_receita,
+            data['id_ingrediente'],
+            data['quantidade'],
+            None
+        ])
+        return cursor.fetchone()[0]
+
+
+def update_ingredientesReceitas(id_ingrediente_receita, data):
+    with connection.cursor() as cursor:
+        cursor.execute('CALL update_ingredientesreceitas(%s, %s, %s)', [
+            id_ingrediente_receita,
+            data['quantidade'],
+            None
+        ])
+        return cursor.fetchone()[0]
+
+
+def delete_ingredientesReceitas(id_ingrediente_receita):
+    with connection.cursor() as cursor:
+        cursor.execute('CALL delete_ingredientesreceitas(%s)',
+                       [id_ingrediente_receita])
+
+
+# UtensiliosReceitas
+def create_utensiliosReceitas(id_receita, data):
+    with connection.cursor() as cursor:
+        cursor.execute('CALL create_utensiliosreceitas(%s, %s, %s, %s)', [
+            id_receita,
+            data['id_utensilio'],
+            data['quantidade'],
+            None
+        ])
+        return cursor.fetchone()[0]
+
+
+def update_utensiliosReceitas(id_utensilio_receita, data):
+    with connection.cursor() as cursor:
+        cursor.execute('CALL update_utensiliosreceitas(%s, %s, %s)', [
+            id_utensilio_receita,
+            data['quantidade'],
+            None
+        ])
+        return cursor.fetchone()[0]
+
+
+def delete_utensiliosReceitas(id_utensilio_receita):
+    with connection.cursor() as cursor:
+        cursor.execute('CALL delete_utensiliosreceitas(%s)',
+                       [id_utensilio_receita])
+
+
 # Categorias
 def create_categorias(data):
     with connection.cursor() as cursor:

@@ -176,6 +176,36 @@ BEGIN
 END;
 $$;
 
+CREATE OR REPLACE PROCEDURE create_estadosreservas(_new_designacao VARCHAR(100), OUT _new_estado_reserva JSON)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO estadosreservas (designacao)
+    VALUES (_new_designacao)
+    RETURNING row_to_json(estadosreservas) INTO _new_estado_reserva;
+END;
+$$;
+
+CREATE OR REPLACE PROCEDURE update_estadosreservas(id_estado_reserva_in INT, _new_designacao VARCHAR(100), OUT _new_estado_reserva JSON)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    UPDATE estadosreservas
+    SET designacao = _new_designacao
+    WHERE id_estado_reserva = id_estado_reserva_in
+    RETURNING row_to_json(estadosreservas) INTO _new_estado_reserva;
+END;
+$$;
+
+CREATE OR REPLACE PROCEDURE delete_estadosreservas(id_estado_reserva_in INT)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    DELETE FROM estadosreservas
+    WHERE id_estado_reserva = id_estado_reserva_in;
+END;
+$$;
+
 CREATE OR REPLACE PROCEDURE create_reservas(_new_id_mesa INT, _new_id_estado_reserva INT, _new_quantidade_pessoas INT, _new_observacoes TEXT, _new_id_garcom INT, _new_data_hora TIMESTAMP, OUT _new_reserva JSON)
 LANGUAGE plpgsql
 AS $$

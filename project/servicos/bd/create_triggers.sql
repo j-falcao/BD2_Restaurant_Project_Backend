@@ -138,8 +138,8 @@ FOR EACH ROW EXECUTE FUNCTION verificar_garcom_reserva();
 -- MESAS
 CREATE OR REPLACE FUNCTION verificar_capacidade_mesa() RETURNS TRIGGER AS $$
 BEGIN
-    IF (SELECT capacidade FROM mesas WHERE id_mesa = NEW.id_mesa) < NEW.quantidade_pessoas THEN
-        RAISE EXCEPTION 'Capacidade da mesa insuficiente para a reserva';
+    IF (SELECT capacidade_maxima FROM mesas WHERE id_mesa = NEW.id_mesa) < NEW.quantidade_pessoas THEN
+        RAISE EXCEPTION 'Capacidade máxima da mesa insuficiente para a reserva';
     END IF;
     RETURN NEW;
 END;

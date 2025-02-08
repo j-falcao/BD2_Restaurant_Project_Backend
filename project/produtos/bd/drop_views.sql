@@ -1,3 +1,5 @@
+DROP VIEW IF EXISTS menusdiassemana_view;
+DROP VIEW IF EXISTS diassemana_view;
 DROP VIEW IF EXISTS itensmenus_view;
 DROP VIEW IF EXISTS menus_view;
 DROP VIEW IF EXISTS itensopcoes_view;

@@ -5,14 +5,24 @@ from rest_framework.permissions import AllowAny
 from .bd import operacoes
 from .models import *
 
-
+# TIPOS
 @api_view(['GET', 'POST'])
 def get_post_tipos(request):
     if request.method == 'GET':
-        return Response(Tipos.fetch_all())
+        id_tipo = request.GET.get('id_tipo')
+        if id_tipo:
+            try:
+                return Response(Tipos.fetch_by_id(id_tipo))
+            except Tipos.DoesNotExist:
+                raise NotFound("Tipo nao encontrado")
+        else:
+            return Response(Tipos.fetch_all())
     elif request.method == 'POST':
         return Response(operacoes.create_tipos(request.data), status=201)
 
+@api_view(['GET'])
+def get_itens_by_tipo(request, id_tipo):
+    return Response(Itens.fetch_by_tipo(id_tipo))
 
 @api_view(['PUT', 'DELETE'])
 def update_delete_tipos(request, id_tipo):
@@ -23,6 +33,7 @@ def update_delete_tipos(request, id_tipo):
         return Response({"msg": "Tipo apagado"}, status=200)
 
 
+# CATEGORIAS
 @api_view(['GET', 'POST'])
 def get_post_categorias(request):
     if request.method == 'GET':
@@ -30,6 +41,9 @@ def get_post_categorias(request):
     elif request.method == 'POST':
         return Response(operacoes.create_categorias(request.data), status=201)
 
+@api_view(['GET'])
+def get_itens_by_categoria(request, id_categoria):
+    return Response(Itens.fetch_by_categoria(id_categoria))
 
 @api_view(['PUT', 'DELETE'])
 def update_delete_categorias(request, id_categoria):
@@ -40,6 +54,7 @@ def update_delete_categorias(request, id_categoria):
         return Response({"msg": "Categoria apagada"}, status=200)
 
 
+# OPCOES
 @api_view(['GET', 'POST'])
 def get_post_opcoes(request):
     if request.method == 'GET':
@@ -47,6 +62,9 @@ def get_post_opcoes(request):
     elif request.method == 'POST':
         return Response(operacoes.create_opcoes(request.data), status=201)
 
+@api_view(['GET'])
+def get_itens_by_opcao(request, id_opcao):
+    return Response(Itens.fetch_by_opcao(id_opcao))
 
 @api_view(['PUT', 'DELETE'])
 def update_delete_opcoes(request, id_opcao):
@@ -57,6 +75,7 @@ def update_delete_opcoes(request, id_opcao):
         return Response({"msg": "Opcao apagada"}, status=200)
 
 
+# ITENS
 @api_view(['GET', 'POST'])
 def get_post_itens(request):
     if request.method == 'GET':
@@ -69,7 +88,10 @@ def get_post_itens(request):
         return Response(Itens.fetch_all())
     elif request.method == 'POST':
         return Response(operacoes.create_item(request.data), status=201)
-
+    
+@api_view(['GET'])
+def get_itens_by_menu(request, id_menu):
+    return Response(Itens.fetch_by_menu(id_menu))
 
 @api_view(['PUT', 'DELETE'])
 def update_delete_itens(request, id_item):
@@ -80,13 +102,13 @@ def update_delete_itens(request, id_item):
         return Response({"msg": "Item apagado"}, status=200)
 
 
+# ITENS OPCOES
 @api_view(['GET', 'POST'])
 def get_post_itensOpcoes(request, id_item):
     if request.method == 'GET':
-        return Response(ItensOpcoes.fetch_by_item(id_item))
+        return Response(Opcoes.fetch_by_item(id_item))
     elif request.method == 'POST':
         return Response(operacoes.create_itensOpcoes(id_item, request.data), status=201)
-
 
 @api_view(['DELETE'])
 def delete_itensOpcoes(request, id_item_opcao):
@@ -94,13 +116,13 @@ def delete_itensOpcoes(request, id_item_opcao):
     return Response({"msg": "ItemOpcao apagado"}, status=200)
 
 
+# ITENS CATEGORIAS
 @api_view(['GET', 'POST'])
 def get_post_itensCategorias(request, id_item):
     if request.method == 'GET':
-        return Response(ItensCategorias.fetch_by_item(id_item))
+        return Response(Categorias.fetch_by_item(id_item))
     elif request.method == 'POST':
         return Response(operacoes.create_itensCategorias(id_item, request.data), status=201)
-
 
 @api_view(['DELETE'])
 def delete_itensCategorias(request, id_item_categoria):
@@ -108,13 +130,13 @@ def delete_itensCategorias(request, id_item_categoria):
     return Response({"msg": "ItemCategoria apagado"}, status=200)
 
 
+# ITENS TIPOS
 @api_view(['GET', 'POST'])
 def get_post_itensTipos(request, id_item):
     if request.method == 'GET':
-        return Response(ItensTipos.fetch_by_item(id_item))
+        return Response(Tipos.fetch_by_item(id_item))
     elif request.method == 'POST':
         return Response(operacoes.create_itensTipos(id_item, request.data), status=201)
-
 
 @api_view(['DELETE'])
 def delete_itensTipos(request, id_item_tipo):
@@ -122,6 +144,7 @@ def delete_itensTipos(request, id_item_tipo):
     return Response({"msg": "ItemTipo apagado"}, status=200)
 
 
+# MENUS
 @api_view(['GET', 'POST'])
 def get_post_menus(request):
     if request.method == 'GET':
@@ -135,7 +158,14 @@ def get_post_menus(request):
             return Response(Menus.fetch_all())
     elif request.method == 'POST':
         return Response(operacoes.create_menus(request.data), status=201)
+    
+@api_view(['GET'])
+def get_menus_by_diasemana(request, id_dia_semana):
+    return Response(Menus.fetch_by_diasemana(id_dia_semana))
 
+@api_view(['GET'])
+def get_menus_by_item(request, id_item):
+    return Response(Menus.fetch_by_item(id_item))
 
 @api_view(['PUT', 'DELETE'])
 def update_delete_menus(request, id_menu):
@@ -146,13 +176,13 @@ def update_delete_menus(request, id_menu):
         return Response({"msg": "Menu apagado"}, status=200)
 
 
+# ITENS MENUS
 @api_view(['GET', 'POST'])
 def get_post_itensMenus(request, id_menu):
     if request.method == 'GET':
-        return Response(ItensMenus.fetch_by_menu(id_menu))
+        return Response(Itens.fetch_by_menu(id_menu))
     elif request.method == 'POST':
         return Response(operacoes.create_itensMenus(id_menu, request.data), status=201)
-
 
 @api_view(['DELETE'])
 def update_delete_itensMenus(request, id_item_menu):
@@ -160,13 +190,13 @@ def update_delete_itensMenus(request, id_item_menu):
     return Response({"msg": "ItemMenu apagado"}, status=200)
 
 
+# MENUS DIAS SEMANA
 @api_view(['GET', 'POST'])
 def get_post_menusDiasSemana(request, id_menu):
     if request.method == 'GET':
-        return Response(MenusDiasSemana.fetch_by_menu(id_menu))
+        return Response(DiasSemana.fetch_by_menu(id_menu))
     elif request.method == 'POST':
         return Response(operacoes.create_menusDiasSemana(id_menu, request.data), status=201)
-
 
 @api_view(['PUT', 'DELETE'])
 def update_delete_menusDiasSemana(request, id_menu_dia_semana):
@@ -175,8 +205,3 @@ def update_delete_menusDiasSemana(request, id_menu_dia_semana):
     elif request.method == 'DELETE':
         operacoes.delete_menusDiasSemana(id_menu_dia_semana)
         return Response({"msg": "MenuDiaSemana apagado"}, status=200)
-
-
-@api_view(['GET'])
-def get_menus_by_dia_semana(request, id_dia_semana):
-    return Response(MenusDiasSemana.fetch_by_dia_semana(id_dia_semana))

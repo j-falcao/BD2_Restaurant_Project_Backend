@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import connection, models
 from project.utils.db_utils import fetch_from_view
 
 
@@ -14,7 +14,7 @@ class Produtos(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'produtos'
+        db_table = 'produtos_view'
 
     def __str__(self):
         return f"Produto: {self.id_produto} - {self.nome}"
@@ -31,15 +31,24 @@ class Categorias(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'categorias'
+        db_table = 'categorias_view'
 
     def __str__(self):
         return f"Categoria: {self.id_categoria} - {self.designacao}"
     
     @staticmethod
+    def fetch_by_id(id_categoria):
+        return fetch_from_view('categorias', {'id_categoria': id_categoria})
+
+    @staticmethod
     def fetch_all():
         return fetch_from_view('categorias')
 
+    @staticmethod
+    def fetch_by_item(id_item):
+        with connection.cursor() as cursor:
+            cursor.execute("CALL get_categorias_by_item(%s, %s)", [id_item, None])
+            return cursor.fetchone()[0]
 
 class Tipos(models.Model):
     id_tipo = models.AutoField(primary_key=True)
@@ -49,14 +58,24 @@ class Tipos(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'tipos'
+        db_table = 'tipos_view'
 
     def __str__(self):
         return f"Tipo: {self.id_tipo} - {self.designacao}"
     
     @staticmethod
+    def fetch_by_id(id_tipo):
+        return fetch_from_view('tipos', {'id_tipo': id_tipo})
+
+    @staticmethod
     def fetch_all():
         return fetch_from_view('tipos')
+    
+    @staticmethod
+    def fetch_by_item(id_item):
+        with connection.cursor() as cursor:
+            cursor.execute("CALL get_tipos_by_item(%s, %s)", [id_item, None])            
+            return cursor.fetchone()[0]
 
 class Opcoes(models.Model):
     id_opcao = models.AutoField(primary_key=True)
@@ -66,16 +85,25 @@ class Opcoes(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'opcoes'
+        db_table = 'opcoes_view'
 
     def __str__(self):
         return f"Opcao: {self.id_opcao} - {self.designacao}"
     
     @staticmethod
+    def fetch_by_id(id_opcao):
+        return fetch_from_view('opcoes', {'id_opcao': id_opcao})
+    
+    @staticmethod
     def fetch_all():
         return fetch_from_view('opcoes')
     
-
+    @staticmethod
+    def fetch_by_item(id_item):
+        with connection.cursor() as cursor:
+            cursor.execute("CALL get_opcoes_by_item(%s, %s)", [id_item, None])            
+            return cursor.fetchone()[0]
+    
 class Itens(models.Model):
     id_item = models.OneToOneField(Produtos, on_delete=models.CASCADE, primary_key=True, related_name='produto_item', db_column='id_item')
     categorias = models.ManyToManyField(Categorias, related_name='itens', through='itenscategorias')
@@ -86,7 +114,7 @@ class Itens(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'itens'
+        db_table = 'itens_view'
 
     def __str__(self):
         return f"Item: {self.id_item}"
@@ -98,10 +126,30 @@ class Itens(models.Model):
     @staticmethod
     def fetch_all():
         return fetch_from_view('itens')
-
+    
     @staticmethod
-    def fetch_by_menu():
-        return fetch_from_view('itens', )
+    def fetch_by_categoria(id_categoria):
+        with connection.cursor() as cursor:
+            cursor.execute("CALL get_itens_by_categoria(%s, %s)", [id_categoria, None])
+            return cursor.fetchone()[0]
+    
+    @staticmethod
+    def fetch_by_tipo(id_tipo):
+        with connection.cursor() as cursor:
+            cursor.execute("CALL get_itens_by_tipo(%s, %s)", [id_tipo, None])
+            return cursor.fetchone()[0]
+    
+    @staticmethod
+    def fetch_by_opcao(id_opcao):
+        with connection.cursor() as cursor:
+            cursor.execute("CALL get_itens_by_opcao(%s, %s)", [id_opcao, None])            
+            return cursor.fetchone()[0]
+        
+    @staticmethod
+    def fetch_by_menu(id_menu):
+        with connection.cursor() as cursor:
+            cursor.execute("CALL get_itens_by_menu(%s, %s)", [id_menu, None])            
+            return cursor.fetchone()[0]
 
 
 class ItensCategorias(models.Model):
@@ -113,18 +161,10 @@ class ItensCategorias(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'itenscategorias'
+        db_table = 'itenscategorias_view'
 
     def __str__(self):
         return f'ItemCategoria: <Item: {self.id_item} - Categoria: {self.id_categoria}>'
-    
-    @staticmethod
-    def fetch_by_item(id_item):
-        return fetch_from_view('itenscategorias', {'id_item': id_item})
-
-    @staticmethod
-    def fetch_by_categoria(id_categoria):
-        return fetch_from_view('itenscategorias', {'id_categoria': id_categoria})
 
 
 class ItensTipos(models.Model):
@@ -138,22 +178,10 @@ class ItensTipos(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'itenstipos'
+        db_table = 'itenstipos_view'
 
     def __str__(self):
         return f"ItemTipo: <Item: {self.id_item} - Tipo: {self.id_tipo}>"
-    
-    @staticmethod
-    def fetch_all():
-        return fetch_from_view('itenstipos')
-    
-    @staticmethod
-    def fetch_by_id(id_item_tipo):
-        return fetch_from_view('itenstipos', {'id_item_tipo': id_item_tipo})
-    
-    @staticmethod
-    def fetch_by_item(id_item):
-        return fetch_from_view('itenstipos', {'id_item': id_item})
 
 
 class ItensOpcoes(models.Model):
@@ -167,22 +195,10 @@ class ItensOpcoes(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'itensopcoes'
+        db_table = 'itensopcoes_view'
 
     def __str__(self):
         return f"ItemOpcao <Item: {self.id_item} - Opcao: {self.id_opcao}>"
-
-    @staticmethod
-    def fetch_all():
-        return fetch_from_view('itensopcoes')
-    
-    @staticmethod
-    def fetch_by_id(id_item_opcao):
-        return fetch_from_view('itensopcoes', {'id_item_opcao': id_item_opcao})
-    
-    @staticmethod
-    def fetch_by_item(id_item):
-        return fetch_from_view('itensopcoes', {'id_item': id_item})
 
 
 class Menus(models.Model):
@@ -193,7 +209,7 @@ class Menus(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'menus'
+        db_table = 'menus_view'
 
     def __str__(self):
         return f"Menu: {self.id_menu.id_produto} - {self.id_menu.nome}"
@@ -205,6 +221,18 @@ class Menus(models.Model):
     @staticmethod
     def fetch_all():
         return fetch_from_view('menus')
+    
+    @staticmethod
+    def fetch_by_item(id_item):
+        with connection.cursor() as cursor:
+            cursor.execute("CALL get_menus_by_item(%s, %s)", [id_item, None])
+            return cursor.fetchone()[0]
+        
+    @staticmethod
+    def fetch_by_diasemana(id_dia_semana):
+        with connection.cursor() as cursor:
+            cursor.execute("CALL get_menus_by_diasemana(%s, %s)", [id_dia_semana, None])
+            return cursor.fetchone()[0]
 
 
 class ItensMenus(models.Model):
@@ -216,26 +244,10 @@ class ItensMenus(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'itensmenus'
+        db_table = 'itensmenus_view'
 
     def __str__(self):
         return f'ItemMenu: <Menu: {self.id_menu} - Item: {self.id_item}>'
-    
-    @staticmethod
-    def fetch_by_id(id_item_menu):
-        return fetch_from_view('itensmenus', {'id_item_menu': id_item_menu})
-    
-    @staticmethod
-    def fetch_all():
-        return fetch_from_view('itensmenus')
-    
-    @staticmethod
-    def fetch_by_menu(id_menu):
-        return fetch_from_view('itensmenus', {'id_menu': id_menu})
-    
-    @staticmethod
-    def fetch_by_item(id_item):
-        return fetch_from_view('itensmenus', {'id_item': id_item})
 
 
 class DiasSemana(models.Model):
@@ -247,7 +259,7 @@ class DiasSemana(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'diassemana'
+        db_table = 'diassemana_view'
 
     def __str__(self):
         return f"Dia: {self.id_dia_semana} - {self.nome}"
@@ -259,6 +271,12 @@ class DiasSemana(models.Model):
     @staticmethod
     def fetch_all():
         return fetch_from_view('diassemana')
+    
+    @staticmethod
+    def fetch_by_menu(id_menu):
+        with connection.cursor() as cursor:
+            cursor.execute("CALL get_diassemana_by_menu(%s, %s)", [id_menu, None])
+            return cursor.fetchone()[0]
 
 
 class MenusDiasSemana(models.Model):
@@ -272,15 +290,7 @@ class MenusDiasSemana(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'menusdiassemana'
+        db_table = 'menusdiassemana_view'
 
     def __str__(self):
         return f'MenuDiaSemana: <Menu: {self.id_menu} - Dia: {self.id_dia_semana} - Almoço: {self.almoco} - Jantar: {self.jantar}>'
-    
-    @staticmethod
-    def fetch_by_menu(id_menu):
-        return fetch_from_view('menusdiassemana', {'id_menu': id_menu})
-    
-    @staticmethod
-    def fetch_by_dia_semana(id_dia_semana):
-        return fetch_from_view('menusdiassemana', {'id_dia_semana': id_dia_semana})

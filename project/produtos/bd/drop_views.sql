@@ -9,4 +9,8 @@ DROP VIEW IF EXISTS itens_view;
 DROP VIEW IF EXISTS opcoes_view;
 DROP VIEW IF EXISTS tipos_view;
 DROP VIEW IF EXISTS categorias_view;
+DROP PROCEDURE IF EXISTS get_receitas_by_ingrediente;
+DROP PROCEDURE IF EXISTS get_receitas_by_utensilio;
+DROP PROCEDURE IF EXISTS get_ingredientes_by_receita;
+DROP PROCEDURE IF EXISTS get_utensilios_by_receita;
 DROP VIEW IF EXISTS produtos_view;

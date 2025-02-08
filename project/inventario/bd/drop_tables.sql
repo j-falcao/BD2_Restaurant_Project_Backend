@@ -1,7 +1,4 @@
-DROP TABLE IF EXISTS instrucoes;
-DROP TABLE IF EXISTS utensiliosreceitas;
-DROP TABLE IF EXISTS ingredientesreceitas;
-DROP TABLE IF EXISTS receitas;
+
 DROP TABLE IF EXISTS utensilioscarrinhos;
 DROP TABLE IF EXISTS utensilios;
 DROP TABLE IF EXISTS ingredientescarrinhos;

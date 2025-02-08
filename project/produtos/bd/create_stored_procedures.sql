@@ -28,6 +28,126 @@
 -- END;
 -- $$;
 
+CREATE OR REPLACE PROCEDURE create_receitas(_new_nome VARCHAR(100), _new_duracao INTERVAL, OUT _new_receita JSON)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO receitas (nome, duracao)
+    VALUES (_new_nome, _new_duracao)
+    RETURNING row_to_json(receitas) INTO _new_receita;
+END;
+$$;
+
+CREATE OR REPLACE PROCEDURE update_receitas(id_receita_in INT, _new_nome VARCHAR(100), _new_duracao INTERVAL, OUT _new_receita JSON)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    UPDATE receitas
+    SET nome = _new_nome, duracao = _new_duracao
+    WHERE id_receita = id_receita_in
+    RETURNING row_to_json(receitas) INTO _new_receita;
+END;
+$$;
+
+CREATE OR REPLACE PROCEDURE delete_receitas(id_receita_in INT)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    DELETE FROM receitas
+    WHERE id_receita = id_receita_in;
+END;
+$$;
+
+CREATE OR REPLACE PROCEDURE create_ingredientesreceitas(_new_id_receita INT, _new_id_ingrediente INT, _new_quantidade INT, OUT _new_ingrediente_receita JSON)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO ingredientesreceitas (id_receita, id_ingrediente, quantidade)
+    VALUES (_new_id_receita, _new_id_ingrediente, _new_quantidade)
+    RETURNING row_to_json(ingredientesreceitas) INTO _new_ingrediente_receita;
+END;
+$$;
+
+CREATE OR REPLACE PROCEDURE update_ingredientesreceitas(id_ingrediente_receita_in INT, _new_quantidade INT, OUT _new_ingrediente_receita JSON)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    UPDATE ingredientesreceitas
+    SET quantidade = _new_quantidade
+    WHERE id_ingrediente_receita = id_ingrediente_receita_in
+    RETURNING row_to_json(ingredientesreceitas) INTO _new_ingrediente_receita;
+END;
+$$;
+
+CREATE OR REPLACE PROCEDURE delete_ingredientesreceitas(id_ingrediente_receita_in INT)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    DELETE FROM ingredientesreceitas
+    WHERE id_ingrediente_receita = id_ingrediente_receita_in;
+END;
+$$;
+
+CREATE OR REPLACE PROCEDURE create_utensiliosreceitas(_new_id_receita INT, _new_id_utensilio INT, _new_quantidade INT, OUT _new_utensilio_receita JSON)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO utensiliosreceitas (id_receita, id_utensilio, quantidade)
+    VALUES (_new_id_receita, _new_id_utensilio, _new_quantidade)
+    RETURNING row_to_json(utensiliosreceitas) INTO _new_utensilio_receita;
+END;
+$$;
+
+CREATE OR REPLACE PROCEDURE update_utensiliosreceitas(id_utensilio_receita_in INT, _new_quantidade INT, OUT _new_utensilio_receita JSON)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    UPDATE utensiliosreceitas
+    SET quantidade = _new_quantidade
+    WHERE id_utensilio_receita = id_utensilio_receita_in
+    RETURNING row_to_json(utensiliosreceitas) INTO _new_utensilio_receita;
+END;
+$$;
+
+CREATE OR REPLACE PROCEDURE delete_utensiliosreceitas(id_utensilio_receita_in INT)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    DELETE FROM utensiliosreceitas
+    WHERE id_utensilio_receita = id_utensilio_receita_in;
+END;
+$$;
+
+CREATE OR REPLACE PROCEDURE create_instrucoes(_new_id_receita INT, _new_descricao TEXT, OUT _new_instrucao JSON)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO instrucoes (id_receita, descricao) -- Trigger 'set_next_numero_sequencia_trigger' define o numero_sequencia antes de inserir
+    VALUES (_new_id_receita, _new_descricao)
+    RETURNING row_to_json(instrucoes) INTO _new_instrucao;
+END;
+$$;
+
+CREATE OR REPLACE PROCEDURE update_instrucoes(id_instrucao_in INT, _new_numero_sequencia INT, _new_descricao TEXT, OUT _new_instrucao JSON)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    UPDATE instrucoes
+    SET numero_sequencia = _new_numero_sequencia, descricao = _new_descricao
+    WHERE id_instrucao = id_instrucao_in
+    RETURNING row_to_json(instrucoes) INTO _new_instrucao;
+END;
+$$;
+
+CREATE OR REPLACE PROCEDURE delete_instrucoes(id_instrucao_in INT)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    DELETE FROM instrucoes
+    WHERE id_instrucao = id_instrucao_in;
+END;
+$$;
+
 CREATE OR REPLACE PROCEDURE create_tipos(_new_designacao VARCHAR(100), OUT _new_tipo JSON)
 LANGUAGE plpgsql
 AS $$

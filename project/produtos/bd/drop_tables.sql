@@ -9,4 +9,8 @@ DROP TABLE IF EXISTS categorias;
 DROP TABLE IF EXISTS itenstipos;
 DROP TABLE IF EXISTS itens;
 DROP TABLE IF EXISTS tipos;
+DROP TABLE IF EXISTS instrucoes;
+DROP TABLE IF EXISTS utensiliosreceitas;
+DROP TABLE IF EXISTS ingredientesreceitas;
+DROP TABLE IF EXISTS receitas;
 DROP TABLE IF EXISTS produtos;

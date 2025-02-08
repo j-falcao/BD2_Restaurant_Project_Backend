@@ -76,38 +76,3 @@ CREATE TABLE IF NOT EXISTS utensilioscarrinhos (
 	CONSTRAINT unique_utensilio_carrinho UNIQUE (id_utensilio, id_administrador, id_carrinho)
 );
 
-CREATE TABLE IF NOT EXISTS receitas (
-	id_receita SERIAL PRIMARY KEY,
-	nome VARCHAR(100) NOT NULL,
-	duracao INTERVAL NOT NULL,
-	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS ingredientesreceitas (
-	id_ingrediente_receita SERIAL PRIMARY KEY,
-	id_ingrediente INT REFERENCES ingredientes(id_ingrediente) ON DELETE CASCADE,
-	id_receita INT REFERENCES receitas(id_receita) ON DELETE CASCADE,
-	quantidade INT NOT NULL,
-	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS utensiliosreceitas (
-	id_utensilio_receita SERIAL PRIMARY KEY,
-	id_utensilio INT REFERENCES utensilios(id_utensilio) ON DELETE CASCADE,
-	id_receita INT REFERENCES receitas(id_receita) ON DELETE CASCADE,
-	quantidade INT NOT NULL,
-	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS instrucoes (
-	id_instrucao SERIAL PRIMARY KEY,
-	id_receita INT REFERENCES receitas(id_receita) ON DELETE CASCADE,
-	numero_sequencia INT NOT NULL,
-	descricao TEXT NOT NULL,
-	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	CONSTRAINT unique_instrucao UNIQUE (id_receita, numero_sequencia)
-);

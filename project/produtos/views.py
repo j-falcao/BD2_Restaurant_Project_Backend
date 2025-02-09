@@ -228,6 +228,9 @@ def delete_itensTipos(request, id_item_tipo):
     return Response({"msg": "ItemTipo apagado"}, status=200)
 
 
+
+
+
 # MENUS
 @api_view(['GET', 'POST'])
 def get_post_menus(request):
@@ -242,6 +245,13 @@ def get_post_menus(request):
             return Response(Menus.fetch_all())
     elif request.method == 'POST':
         return Response(operacoes.create_menus(request.data), status=201)
+    
+    
+    
+    
+    
+    
+    
     
 @api_view(['GET'])
 def get_menus_by_diasemana(request, id_dia_semana):

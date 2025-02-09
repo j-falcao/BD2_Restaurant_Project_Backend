@@ -39,6 +39,7 @@ BEGIN
             i.url_imagem AS url_imagem_ingrediente
         FROM ingredientesreceitas ir
         JOIN ingredientes i ON i.id_ingrediente = ir.id_ingrediente
+        WHERE ir.id_receita = _id_receita_in
     ) ingredientes;
 END;
 $$;
@@ -55,6 +56,7 @@ BEGIN
             u.url_imagem AS url_imagem_utensilio
         FROM utensiliosreceitas ur
         JOIN utensilios u ON u.id_utensilio = ur.id_utensilio
+        WHERE ur.id_receita = _id_receita_in
     ) utensilios;
 END;
 $$;

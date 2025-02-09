@@ -127,11 +127,11 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS("Seeding carrinhos"))
             self.seed_carrinhos()
 
-            self.stdout.write(self.style.SUCCESS("Seeding receitas"))
-            self.seed_receitas(num_entries)
-
             self.stdout.write(self.style.SUCCESS("Seeding produtos/itens/itens_menus"))
             self.seed_produtos_itens_menus(num_entries)
+
+            self.stdout.write(self.style.SUCCESS("Seeding receitas"))
+            self.seed_receitas(num_entries)
 
             self.stdout.write(self.style.SUCCESS("Seeding tipos"))
             self.seed_tipos()
@@ -439,12 +439,14 @@ class Command(BaseCommand):
         ingredientes = []
         utensilios = []
         instrucoes = []
+        produtos = [ item['id_item'] for item in Itens.fetch_all()]
         
         with transaction.atomic(), connection.cursor() as cursor:
             for _ in range(num_receitas):
                 nome = fake.word()
                 duracao = f"{fake.random_int(min=1, max=300)} minutes"
-                cursor.execute("INSERT INTO receitas (nome, duracao) VALUES (%s, %s) RETURNING id_receita", (nome, duracao))
+                produto = random.choice(produtos)
+                cursor.execute("INSERT INTO receitas (nome, duracao, id_produto) VALUES (%s, %s, %s) RETURNING id_receita", (nome, duracao, produto))
                 id_receita = cursor.fetchone()[0]
                 
                 num_ingredientes = fake.random_int(min=1, max=max_ingredientes)

@@ -149,6 +149,66 @@ CREATE TRIGGER verificar_servico_ativo_pedidoproduto_trigger
 BEFORE INSERT OR UPDATE ON pedidosprodutos
 FOR EACH ROW EXECUTE FUNCTION verificar_servico_ativo_pedidoproduto();
 
+-- Trigger para impedir a criacao de pedido_produtos se nao houver ingredientes ou utensilios suficientes
+CREATE OR REPLACE FUNCTION verificar_stock_pedido()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Verifica ingredientes
+    IF EXISTS (
+        SELECT 1
+        FROM ingredientesreceitas ir
+        JOIN receitas r ON ir.id_receita = r.id_receita
+        JOIN produtos p ON p.id_produto = r.id_produto
+        WHERE p.id_produto = NEW.id_produto
+        AND ir.quantidade > (SELECT quantidade_stock FROM ingredientes WHERE id_ingrediente = ir.id_ingrediente)
+    ) THEN
+        RAISE EXCEPTION 'Stock insuficiente para ingredientes do produto %', NEW.id_produto;
+    END IF;
+    
+    -- Verifica utensilios
+    IF EXISTS (
+        SELECT 1
+        FROM utensiliosreceitas ur
+        JOIN receitas r ON ur.id_receita = r.id_receita
+        JOIN produtos p ON p.id_produto = r.id_produto
+        WHERE p.id_produto = NEW.id_produto
+        AND ur.quantidade > (SELECT quantidade_stock FROM utensilios WHERE id_utensilio = ur.id_utensilio)
+    ) THEN
+        RAISE EXCEPTION 'Stock insuficiente para utensílios do produto %', NEW.id_produto;
+    END IF;
+    
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER verificar_stock_pedido_trigger
+BEFORE INSERT ON pedidosprodutos
+FOR EACH ROW
+EXECUTE FUNCTION verificar_stock_pedido();
+
+-- Trigger para reduzir o stock quando um pedido_produto for preparado
+CREATE OR REPLACE FUNCTION reduzir_stock_apos_preparacao()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Reduz o stock dos ingredientes
+    UPDATE ingredientes
+    SET quantidade_stock = quantidade_stock - ir.quantidade
+    FROM ingredientesreceitas ir, receitas r, produtos p
+    WHERE p.id_produto = NEW.id_produto
+    AND r.id_produto = p.id_produto
+    AND ir.id_receita = r.id_receita
+    AND ingredientes.id_ingrediente = ir.id_ingrediente;
+    
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER reduzir_stock_apos_preparacao_trigger
+AFTER UPDATE ON pedidosprodutos
+FOR EACH ROW
+WHEN (NEW.id_cozinheiro IS NOT NULL AND OLD.id_cozinheiro IS NULL)
+EXECUTE FUNCTION reduzir_stock_apos_preparacao();
+
 
 -- RESERVAS
 CREATE OR REPLACE FUNCTION atualizar_estadomesa_reservada() RETURNS TRIGGER AS $$

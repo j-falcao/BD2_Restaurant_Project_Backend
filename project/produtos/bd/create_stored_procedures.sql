@@ -1,19 +1,19 @@
-CREATE OR REPLACE PROCEDURE create_receitas(_new_nome VARCHAR(100), _new_duracao INTERVAL, OUT _new_receita JSON)
+CREATE OR REPLACE PROCEDURE create_receitas(_new_nome VARCHAR(100), _new_duracao INTERVAL, _new_id_produto INT, OUT _new_receita JSON)
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    INSERT INTO receitas (nome, duracao)
-    VALUES (_new_nome, _new_duracao)
+    INSERT INTO receitas (nome, duracao, id_produto)
+    VALUES (_new_nome, _new_duracao, _new_id_produto)
     RETURNING row_to_json(receitas) INTO _new_receita;
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE update_receitas(id_receita_in INT, _new_nome VARCHAR(100), _new_duracao INTERVAL, OUT _new_receita JSON)
+CREATE OR REPLACE PROCEDURE update_receitas(id_receita_in INT, _new_nome VARCHAR(100), _new_duracao INTERVAL, _new_id_produto INT, OUT _new_receita JSON)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     UPDATE receitas
-    SET nome = _new_nome, duracao = _new_duracao
+    SET nome = _new_nome, duracao = _new_duracao, id_produto = _new_id_produto
     WHERE id_receita = id_receita_in
     RETURNING row_to_json(receitas) INTO _new_receita;
 END;

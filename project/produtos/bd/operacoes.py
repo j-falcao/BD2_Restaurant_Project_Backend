@@ -32,9 +32,10 @@ def delete_instrucoes(id_instrucao):
 # Receitas
 def create_receitas(receita):
     with connection.cursor() as cursor:
-        cursor.execute('CALL create_receitas(%s, %s, %s)', [
+        cursor.execute('CALL create_receitas(%s, %s, %s, %s)', [
             receita['nome'],
             receita['duracao'],
+            receita['id_produto'],
             None
         ])
         return cursor.fetchone()[0]
@@ -42,10 +43,11 @@ def create_receitas(receita):
 
 def update_receitas(id_receita, receita):
     with connection.cursor() as cursor:
-        cursor.execute('CALL update_receitas(%s, %s, %s, %s)', [
+        cursor.execute('CALL update_receitas(%s, %s, %s, %s, %s)', [
             id_receita,
             receita['nome'],
             receita['duracao'],
+            receita['id_produto'],
             None
         ])
         return cursor.fetchone()[0]

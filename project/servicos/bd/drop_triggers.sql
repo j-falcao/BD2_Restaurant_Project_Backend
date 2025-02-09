@@ -8,6 +8,8 @@ DROP FUNCTION IF EXISTS atualizar_estadoreserva_estadomesa() CASCADE;
 -- PEDIDOS
 DROP FUNCTION IF EXISTS verificar_servico_ativo_pedido() CASCADE;
 DROP FUNCTION IF EXISTS verificar_servico_ativo_pedidoproduto() CASCADE;
+DROP FUNCTION IF EXISTS verificar_stock_pedido() CASCADE;
+DROP FUNCTION IF EXISTS reduzir_stock_apos_preparacao() CASCADE;
 
 -- RESERVAS
 DROP FUNCTION IF EXISTS atualizar_estadomesa_reservada() CASCADE;

@@ -28,12 +28,12 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_mesas(_new_numero INT, _new_capacidade_maxima INT, OUT _new_mesa JSON)
+CREATE OR REPLACE PROCEDURE create_mesas(_new_capacidade_maxima INT, OUT _new_mesa JSON)
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    INSERT INTO mesas (numero, capacidade_maxima)
-    VALUES (_new_numero, _new_capacidade_maxima)
+    INSERT INTO mesas (capacidade_maxima)
+    VALUES (_new_capacidade_maxima)
     RETURNING row_to_json(mesas) INTO _new_mesa;
 END;
 $$;
@@ -97,18 +97,40 @@ DECLARE
     _new_id_garcom INT; 
     _new_id_mesa INT;
     _new_id_servico INT;
+    _estado_reserva TEXT;
 BEGIN
+    -- Obter estado da reserva
+    SELECT designacao INTO _estado_reserva 
+    FROM reservas
+    JOIN estadosreservas ON reservas.id_estado_reserva = estadosreservas.id_estado_reserva
+    WHERE id_reserva = _new_id_reserva;
+
+    -- Validar estado da reserva
+    IF _estado_reserva = 'Cancelada' THEN
+        RAISE EXCEPTION 'Não é possibile criar serviços para uma reserva que tenha sido cancelada';
+    ELSIF _estado_reserva = 'Concluida' THEN
+        RAISE EXCEPTION 'Não é possibile criar serviços para uma reserva que já esteja concluida';
+    END IF;
+
+    -- Obter dados da reserva
     SELECT id_garcom, id_mesa 
     INTO _new_id_garcom, _new_id_mesa 
     FROM reservas 
     WHERE id_reserva = _new_id_reserva;
 
+    -- Criar servico com os dados da reserva
     INSERT INTO servicos (id_garcom, id_mesa)
     VALUES (_new_id_garcom, _new_id_mesa)
     RETURNING id_servico, row_to_json(servicos) INTO _new_id_servico, _new_servico;
 
+    -- Atualizar o estado da reserva para 'Concluida'
     UPDATE reservas
-    SET id_servico = _new_id_servico
+    SET id_servico = _new_id_servico, 
+        id_estado_reserva = (
+            SELECT id_estado_reserva 
+            FROM estadosreservas 
+            WHERE designacao = 'Concluida'
+        )
     WHERE id_reserva = _new_id_reserva;
 END;
 $$;
@@ -230,6 +252,22 @@ CREATE OR REPLACE PROCEDURE cancelar_reservas(id_reserva_in INT, OUT _new_reserv
 LANGUAGE plpgsql
 AS $$
 BEGIN
+    -- Verificar estado da reserva
+    IF EXISTS (
+        SELECT 1
+        FROM reservas
+        WHERE id_reserva = id_reserva_in
+        AND id_estado_reserva = (
+            SELECT id_estado_reserva
+            FROM estadosreservas
+            WHERE designacao = 'Concluida'
+        )   
+    )
+    THEN
+        RAISE EXCEPTION 'Não é possivel cancelar uma reserva que já foi concluida';
+    END IF;
+
+
     UPDATE reservas
     SET id_estado_reserva = (
         SELECT id_estado_reserva

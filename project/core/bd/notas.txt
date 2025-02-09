@@ -4,3 +4,4 @@
 -- criar trigger para ver se id_administrador perten ce a admin ou garcom por exemplo
 -- Criar trigger para impedir a criacao de pedidosprodutos para servicos que nao sejam geridos pelo garcom logado
 -- Criar trigger para impedir a criacao de revervas com data hora iguais ou muito proximas
+-- Fazer views para servicos/reservas/pedidos/pedidosprodutos feitos pelo garcom/administrador logado

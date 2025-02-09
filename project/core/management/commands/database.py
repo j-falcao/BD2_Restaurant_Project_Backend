@@ -179,9 +179,9 @@ class Command(BaseCommand):
 
     def seed_cargos(self):
         cargos = [
-            "Garcom",
-            "Cozinheiro",
             "Administrador",
+            "Cozinheiro",
+            "Garcom",
         ]
         with connection.cursor() as cursor:
             cursor.executemany(
@@ -192,7 +192,7 @@ class Command(BaseCommand):
     def seed_utilizadores(self):
         utilizadores_data = []
         for _ in range(10):
-            id_cargo = 3 if _ == 0 else random.randint(1, 3)
+            id_cargo = 1 if _ == 0 else random.randint(1, 3)
             first_name = fake.first_name()
             last_name = fake.last_name()
             is_superuser = _ == 0
@@ -316,15 +316,13 @@ class Command(BaseCommand):
     def seed_mesas(self, num_entries):
         data = [
             (
-                fake.random_int(min=1, max=3),
-                i + 1,
                 fake.random_int(min=2, max=12),
             )
             for i in range(num_entries)
         ]
         with transaction.atomic(), connection.cursor() as cursor:
             cursor.executemany(
-            "INSERT INTO mesas (id_estado_mesa, numero, capacidade_maxima) VALUES (%s, %s, %s)",
+            "INSERT INTO mesas (capacidade_maxima) VALUES (%s)",
             data,
         )
 
@@ -594,8 +592,8 @@ class Command(BaseCommand):
     def seed_estadosreservas(self):
         with transaction.atomic(), connection.cursor() as cursor:
             data = [
-                ('Pendente',),
                 ('Confirmada',), 
+                ('Concluida',),
                 ('Cancelada',)
             ]
             cursor.executemany(

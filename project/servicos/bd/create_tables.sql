@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS pedidosprodutos ( -- trigger para impedir a criação
 
 CREATE TABLE IF NOT EXISTS estadosreservas (
 	id_estado_reserva SERIAL PRIMARY KEY,
-	designacao VARCHAR(100) NOT NULL UNIQUE CHECK (designacao IN ('Pendente', 'Confirmada', 'Cancelada')),
+	designacao VARCHAR(100) NOT NULL UNIQUE CHECK (designacao IN ('Confirmada', 'Concluida', 'Cancelada')),
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -53,9 +53,9 @@ CREATE TABLE IF NOT EXISTS reservas (
     id_estado_reserva INT REFERENCES estadosreservas(id_estado_reserva) ON DELETE CASCADE,
     quantidade_pessoas INT NOT NULL CHECK (quantidade_pessoas > 0),
     id_garcom INT NOT NULL REFERENCES utilizadores(id) ON DELETE CASCADE, -- garçom que fez a reserva
-    data_hora TIMESTAMP NOT NULL UNIQUE,
+    data_hora TIMESTAMP NOT NULL UNIQUE CHECK (data_hora > CURRENT_TIMESTAMP),
     observacoes TEXT,
-    id_servico INT REFERENCES servicos(id_servico) ON DELETE CASCADE, -- serviço associado à reserva, se houver
+    id_servico INT REFERENCES servicos(id_servico) ON DELETE SET NULL, -- serviço associado à reserva, se houver
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

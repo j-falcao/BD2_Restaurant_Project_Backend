@@ -13,6 +13,7 @@ def get_post_estadosmesas(request):
     elif request.method == 'POST':
         return Response(operacoes.create_estadosMesas(request.data), status=201)
 
+
 @api_view(['PUT', 'DELETE'])
 def update_delete_estadosmesas(request, id_estado_mesa):
     if request.method == 'PUT':
@@ -26,16 +27,10 @@ def update_delete_estadosmesas(request, id_estado_mesa):
 @api_view(['GET', 'POST'])
 def get_post_mesas(request):
     if request.method == 'GET':
-        id_mesa = request.GET.get('id_mesa')
-        if id_mesa:
-            try:
-                return Response(Mesas.fetch_by_id(id_mesa))
-            except Mesas.DoesNotExist:
-                raise NotFound("Mesa nao encontrada")
-        else:
-            return Response(Mesas.fetch_all())
+        return Response(Mesas.fetch_all())
     elif request.method == 'POST':
         return Response(operacoes.create_mesas(request.data), status=201)
+
 
 @api_view(['PUT', 'DELETE'])
 def update_delete_mesas(request, id_mesa):
@@ -54,13 +49,16 @@ def get_post_servicos(request):
     elif request.method == 'POST':
         return Response(operacoes.create_servicos(request.data), status=201)
 
+
 @api_view(['POST'])
 def concluir_servicos(request, id_servico):
-    return Response(operacoes.concluir_servicos(id_servico), status=200)
+    operacoes.concluir_servicos(id_servico)
+    return Response({"msg": "Servico concluido"}, status=200)
 
 @api_view(['POST'])
 def post_servico_com_reserva(request, id_reserva):
     return Response(operacoes.create_servico_com_reserva(id_reserva), status=201)
+
 
 @api_view(['PUT', 'DELETE'])
 def update_delete_servicos(request, id_servico):
@@ -79,6 +77,7 @@ def get_post_pedidos(request, id_servico):
     elif request.method == 'POST':
         return Response(operacoes.create_pedidos(id_servico), status=201)
 
+
 @api_view(['DELETE'])
 def delete_pedidos(request, id_pedido):
     operacoes.delete_pedidos(id_pedido)
@@ -93,9 +92,12 @@ def get_post_pedidosProdutos(request, id_pedido):
     elif request.method == 'POST':
         return Response(operacoes.create_pedidosProdutos(id_pedido, request.data), status=201)
 
+
 @api_view(['POST'])
 def confecionar_pedidosProdutos(request, id_pedido_produto):
-    return Response(operacoes.confeccionar_pedidosProdutos(id_pedido_produto, request.data), status=200)
+    operacoes.confecionar_pedidosProdutos(id_pedido_produto, request.data)
+    return Response({"msg": "PedidoProduto confecionado"}, status=200)
+
 
 @api_view(['DELETE'])
 def delete_pedidosProdutos(request, id_pedido_produto):
@@ -110,7 +112,8 @@ def get_post_estadosreservas(request):
         return Response(EstadosReservas.fetch_all())
     elif request.method == 'POST':
         return Response(operacoes.create_estadosReservas(request.data), status=201)
-    
+
+
 @api_view(['PUT', 'DELETE'])
 def update_delete_estadosreservas(request, id_estado_reserva):
     if request.method == 'PUT':
@@ -124,20 +127,14 @@ def update_delete_estadosreservas(request, id_estado_reserva):
 @api_view(['GET', 'POST'])
 def get_post_reservas(request):
     if request.method == 'GET':
-        id_reserva = request.GET.get('id_reserva')
-        if id_reserva:
-            try:
-                return Response(Reservas.fetch_by_id(id_reserva))
-            except Reservas.DoesNotExist:
-                raise NotFound("Reserva nao encontrada")
-        else:
-            return Response(Reservas.fetch_all())
+        return Response(Reservas.fetch_all())
     elif request.method == 'POST':
         return Response(operacoes.create_reservas(request.data), status=201)
 
 @api_view(['POST'])
 def cancelar_reservas(request, id_reserva):
-    return Response(operacoes.cancelar_reservas(id_reserva), status=200)
+    operacoes.cancelar_reservas(id_reserva)
+    return Response({"msg": "Reserva cancelada"}, status=200)
 
 @api_view(['PUT', 'DELETE'])
 def update_delete_reservas(request, id_reserva):

@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import connection, models
 from autenticacao.models import Utilizadores
 from project.utils.db_utils import fetch_from_view
 
@@ -40,10 +40,6 @@ class Mesas(models.Model):
     @staticmethod
     def fetch_all():
         return fetch_from_view("mesas_view")
-    
-    @staticmethod
-    def fetch_by_id(id_mesa):
-        return fetch_from_view("mesas_view", {"id_mesa": id_mesa})
     
     @staticmethod
     def fetch_disponiveis():
@@ -142,20 +138,20 @@ class Reservas(models.Model):
         return fetch_from_view("reservas_view")
     
     @staticmethod
-    def fetch_by_id(id_reserva):
-        return fetch_from_view("reservas_view", {"id_reserva": id_reserva})
+    def fetch_by_mesa(id_mesa):
+        with connection.cursor() as cursor:
+            cursor.execute("CALL get_reservas_by_mesa(%s)", [id_mesa])
+            return cursor.fetchone()[0] 
     
     @staticmethod
-    def fetch_by_mesa(id_mesa):
-        return fetch_from_view("reservas_view", {"id_mesa": id_mesa})
+    def fetch_by_data(data_inicio, data_fim):
+        with connection.cursor() as cursor:
+            cursor.execute("CALL get_reservas_by_data(%s, %s, %s)", [data_inicio, data_fim, None])
+            return cursor.fetchone()[0]
     
     @staticmethod
     def fetch_by_servico(id_servico):
         return fetch_from_view("reservas_view", {"id_servico": id_servico})
-    
-    @staticmethod
-    def fetch_by_data(data_hora):
-        return fetch_from_view("reservas_view", {"data_hora": data_hora})
 
 
 class Pedidos(models.Model):

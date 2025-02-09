@@ -43,9 +43,11 @@ LANGUAGE plpgsql
 AS $$
 BEGIN
     UPDATE mesas
-    SET id_estado_mesa = _new_id_estado_mesa, numero = _new_numero, capacidade_maxima = _new_capacidade_maxima
+    SET id_estado_mesa = _new_id_estado_mesa, 
+        numero = _new_numero, 
+        capacidade_maxima = _new_capacidade_maxima
     WHERE id_mesa = id_mesa_in
-    RETURNING row_to_json(mesas) INTO _new_mesa;
+    RETURNING row_to_json((SELECT * FROM mesas_view WHERE id_mesa = id_mesa_in)) INTO _new_mesa;
 END;
 $$;
 
@@ -243,7 +245,7 @@ BEGIN
     UPDATE reservas
     SET id_mesa = _new_id_mesa, id_estado_reserva = _new_id_estado_reserva, quantidade_pessoas = _new_quantidade_pessoas, observacoes = _new_observacoes, id_garcom = _new_id_garcom, data_hora = _new_data_hora
     WHERE id_reserva = id_reserva_in
-    RETURNING row_to_json(reservas) INTO _new_reserva;
+    RETURNING row_to_json((SELECT * FROM reservas_view WHERE id_reserva = id_reserva_in)) INTO _new_reserva;
 END;
 $$;
 

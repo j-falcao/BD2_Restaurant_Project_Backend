@@ -31,10 +31,16 @@ $$;
 CREATE OR REPLACE PROCEDURE create_mesas(_new_capacidade_maxima INT, OUT _new_mesa JSON)
 LANGUAGE plpgsql
 AS $$
+DECLARE _new_id_mesa INT;
 BEGIN
     INSERT INTO mesas (capacidade_maxima)
     VALUES (_new_capacidade_maxima)
-    RETURNING row_to_json(mesas) INTO _new_mesa;
+    RETURNING id_mesa INTO _new_id_mesa;
+
+    SELECT row_to_json(m)
+    INTO _new_mesa
+    FROM mesas_view m
+    WHERE m.id_mesa = _new_id_mesa;
 END;
 $$;
 
@@ -235,10 +241,16 @@ $$;
 CREATE OR REPLACE PROCEDURE create_reservas(_new_id_mesa INT, _new_quantidade_pessoas INT, _new_observacoes TEXT, _new_id_garcom INT, _new_data_hora TIMESTAMP, OUT _new_reserva JSON)
 LANGUAGE plpgsql
 AS $$
+DECLARE _new_id_reserva INT;
 BEGIN
     INSERT INTO reservas (id_mesa, quantidade_pessoas, id_garcom, observacoes, data_hora)
     VALUES (_new_id_mesa, _new_quantidade_pessoas, _new_id_garcom, _new_observacoes, _new_data_hora)
-    RETURNING row_to_json(reservas) INTO _new_reserva;
+    RETURNING id_reserva INTO _new_id_reserva;
+    
+    SELECT row_to_json(r)
+    INTO _new_reserva
+    FROM reservas_view r
+    WHERE r.id_reserva = _new_id_reserva;
 END;
 $$;
 

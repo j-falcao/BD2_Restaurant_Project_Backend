@@ -26,8 +26,7 @@ urlpatterns = [
 
     # pedidosprodutos
     path('pedidosprodutos/<int:id_pedido_produto>/', delete_pedidosProdutos),
-    path('pedidosprodutos/<int:id_pedido_produto>/confecionar/',
-         confecionar_pedidosProdutos),
+    path('pedidosprodutos/<int:id_pedido_produto>/confecionar/', confecionar_pedidosProdutos),
 
     # estados reservas
     path('estadosreservas/', get_post_estadosreservas),
@@ -35,10 +34,10 @@ urlpatterns = [
 
     # reservas
     path('reservas/', get_post_reservas),
+    path('reservas/<int:id_reserva>/', update_delete_reservas),
     path('reservas/confirmadas/', get_reservas_confirmadas),
     path('reservas/canceladas/', get_reservas_canceladas),
     path('reservas/concluidas/', get_reservas_concluidas),
-    path('reservas/<int:id_reserva>/', update_delete_reservas),
     path('reservas/<int:id_reserva>/servicos/', post_servico_com_reserva),
     path('reservas/<int:id_reserva>/cancelar/', cancelar_reservas),
 

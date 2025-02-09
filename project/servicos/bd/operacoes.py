@@ -40,9 +40,8 @@ def create_mesas(data):
 
 def update_mesas(id_mesa, data):
     with connection.cursor() as cursor:
-        cursor.execute('CALL update_mesas(%s, %s, %s, %s, %s)', [
+        cursor.execute('CALL update_mesas(%s, %s, %s, %s)', [
             id_mesa,
-            data['id_estado_mesa'],
             data['numero'],
             data['capacidade_maxima'],
             None

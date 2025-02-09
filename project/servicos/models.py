@@ -1,6 +1,7 @@
 from django.db import connection, models
 from autenticacao.models import Utilizadores
 from project.utils.db_utils import fetch_from_view
+from datetime import datetime
 
 
 class EstadosMesas(models.Model):
@@ -133,25 +134,44 @@ class Reservas(models.Model):
     def __str__(self):
         return f"Reserva {self.id_reserva} na Mesa {self.id_mesa}"
     
+    
+    @staticmethod
+    def fetch_by_id(id_reserva):
+        return fetch_from_view("reservas_view", {"id_reserva": id_reserva})
+    
     @staticmethod
     def fetch_all():
         return fetch_from_view("reservas_view")
     
     @staticmethod
-    def fetch_by_mesa(id_mesa):
-        with connection.cursor() as cursor:
-            cursor.execute("CALL get_reservas_by_mesa(%s)", [id_mesa])
-            return cursor.fetchone()[0] 
+    def fetch_confirmadas():
+        return fetch_from_view("reservas_confirmadas_view")
     
     @staticmethod
-    def fetch_by_data(data_inicio, data_fim):
+    def fetch_canceladas():
+        return fetch_from_view("reservas_canceladas_view")
+    
+    @staticmethod
+    def fetch_concluidas():
+        return fetch_from_view("reservas_concluidas_view")
+    
+    @staticmethod
+    def fetch_by_mesa(id_mesa):
+        with connection.cursor() as cursor:
+            cursor.execute("CALL get_reservas_by_mesa(%s, %s)", [id_mesa, None])
+            return cursor.fetchone()[0]
+        
+    @staticmethod
+    def fetch_by_garcom(id_garcom):
+        with connection.cursor() as cursor:
+            cursor.execute("CALL get_reservas_by_garcom(%s, %s)", [id_garcom, None])
+            return cursor.fetchone()[0]
+
+    @staticmethod
+    def fetch_by_data(data_inicio=datetime.now(), data_fim=datetime.now()):
         with connection.cursor() as cursor:
             cursor.execute("CALL get_reservas_by_data(%s, %s, %s)", [data_inicio, data_fim, None])
             return cursor.fetchone()[0]
-    
-    @staticmethod
-    def fetch_by_servico(id_servico):
-        return fetch_from_view("reservas_view", {"id_servico": id_servico})
 
 
 class Pedidos(models.Model):

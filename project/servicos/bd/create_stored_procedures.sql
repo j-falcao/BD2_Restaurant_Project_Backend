@@ -46,10 +46,15 @@ BEGIN
     SET id_estado_mesa = _new_id_estado_mesa, 
         numero = _new_numero, 
         capacidade_maxima = _new_capacidade_maxima
-    WHERE id_mesa = id_mesa_in
-    RETURNING row_to_json((SELECT * FROM mesas_view WHERE id_mesa = id_mesa_in)) INTO _new_mesa;
+    WHERE id_mesa = id_mesa_in;
+
+    SELECT row_to_json(m)
+    INTO _new_mesa
+    FROM mesas_view m
+    WHERE m.id_mesa = id_mesa_in;
 END;
 $$;
+
 
 CREATE OR REPLACE PROCEDURE delete_mesas(id_mesa_in INT)
 LANGUAGE plpgsql
@@ -244,8 +249,12 @@ AS $$
 BEGIN
     UPDATE reservas
     SET id_mesa = _new_id_mesa, id_estado_reserva = _new_id_estado_reserva, quantidade_pessoas = _new_quantidade_pessoas, observacoes = _new_observacoes, id_garcom = _new_id_garcom, data_hora = _new_data_hora
-    WHERE id_reserva = id_reserva_in
-    RETURNING row_to_json((SELECT * FROM reservas_view WHERE id_reserva = id_reserva_in)) INTO _new_reserva;
+    WHERE id_reserva = id_reserva_in;
+
+    SELECT row_to_json(r)
+    INTO _new_reserva
+    FROM reservas_view r
+    WHERE r.id_reserva = id_reserva_in;
 END;
 $$;
 

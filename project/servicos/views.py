@@ -31,6 +31,17 @@ def get_post_mesas(request):
     elif request.method == 'POST':
         return Response(operacoes.create_mesas(request.data), status=201)
 
+@api_view(['GET'])
+def get_mesas_disponiveis(request):
+    return Response(Mesas.fetch_disponiveis())
+
+@api_view(['GET'])
+def get_mesas_ocupadas(request):
+    return Response(Mesas.fetch_ocupadas())
+
+@api_view(['GET'])
+def get_mesas_reservadas(request):
+    return Response(Mesas.fetch_reservadas())
 
 @api_view(['PUT', 'DELETE'])
 def update_delete_mesas(request, id_mesa):
@@ -130,6 +141,18 @@ def get_post_reservas(request):
         return Response(Reservas.fetch_all())
     elif request.method == 'POST':
         return Response(operacoes.create_reservas(request.data), status=201)
+
+@api_view(['GET'])
+def get_reservas_confirmadas(request):
+    return Response(Reservas.fetch_confirmadas())
+
+@api_view(['GET'])
+def get_reservas_canceladas(request):
+    return Response(Reservas.fetch_canceladas())
+
+@api_view(['GET'])
+def get_reservas_concluidas(request):
+    return Response(Reservas.fetch_concluidas())
 
 @api_view(['POST'])
 def cancelar_reservas(request, id_reserva):

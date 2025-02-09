@@ -163,8 +163,8 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS("Seeding mesas"))
             self.seed_mesas(num_entries)
 
-            self.stdout.write(self.style.SUCCESS("Seeding servicos/pedidos/pedidosprodutos"))
-            self.seed_servicos_pedidos_pedidosprodutos(num_entries)
+            # self.stdout.write(self.style.SUCCESS("Seeding servicos/pedidos/pedidosprodutos"))
+            # self.seed_servicos_pedidos_pedidosprodutos(num_entries)
 
             self.stdout.write(self.style.SUCCESS("Seeding estadosreservas"))
             self.seed_estadosreservas()

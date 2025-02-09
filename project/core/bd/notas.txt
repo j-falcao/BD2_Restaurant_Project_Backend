@@ -1,7 +1,8 @@
--- Criar protecao para nao deixar fazer select diretamente na tabela, mas sim nas vistas
 -- Crair trigger para impedir a criacao de pedidoSprodutos para produtos cujos ingredientes ou utensilios necessarios para a sua preparacao, nao estejam em stock
 -- Criar trigger para sempre que um pedidoproduto e preparado, atualizar o stock dos ingredientes necessarios
 -- criar trigger para ver se id_administrador perten ce a admin ou garcom por exemplo
--- Criar trigger para impedir a criacao de pedidosprodutos para servicos que nao sejam geridos pelo garcom logado
+-- Criar trigger para impedir a criacao de pedidos/pedidosprodutos para servicos que nao sejam geridos pelo garcom logado
 -- Criar trigger para impedir a criacao de revervas com data hora iguais ou muito proximas
 -- Fazer views para servicos/reservas/pedidos/pedidosprodutos feitos pelo garcom/administrador logado
+-- criar trigger para concluir reservas quando current_timestamp > data_hora e o estado nao for cancelada
+-- fazer paginacao e tratamento de erros (nao mandar erro em html)

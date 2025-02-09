@@ -63,7 +63,7 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE get_reservas_by_date(_data_inicio_in DATE, _data_fim_in DATE, OUT resultado JSON)
+CREATE OR REPLACE PROCEDURE get_reservas_by_data(_data_inicio_in DATE, _data_fim_in DATE, OUT resultado JSON)
 LANGUAGE plpgsql
 AS $$
 BEGIN

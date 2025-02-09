@@ -7,7 +7,7 @@ DROP VIEW IF EXISTS reservas_canceladas_view;
 DROP VIEW IF EXISTS reservas_concluidas_view;
 DROP PROCEDURE IF EXISTS get_reservas_by_mesa;
 DROP PROCEDURE IF EXISTS get_reservas_by_garcom;
-DROP PROCEDURE IF EXISTS get_reservas_by_date;
+DROP PROCEDURE IF EXISTS get_reservas_by_data;
 DROP VIEW IF EXISTS estadosreservas_view;
 DROP VIEW IF EXISTS mesas_view;
 DROP VIEW IF EXISTS mesas_disponiveis_view;

@@ -9,6 +9,10 @@ urlpatterns = [
     # mesas
     path('mesas/', get_post_mesas),
     path('mesas/<int:id_mesa>/', update_delete_mesas),
+    path('mesas/disponiveis/', get_mesas_disponiveis),
+    path('mesas/ocupadas/', get_mesas_ocupadas),
+    path('mesas/reservadas/', get_mesas_reservadas),
+    
 
     # servicos
     path('', get_post_servicos),
@@ -31,6 +35,9 @@ urlpatterns = [
 
     # reservas
     path('reservas/', get_post_reservas),
+    path('reservas/confirmadas/', get_reservas_confirmadas),
+    path('reservas/canceladas/', get_reservas_canceladas),
+    path('reservas/concluidas/', get_reservas_concluidas),
     path('reservas/<int:id_reserva>/', update_delete_reservas),
     path('reservas/<int:id_reserva>/servicos/', post_servico_com_reserva),
     path('reservas/<int:id_reserva>/cancelar/', cancelar_reservas),

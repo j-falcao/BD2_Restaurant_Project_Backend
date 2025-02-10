@@ -63,6 +63,17 @@ BEGIN
 END;
 $$;
 
+CREATE OR REPLACE PROCEDURE promover_utilizadores(id_in INT, _new_id_cargo INT, OUT _new_utilizador JSON)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    UPDATE utilizadores
+    SET id_cargo = _new_id_cargo
+    WHERE id = id_in
+    RETURNING row_to_json(utilizadores) INTO _new_utilizador;
+END;
+$$;
+
 CREATE OR REPLACE PROCEDURE delete_utilizadores(id_in INT, OUT _id INT)
 LANGUAGE plpgsql
 AS $$

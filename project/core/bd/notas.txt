@@ -1,4 +1,1 @@
-
--- Fazer views para servicos/reservas/pedidos/pedidosprodutos feitos pelo garcom/administrador logado OU podem ler todos mas so podem escrever no deles
-
 -- fazer paginacao e tratamento de erros (nao mandar erro em html)

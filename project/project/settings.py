@@ -59,16 +59,16 @@ REST_FRAMEWORK = {
 }
 
 
-""" 'mongo': {
-    'ENGINE': 'django.db.backends.XXX',
-    'NAME': os.getenv('MONGO_DB_NAME'),
-    'HOST': os.getenv('MONGO_HOST'),
-    'PORT': os.getenv('MONGO_PORT'),
-    'USERNAME': os.getenv('MONGO_USER'),
-    'PASSWORD': os.getenv('MONGO_PASS'),
-    
-}, """
+
 DATABASES = {
+    'mongo': {
+        'ENGINE': 'djongo',
+        'NAME': os.getenv('MONGO_DB_NAME'),
+        'HOST': os.getenv('MONGO_HOST'),
+        'PORT': os.getenv('MONGO_PORT'),
+        'USER': os.getenv('MONGO_USER'),
+        'PASSWORD': os.getenv('MONGO_PASS')
+    },
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('DB_NAME'),

@@ -6,8 +6,6 @@ from rest_framework.permissions import AllowAny
 from .bd import operacoes
 
 # Ingredientes
-
-
 @api_view(['GET', 'POST'])
 def get_post_ingredientes(request):  # ✅
     if request.method == 'GET':

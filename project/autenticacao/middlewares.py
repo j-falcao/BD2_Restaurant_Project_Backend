@@ -18,6 +18,10 @@ def set_current_db(db_alias):
 
 class DynamicDatabaseMiddleware(MiddlewareMixin):
     def process_request(self, request):
+        if request.path.startswith('/estatisticas/'):
+            set_current_db('mongo')
+            return
+        
         utilizador, _ = CookieJWTAuthentication().authenticate(request) or (None, None)
         if not utilizador:
             set_current_db('default')

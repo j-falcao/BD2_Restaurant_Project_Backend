@@ -163,9 +163,6 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS("Seeding mesas"))
             self.seed_mesas(num_entries)
 
-            self.stdout.write(self.style.SUCCESS("Seeding estadospedidosprodutos"))
-            self.seed_estadospedidosprodutos()
-
             # self.stdout.write(self.style.SUCCESS("Seeding servicos/pedidos/pedidosprodutos"))
             # self.seed_servicos_pedidos_pedidosprodutos(num_entries)
 
@@ -328,18 +325,6 @@ class Command(BaseCommand):
             "INSERT INTO mesas (capacidade_maxima) VALUES (%s)",
             data,
         )
-            
-    def seed_estadospedidosprodutos(self):
-        data = [
-            "Pendente",
-            "Preparando",
-            "Pronto",
-        ]
-
-        with transaction.atomic(), connection.cursor() as cursor:
-            cursor.executemany(
-                "INSERT INTO estadospedidosprodutos (designacao) VALUES (%s)", [(estado,) for estado in data]
-            )
 
     def seed_produtos_itens_menus(self, num_entries):
         produtos_data = []

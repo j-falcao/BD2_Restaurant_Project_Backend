@@ -73,10 +73,16 @@ $$;
 CREATE OR REPLACE PROCEDURE create_servicos(_new_id_garcom INT, _new_id_mesa INT, OUT _new_servico JSON)
 LANGUAGE plpgsql
 AS $$
+DECLARE _new_id_servico INT;
 BEGIN
     INSERT INTO servicos (id_garcom, id_mesa)
     VALUES (_new_id_garcom, _new_id_mesa)
-    RETURNING row_to_json(servicos) INTO _new_servico;
+    RETURNING id_servico INTO _new_id_servico;
+
+    SELECT row_to_json(s)
+    INTO _new_servico
+    FROM servicos_view s
+    WHERE s.id_servico = _new_id_servico;
 END;
 $$;
 
@@ -86,8 +92,12 @@ AS $$
 BEGIN
     UPDATE servicos
     SET id_garcom = _new_id_garcom, id_mesa = _new_id_mesa
-    WHERE id_servico = id_servico_in
-    RETURNING row_to_json(servicos) INTO _new_servico;
+    WHERE id_servico = id_servico_in;
+
+    SELECT row_to_json(s)
+    INTO _new_servico
+    FROM servicos_view s
+    WHERE s.id_servico = id_servico_in;
 END;
 $$;
 
@@ -97,8 +107,12 @@ AS $$
 BEGIN
     UPDATE servicos
     SET data_hora_fim = CURRENT_TIMESTAMP
-    WHERE id_servico = id_servico_in
-    RETURNING row_to_json(servicos) INTO _new_servico;
+    WHERE id_servico = id_servico_in;
+
+    SELECT row_to_json(s)
+    INTO _new_servico
+    FROM servicos_view s
+    WHERE s.id_servico = id_servico_in;
 END;
 $$;
 
@@ -133,7 +147,7 @@ BEGIN
     -- Criar servico com os dados da reserva
     INSERT INTO servicos (id_garcom, id_mesa)
     VALUES (_new_id_garcom, _new_id_mesa)
-    RETURNING id_servico, row_to_json(servicos) INTO _new_id_servico, _new_servico;
+    RETURNING id_servico INTO _new_id_servico;
 
     -- Atualizar o estado da reserva para 'Concluida'
     UPDATE reservas
@@ -144,9 +158,14 @@ BEGIN
             WHERE designacao = 'Concluida'
         )
     WHERE id_reserva = _new_id_reserva;
+
+    -- Retornar o servico criado
+    SELECT row_to_json(s)
+    INTO _new_servico
+    FROM servicos_view s
+    WHERE s.id_servico = _new_id_servico;
 END;
 $$;
-
 
 CREATE OR REPLACE PROCEDURE delete_servicos(id_servico_in INT)
 LANGUAGE plpgsql
@@ -176,30 +195,76 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE create_pedidosprodutos(_new_id_pedido INT, _new_id_produto INT, OUT _new_pedido_produto JSON)
+CREATE OR REPLACE PROCEDURE create_pedidosprodutos(_new_id_pedido INT, _new_quantidade INT, _new_id_produto INT, OUT _new_pedido_produto JSON)
 LANGUAGE plpgsql
 AS $$
+DECLARE _new_id_pedido_produto INT;
 BEGIN
-    INSERT INTO pedidosprodutos (id_pedido, id_produto)
-    VALUES (_new_id_pedido, _new_id_produto)
-    RETURNING row_to_json(pedidosprodutos) INTO _new_pedido_produto;
+    INSERT INTO pedidosprodutos (id_pedido, id_produto, quantidade)
+    VALUES (_new_id_pedido, _new_id_produto, _new_quantidade)
+    RETURNING id_pedido_produto INTO _new_id_pedido_produto;
+
+    SELECT row_to_json(pp)
+    INTO _new_pedido_produto
+    FROM pedidosprodutos_view pp
+    WHERE pp.id_pedido_produto = _new_id_pedido_produto;
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE confecionar_pedidosprodutos(id_pedido_produto_in INT, _new_id_cozinheiro INT, OUT _new_pedido_produto JSON)
+CREATE OR REPLACE PROCEDURE escolher_pedidosprodutos(id_pedido_produto_in INT, _new_id_cozinheiro INT, OUT _new_pedido_produto JSON)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     UPDATE pedidosprodutos
-    SET id_cozinheiro = _new_id_cozinheiro
-    WHERE id_pedido_produto = id_pedido_produto_in
-    RETURNING row_to_json(pedidosprodutos) INTO _new_pedido_produto;
+    SET id_cozinheiro = _new_id_cozinheiro, id_estado_pedido_produto = (
+        SELECT id_estado_pedido_produto
+        FROM estadospedidosprodutos
+        WHERE designacao = 'Preparando'
+    )
+    WHERE id_pedido_produto = id_pedido_produto_in;
+
+    SELECT row_to_json(pp)
+    INTO _new_pedido_produto
+    FROM pedidosprodutos_view pp
+    WHERE pp.id_pedido_produto = id_pedido_produto_in;
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE delete_pedidosprodutos(
-    id_pedido_produto_in INT
-)
+CREATE OR REPLACE PROCEDURE confecionar_pedidosprodutos(id_pedido_produto_in INT, OUT _new_pedido_produto JSON)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    UPDATE pedidosprodutos
+    SET id_estado_pedido_produto = (
+        SELECT id_estado_pedido_produto
+        FROM estadospedidosprodutos
+        WHERE designacao = 'Pronto'
+    )
+    WHERE id_pedido_produto = id_pedido_produto_in;
+
+    SELECT row_to_json(pp)
+    INTO _new_pedido_produto
+    FROM pedidosprodutos_view pp
+    WHERE pp.id_pedido_produto = id_pedido_produto_in;
+END;
+$$;
+
+CREATE OR REPLACE PROCEDURE update_pedidosprodutos(id_pedido_produto_in INT, _new_quantidade INT, OUT _new_pedido_produto JSON)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    UPDATE pedidosprodutos
+    SET quantidade = _new_quantidade
+    WHERE id_pedido_produto = id_pedido_produto_in;
+
+    SELECT row_to_json(pp)
+    INTO _new_pedido_produto    
+    FROM pedidosprodutos_view pp
+    WHERE pp.id_pedido_produto = id_pedido_produto_in;
+END;
+$$;
+
+CREATE OR REPLACE PROCEDURE delete_pedidosprodutos(id_pedido_produto_in INT)
 LANGUAGE plpgsql
 AS $$
 BEGIN
@@ -296,8 +361,12 @@ BEGIN
         FROM estadosreservas
         WHERE designacao = 'Cancelada'
     )
-    WHERE id_reserva = id_reserva_in
-    RETURNING row_to_json(reservas) INTO _new_reserva;
+    WHERE id_reserva = id_reserva_in;
+
+    SELECT row_to_json(r)
+    INTO _new_reserva
+    FROM reservas_view r
+    WHERE r.id_reserva = id_reserva_in;
 END;
 $$;
 

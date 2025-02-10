@@ -10,7 +10,6 @@ DROP PROCEDURE IF EXISTS update_servicos;
 DROP PROCEDURE IF EXISTS concluir_servicos;
 DROP PROCEDURE IF EXISTS delete_servicos;
 DROP PROCEDURE IF EXISTS create_pedidos;
-DROP PROCEDURE IF EXISTS update_pedidos;
 DROP PROCEDURE IF EXISTS delete_pedidos;
 DROP PROCEDURE IF EXISTS create_pedidosprodutos;
 DROP PROCEDURE IF EXISTS update_pedidosprodutos;

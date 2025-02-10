@@ -1,32 +1,6 @@
 from django.db import connection
 from ..models import *
 
-# Estados Mesas
-
-
-def create_estadosMesas(data):
-    with connection.cursor() as cursor:
-        cursor.execute('CALL create_estadosmesas(%s, %s)', [
-            data['designacao'],
-            None
-        ])
-        return cursor.fetchone()[0]
-
-
-def update_estadosMesas(id_estado_mesa, data):
-    with connection.cursor() as cursor:
-        cursor.execute('CALL update_estadosmesas(%s, %s, %s)', [
-            id_estado_mesa,
-            data['designacao'],
-            None
-        ])
-        return cursor.fetchone()[0]
-
-
-def delete_estadosMesas(id_estados_mesa):
-    with connection.cursor() as cursor:
-        cursor.execute('CALL delete_estadosmesas(%s)', [id_estados_mesa])
-
 
 # Mesas
 def create_mesas(data):
@@ -36,7 +10,6 @@ def create_mesas(data):
             None
         ])
         return cursor.fetchone()[0]
-
 
 def update_mesas(id_mesa, data):
     with connection.cursor() as cursor:
@@ -48,35 +21,9 @@ def update_mesas(id_mesa, data):
         ])
         return cursor.fetchone()[0]
 
-
 def delete_mesas(id_mesa):
     with connection.cursor() as cursor:
         cursor.execute('CALL delete_mesas(%s)', [id_mesa])
-
-
-# Estados Reservas
-def create_estadosReservas(data):
-    with connection.cursor() as cursor:
-        cursor.execute('CALL create_estadosreservas(%s, %s)', [
-            data['designacao'],
-            None
-        ])
-        return cursor.fetchone()[0]
-
-
-def update_estadosReservas(id_estado_reserva, data):
-    with connection.cursor() as cursor:
-        cursor.execute('CALL update_estadosreservas(%s, %s, %s)', [
-            id_estado_reserva,
-            data['designacao'],
-            None
-        ])
-        return cursor.fetchone()[0]
-
-
-def delete_estadosReservas(id_estado_reserva):
-    with connection.cursor() as cursor:
-        cursor.execute('CALL delete_estadosreservas(%s)', [id_estado_reserva])
 
 
 # Reservas
@@ -92,7 +39,6 @@ def create_reservas(data):
         ])
         return cursor.fetchone()[0]
 
-
 def update_reservas(id_reserva, data):
     with connection.cursor() as cursor:
         cursor.execute('CALL update_reservas(%s, %s, %s, %s, %s, %s, %s, %s)', [
@@ -107,7 +53,6 @@ def update_reservas(id_reserva, data):
         ])
         return cursor.fetchone()[0]
 
-
 def cancelar_reservas(id_reserva):
     with connection.cursor() as cursor:
         cursor.execute('CALL cancelar_reservas(%s, %s)', [
@@ -115,7 +60,6 @@ def cancelar_reservas(id_reserva):
             None
         ])
         return cursor.fetchone()[0]
-
 
 def delete_reservas(id_reserva):
     with connection.cursor() as cursor:
@@ -132,7 +76,6 @@ def create_servicos(data):
         ])
         return cursor.fetchone()[0]
 
-
 def update_servicos(id_servico, data):
     with connection.cursor() as cursor:
         cursor.execute('CALL update_servicos(%s, %s, %s, %s)', [
@@ -143,14 +86,12 @@ def update_servicos(id_servico, data):
         ])
         return cursor.fetchone()[0]
 
-
 def concluir_servicos(id_servico):
     with connection.cursor() as cursor:
         cursor.execute('CALL concluir_servicos(%s, %s)', [
             id_servico, None
         ])
         return cursor.fetchone()[0]
-
 
 def create_servico_com_reserva(id_reserva):
     with connection.cursor() as cursor:
@@ -159,7 +100,6 @@ def create_servico_com_reserva(id_reserva):
             None
         ])
         return cursor.fetchone()[0]
-
 
 def delete_servicos(id_servico):
     with connection.cursor() as cursor:
@@ -175,7 +115,6 @@ def create_pedidos(id_servico):
         ])
         return cursor.fetchone()[0]
 
-
 def delete_pedidos(id_pedido):
     with connection.cursor() as cursor:
         cursor.execute('CALL delete_pedidos(%s)', [id_pedido])
@@ -184,24 +123,40 @@ def delete_pedidos(id_pedido):
 # PedidosProdutos
 def create_pedidosProdutos(id_pedido, data):
     with connection.cursor() as cursor:
-        cursor.execute('CALL create_pedidosprodutos(%s, %s, %s)', [
+        cursor.execute('CALL create_pedidosprodutos(%s, %s, %s, %s)', [
             id_pedido,
+            data['quantidade'],
             data['id_produto'],
             None
         ])
         return cursor.fetchone()[0]
 
-
-def delete_pedidosProdutos(id_pedido_produto):
+def escolher_pedidosProdutos(id_pedido_produto, data):
     with connection.cursor() as cursor:
-        cursor.execute('CALL delete_pedidosprodutos(%s)', [id_pedido_produto])
-
-
-def confecionar_pedidosProdutos(id_pedido_produto, data):
-    with connection.cursor() as cursor:
-        cursor.execute('CALL confecionar_pedidosprodutos(%s, %s, %s)', [
+        cursor.execute('CALL escolher_pedidosprodutos(%s, %s, %s)', [
             id_pedido_produto,
             data['id_cozinheiro'],
             None
         ])
         return cursor.fetchone()[0]
+
+def confecionar_pedidosProdutos(id_pedido_produto):
+    with connection.cursor() as cursor:
+        cursor.execute('CALL confecionar_pedidosprodutos(%s, %s)', [
+            id_pedido_produto,
+            None
+        ])
+        return cursor.fetchone()[0]
+    
+def update_pedidosProdutos(id_pedido_produto, data):
+    with connection.cursor() as cursor:
+        cursor.execute('CALL update_pedidosprodutos(%s, %s, %s)', [
+            id_pedido_produto,
+            data['quantidade'],
+            None
+        ])
+        return cursor.fetchone()[0]
+
+def delete_pedidosProdutos(id_pedido_produto):
+    with connection.cursor() as cursor:
+        cursor.execute('CALL delete_pedidosprodutos(%s)', [id_pedido_produto])

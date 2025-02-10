@@ -13,7 +13,7 @@ BEGIN
 
     UPDATE servicos
     SET preco_total = (
-        SELECT COALESCE(SUM(produtos.preco), 0) 
+        SELECT COALESCE(SUM(produtos.preco * pedidosprodutos.quantidade), 0) 
         FROM pedidosprodutos 
         JOIN produtos ON pedidosprodutos.id_produto = produtos.id_produto
         WHERE pedidosprodutos.id_pedido = _id_pedido
@@ -160,7 +160,7 @@ BEGIN
         JOIN receitas r ON ir.id_receita = r.id_receita
         JOIN produtos p ON p.id_produto = r.id_produto
         WHERE p.id_produto = NEW.id_produto
-        AND ir.quantidade > (SELECT quantidade_stock FROM ingredientes WHERE id_ingrediente = ir.id_ingrediente)
+        AND ir.quantidade * NEW.quantidade > (SELECT quantidade_stock FROM ingredientes WHERE id_ingrediente = ir.id_ingrediente)
     ) THEN
         RAISE EXCEPTION 'Stock insuficiente para ingredientes do produto %', NEW.id_produto;
     END IF;
@@ -190,24 +190,77 @@ EXECUTE FUNCTION verificar_stock_pedido();
 CREATE OR REPLACE FUNCTION reduzir_stock_apos_preparacao()
 RETURNS TRIGGER AS $$
 BEGIN
-    -- Reduz o stock dos ingredientes
-    UPDATE ingredientes
-    SET quantidade_stock = quantidade_stock - ir.quantidade
-    FROM ingredientesreceitas ir, receitas r, produtos p
-    WHERE p.id_produto = NEW.id_produto
-    AND r.id_produto = p.id_produto
-    AND ir.id_receita = r.id_receita
-    AND ingredientes.id_ingrediente = ir.id_ingrediente;
+    IF NEW.id_estado_pedido_produto = (SELECT id_estado_pedido_produto FROM estadospedidosprodutos WHERE designacao = 'Pronto') THEN
+        -- Reduz o stock dos ingredientes
+        UPDATE ingredientes
+        SET quantidade_stock = quantidade_stock - (ir.quantidade * NEW.quantidade)
+        FROM ingredientesreceitas ir, receitas r, produtos p
+        WHERE p.id_produto = NEW.id_produto
+        AND r.id_produto = p.id_produto
+        AND ir.id_receita = r.id_receita
+        AND ingredientes.id_ingrediente = ir.id_ingrediente;
+    END IF;
     
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER reduzir_stock_apos_preparacao_trigger
-AFTER UPDATE ON pedidosprodutos
-FOR EACH ROW
-WHEN (NEW.id_cozinheiro IS NOT NULL AND OLD.id_cozinheiro IS NULL)
-EXECUTE FUNCTION reduzir_stock_apos_preparacao();
+AFTER UPDATE OF id_estado_pedido_produto ON pedidosprodutos
+FOR EACH ROW EXECUTE FUNCTION reduzir_stock_apos_preparacao();
+
+CREATE OR REPLACE FUNCTION auto_set_estadopedidoproduto_pendente() RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.id_cozinheiro IS NULL THEN
+        SELECT id_estado_pedido_produto INTO NEW.id_estado_pedido_produto
+        FROM estadospedidosprodutos 
+        WHERE designacao = 'Pendente';
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER auto_set_estadopedidoproduto_pendente_trigger
+BEFORE INSERT ON pedidosprodutos
+FOR EACH ROW EXECUTE FUNCTION auto_set_estadopedidoproduto_pendente();
+
+CREATE OR REPLACE FUNCTION verificar_estadopedidoproduto() RETURNS TRIGGER AS $$
+DECLARE
+    _id_estado_pedido_produto_pendente INT;
+    _id_estado_pedido_produto_preparando INT;
+    _id_estado_pedido_produto_pronto INT;
+BEGIN
+    SELECT id_estado_pedido_produto INTO _id_estado_pedido_produto_pendente
+    FROM estadospedidosprodutos 
+    WHERE designacao = 'Pendente';
+    
+    SELECT id_estado_pedido_produto INTO _id_estado_pedido_produto_preparando
+    FROM estadospedidosprodutos 
+    WHERE designacao = 'Preparando';
+    
+    SELECT id_estado_pedido_produto INTO _id_estado_pedido_produto_pronto
+    FROM estadospedidosprodutos 
+    WHERE designacao = 'Pronto';
+
+    IF NEW.id_estado_pedido_produto = _id_estado_pedido_produto_preparando
+    AND OLD.id_estado_pedido_produto != _id_estado_pedido_produto_pendente
+    THEN
+        RAISE EXCEPTION 'O estado do pedido produto deve ser pendente';
+    END IF;
+
+    IF NEW.id_estado_pedido_produto = _id_estado_pedido_produto_pronto
+    AND OLD.id_estado_pedido_produto != _id_estado_pedido_produto_preparando
+    THEN
+        RAISE EXCEPTION 'O estado do pedido produto deve ser preparando';
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER verificar_estadopedidoproduto_trigger
+BEFORE UPDATE OF id_estado_pedido_produto ON pedidosprodutos
+FOR EACH ROW EXECUTE FUNCTION verificar_estadopedidoproduto();
 
 
 -- RESERVAS
@@ -270,6 +323,27 @@ CREATE TRIGGER auto_set_estadoreserva_confirmada_trigger
 BEFORE INSERT ON reservas
 FOR EACH ROW EXECUTE FUNCTION auto_set_estadoreserva_confirmada();
 
+CREATE OR REPLACE FUNCTION verificar_data_hora_reserva() 
+RETURNS TRIGGER AS $$
+BEGIN
+    IF EXISTS (
+        SELECT 1 FROM reservas 
+        WHERE id_mesa = NEW.id_mesa 
+        AND NEW.data_hora < data_hora + INTERVAL '1 hour'  -- Começa antes do fim da reserva existente
+        AND NEW.data_hora + INTERVAL '1 hour' > data_hora  -- Termina depois do início da reserva existente
+        AND id_reserva != NEW.id_reserva
+        AND id_estado_reserva != (SELECT id_estado_reserva FROM estadosreservas WHERE designacao = 'Cancelada')
+    ) THEN
+        RAISE EXCEPTION 'Uma reserva não pode se sobrepor a outra';
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER verificar_data_hora_reserva_trigger
+BEFORE INSERT OR UPDATE OF data_hora ON reservas
+FOR EACH ROW 
+EXECUTE FUNCTION verificar_data_hora_reserva();
 
 
 -- MESAS

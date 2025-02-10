@@ -2,21 +2,21 @@ CREATE OR REPLACE VIEW estadosmesas_view AS
 SELECT * FROM estadosmesas;
 
 CREATE OR REPLACE VIEW mesas_view AS 
-SELECT mesas.*, estadosmesas.designacao FROM mesas
+SELECT mesas.*, estadosmesas.designacao AS estado FROM mesas
 JOIN estadosmesas ON mesas.id_estado_mesa = estadosmesas.id_estado_mesa;
 
 CREATE OR REPLACE VIEW mesas_disponiveis_view AS 
-SELECT mesas.*, estadosmesas.designacao FROM mesas
+SELECT mesas.*, estadosmesas.designacao AS estado FROM mesas
 JOIN estadosmesas ON mesas.id_estado_mesa = estadosmesas.id_estado_mesa
 WHERE designacao = 'Disponivel';
 
 CREATE OR REPLACE VIEW mesas_ocupadas_view AS 
-SELECT mesas.*, estadosmesas.designacao FROM mesas
+SELECT mesas.*, estadosmesas.designacao AS estado FROM mesas
 JOIN estadosmesas ON mesas.id_estado_mesa = estadosmesas.id_estado_mesa
 WHERE designacao = 'Ocupada';
 
 CREATE OR REPLACE VIEW mesas_reservadas_view AS 
-SELECT mesas.*, estadosmesas.designacao FROM mesas
+SELECT mesas.*, estadosmesas.designacao AS estado FROM mesas
 JOIN estadosmesas ON mesas.id_estado_mesa = estadosmesas.id_estado_mesa
 WHERE designacao = 'Reservada';
 
@@ -27,10 +27,9 @@ SELECT * FROM estadosreservas;
 CREATE OR REPLACE VIEW reservas_view AS 
 SELECT 
     reservas.*, 
-    estadosreservas.designacao, 
-    utilizadores.id AS id_garcom_reserva,  
-    utilizadores.first_name || ' ' || utilizadores.last_name AS nome_garcom_reserva, 
-    utilizadores.url_imagem AS url_imagem_garcom_reserva 
+    estadosreservas.designacao AS estado,  
+    utilizadores.first_name || ' ' || utilizadores.last_name AS nome_garcom, 
+    utilizadores.url_imagem
 FROM reservas
 JOIN estadosreservas ON reservas.id_estado_reserva = estadosreservas.id_estado_reserva
 JOIN utilizadores ON reservas.id_garcom = utilizadores.id;
@@ -56,7 +55,7 @@ AS $$
 BEGIN
     SELECT json_agg(row_to_json(reservas)) INTO resultado
     FROM reservas
-    WHERE data_reserva BETWEEN _data_inicio_in AND _data_fim_in;
+    WHERE data_hora BETWEEN _data_inicio_in AND _data_fim_in;
 END;
 $$;
 

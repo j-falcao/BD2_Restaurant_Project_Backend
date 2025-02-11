@@ -78,7 +78,6 @@ def create_servicos(data):
             None
         ])
         servico = cursor.fetchone()[0]
-        estatisticas.create_servico(servico)
         return servico
 
 def update_servicos(id_servico, data):

@@ -80,11 +80,9 @@ CREATE OR REPLACE VIEW servicos_view AS
 SELECT 
     servicos.*, 
     utilizadores.first_name || ' ' || utilizadores.last_name AS nome_garcom, 
-    utilizadores.url_imagem as url_imagem_garcom,
-    mesas.numero AS numero_mesa
+    utilizadores.url_imagem as url_imagem_garcom
 FROM servicos
-JOIN utilizadores ON servicos.id_garcom = utilizadores.id
-JOIN mesas ON servicos.id_mesa = mesas.id_mesa;
+JOIN utilizadores ON servicos.id_garcom = utilizadores.id;
 
 CREATE OR REPLACE FUNCTION get_servicos_com_pedidos(_id_servico_in INT)
 RETURNS JSON

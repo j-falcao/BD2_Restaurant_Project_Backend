@@ -1,6 +1,6 @@
 from ..models import *
 from django.db import connection
-from estatisticas import operacoes as estatisticas
+from estatisticas import operacoes_recolha as estatisticas
 
 
 # Instrucoes
@@ -318,7 +318,6 @@ def update_menus(id_menu, data):
 def delete_menus(id_menu):
     with connection.cursor() as cursor:
         cursor.execute('CALL delete_menus(%s)', [id_menu])
-        estatisticas.delete_menu(cursor.fetchone()[0])
 
 
 # Itens Menus

@@ -151,8 +151,15 @@ AS $$
 BEGIN
     SELECT json_agg(row_to_json(menus)) INTO resultado
     FROM (
-        SELECT menus.*, produtos.nome, produtos.url_imagem, produtos.preco FROM menus
+        SELECT 
+            menus.*,
+            im.id_item_menu,
+            produtos.nome, 
+            produtos.url_imagem, 
+            produtos.preco 
+        FROM menus
         JOIN produtos ON menus.id_menu = produtos.id_produto
+        JOIN itensmenus im ON menus.id_menu = im.id_menu
     ) menus
     JOIN itensmenus im ON menus.id_menu = im.id_menu
     WHERE im.id_item = _id_item_in;
@@ -165,8 +172,15 @@ AS $$
 BEGIN
     SELECT json_agg(row_to_json(itens)) INTO resultado
     FROM (
-        SELECT itens.*, produtos.nome, produtos.url_imagem, produtos.preco FROM itens
+        SELECT 
+            im.id_item_menu,
+            itens.*, 
+            produtos.nome, 
+            produtos.url_imagem, 
+            produtos.preco
+        FROM itens
         JOIN produtos ON itens.id_item = produtos.id_produto
+        JOIN itensmenus im ON itens.id_item = im.id_item
     ) itens
     JOIN itensmenus im ON itens.id_item = im.id_item
     WHERE im.id_menu = _id_menu_in;
@@ -179,8 +193,15 @@ AS $$
 BEGIN
     SELECT json_agg(row_to_json(menus)) INTO resultado
     FROM (
-        SELECT menus.*, produtos.nome, produtos.url_imagem, produtos.preco FROM menus
+        SELECT 
+            menus.*,
+            menusdiassemana.id_menu_dia_semana,
+            produtos.nome, 
+            produtos.url_imagem, 
+            produtos.preco
+        FROM menus
         JOIN produtos ON menus.id_menu = produtos.id_produto
+        JOIN menusdiassemana ON menus.id_menu = menusdiassemana.id_menu
     ) menus
     JOIN menusdiassemana ON menus.id_menu = menusdiassemana.id_menu
     WHERE menusdiassemana.id_dia_semana = _id_dia_semana;

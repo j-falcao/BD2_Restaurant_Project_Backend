@@ -19,9 +19,9 @@ def create_utilizador(validated_data):
             validated_data['password'],
             None
         ])
-
-        estatisticas.create_utilizador(validated_data)
-        return cursor.fetchone()[0]
+        utilizador = cursor.fetchone()[0]
+        estatisticas.create_utilizador(utilizador)
+        return utilizador
 
 def update_utilizador(id_utilizador, validated_data):
     with connection.cursor() as cursor:

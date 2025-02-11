@@ -38,9 +38,9 @@ def create_reservas(data):
             data['data_hora'],
             None
         ])
-
-        estatisticas.create_reserva(data)
-        return cursor.fetchone()[0]
+        reserva = cursor.fetchone()[0]
+        estatisticas.create_reserva(reserva) # registar reserva para estatisticas
+        return reserva
 
 def update_reservas(id_reserva, data):
     with connection.cursor() as cursor:
@@ -77,9 +77,9 @@ def create_servicos(data):
             data['id_mesa'],
             None
         ])
-
-        estatisticas.create_servico(data)
-        return cursor.fetchone()[0]
+        servico = cursor.fetchone()[0]
+        estatisticas.create_servico(servico)
+        return servico
 
 def update_servicos(id_servico, data):
     with connection.cursor() as cursor:
@@ -104,7 +104,9 @@ def create_servico_com_reserva(id_reserva):
             id_reserva,
             None
         ])
-        return cursor.fetchone()[0]
+        servico = cursor.fetchone()[0]
+        estatisticas.create_servico(servico)
+        return servico
 
 def delete_servicos(id_servico):
     with connection.cursor() as cursor:

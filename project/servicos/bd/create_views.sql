@@ -115,13 +115,12 @@ BEGIN
         GROUP BY p.id_pedido
     ),
     servico_data AS (
-        SELECT 
+        SELECT
             sv.id_servico,
             sv.id_garcom,
             sv.nome_garcom,
             sv.url_imagem_garcom,
             sv.id_mesa,
-            sv.numero_mesa,
             sv.created_at AS servico_created_at,
             COALESCE(array_agg(
                 json_build_object(
@@ -132,7 +131,7 @@ BEGIN
         FROM servicos_view sv
         LEFT JOIN pedidos_data pd ON sv.id_servico = _id_servico_in
         WHERE sv.id_servico = _id_servico_in
-        GROUP BY sv.id_servico, sv.id_garcom, sv.nome_garcom, sv.url_imagem_garcom, sv.id_mesa, sv.numero_mesa, sv.created_at
+        GROUP BY sv.id_servico, sv.id_garcom, sv.nome_garcom, sv.url_imagem_garcom, sv.id_mesa, sv.created_at
     )
     SELECT row_to_json(sd) INTO servico_json
     FROM servico_data sd;

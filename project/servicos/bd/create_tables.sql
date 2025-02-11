@@ -8,7 +8,6 @@ CREATE TABLE IF NOT EXISTS estadosmesas (
 CREATE TABLE IF NOT EXISTS mesas (
 	id_mesa SERIAL PRIMARY KEY,
 	id_estado_mesa INT REFERENCES estadosmesas(id_estado_mesa) ON DELETE CASCADE,
-	numero INT NOT NULL UNIQUE CHECK (numero > 0),
 	capacidade_maxima INT NOT NULL CHECK (capacidade_maxima > 0),
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP

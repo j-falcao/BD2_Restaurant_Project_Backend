@@ -39,9 +39,9 @@ def create_receitas(receita):
             receita['id_produto'],
             None
         ])
-
+        receita = cursor.fetchone()[0]
         estatisticas.create_receita(receita)
-        return cursor.fetchone()[0]
+        return receita
 
 
 def update_receitas(id_receita, receita):
@@ -197,9 +197,9 @@ def create_item(data):
             data['porcao'],
             None
         ])
-
-        estatisticas.create_item(data)
-        return cursor.fetchone()[0]
+        item = cursor.fetchone()[0]
+        estatisticas.create_item(item)
+        return item
     
 def update_item(id_item, data):
     with connection.cursor() as cursor:
@@ -273,9 +273,9 @@ def create_menus(data):
             data['preco'],
             None
         ])
-
-        estatisticas.create_menu(data)
-        return cursor.fetchone()[0]
+        menu = cursor.fetchone()[0]
+        estatisticas.create_menu(menu)
+        return menu
     
 def update_menus(id_menu, data):
     with connection.cursor() as cursor:
@@ -301,7 +301,9 @@ def create_itensMenus(id_menu, data):
             data['id_item'],
             None
         ])
-        return cursor.fetchone()[0]
+        itemmenu = cursor.fetchone()[0]
+        estatisticas.create_itemmenu(itemmenu)
+        return itemmenu
     
 def delete_itensMenus(id_item_menu):
     with connection.cursor() as cursor:

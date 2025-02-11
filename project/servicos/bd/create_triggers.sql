@@ -364,18 +364,3 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER auto_set_estadomesa_disponivel_trigger
 BEFORE INSERT ON mesas
 FOR EACH ROW EXECUTE FUNCTION auto_set_estadomesa_disponivel();
-
-
-CREATE OR REPLACE FUNCTION auto_set_numero_mesa() RETURNS TRIGGER AS $$
-DECLARE
-    max_numero INT;
-BEGIN
-    SELECT COALESCE(MAX(numero), 0) + 1 INTO max_numero FROM mesas;
-    NEW.numero = max_numero;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER auto_set_numero_mesa_trigger
-BEFORE INSERT ON mesas
-FOR EACH ROW EXECUTE FUNCTION auto_set_numero_mesa();

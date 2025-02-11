@@ -44,13 +44,12 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE update_mesas(id_mesa_in INT, _new_numero INT, _new_capacidade_maxima INT, OUT _new_mesa JSON)
+CREATE OR REPLACE PROCEDURE update_mesas(id_mesa_in INT, _new_capacidade_maxima INT, OUT _new_mesa JSON)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     UPDATE mesas
-    SET numero = _new_numero, 
-        capacidade_maxima = _new_capacidade_maxima
+    SET capacidade_maxima = _new_capacidade_maxima
     WHERE id_mesa = id_mesa_in;
 
     SELECT row_to_json(m)

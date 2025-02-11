@@ -1,7 +1,7 @@
 from project.utils.db_utils import fetch_from_view
 from django.db import connection
 from ..models import *
-from estatisticas import operacoes as estatisticas
+from estatisticas import operacoes_recolha as estatisticas
 
 # Ingredientes
 def create_ingredientes(ingrediente):

@@ -1,4 +1,3 @@
-import pymongo
 from pymongo import MongoClient
 uri = "mongodb://localhost:27017/"
 client = MongoClient(uri)
@@ -7,19 +6,19 @@ database = client["BD2_Projeto"]
 
 ## INVENTARIO
 def create_ingrediente(ingrediente):
-    collection = database["inventarios"]
+    collection = database["inventario"]
     collection.insert_one({**ingrediente})
 
 def create_utensilio(utensilios_data):
-    collection = database["inventarios"]
+    collection = database["inventario"]
     collection.insert_one({**utensilios_data})
 
 def update_ingrediente(id_ingrediente, quantidade):
-    collection = database["inventarios"]
+    collection = database["inventario"]
     collection.update_one({"id_ingrediente": id_ingrediente}, {"$set": {"quantidade_stock": quantidade}})
 
 def update_utensilio(id_utensilio, quantidade):
-    collection = database["inventarios"]
+    collection = database["inventario"]
     collection.update_one({"id_utensilio": id_utensilio}, {"$set": {"quantidade_stock": quantidade}})
 
 
@@ -137,6 +136,72 @@ def delete_itemmenu(itemmenu):
     collection = database["produtos"]
     collection.delete_one({"id_item": itemmenu["id_item"]})
 
-def tipos_itens_mais_usados():
-    collection = database["inventarios"]
-    return collection.aggregate([{"$group": {"_id": "$id_item", "quantidade": {"$sum": 1}}}, {"$sort": {"quantidade": -1}}])
+
+
+# ANALISE
+def percentagem_ingredientes_por_tipo():
+    collection = database["inventario"]
+
+    # pipeline = [
+    #     {"$unwind": "$tipos"},
+    #     {"$group": {
+    #         "_id": "$tipos",
+    #         "count": {"$sum": 1}
+    #     }},
+    #     {"$group": {
+    #         "_id": None,
+    #         "total": {"$sum": "$count"},
+    #         "types": {"$push": {"id_tipo": "$_id", "count": "$count"}}
+    #     }},
+    #     {"$unwind": "$types"},
+    #     {"$addFields": {
+    #         "types.percentage": {
+    #             "$multiply": [
+    #                 {"$divide": ["$types.count", "$total"]},
+    #                 100
+    #             ]
+    #         }
+    #     }},
+    #     {"$project": {
+    #         "_id": 0,
+    #         "id_tipo": "$types.id_tipo",
+    #         "count": "$types.count",
+    #         "percentage": "$types.percentage"
+    #     }},
+    #     {"$lookup": {
+    #         "from": "tipos",
+    #         "localField": "id_tipo",
+    #         "foreignField": "_id",
+    #         "as": "tipo_info"
+    #     }},
+    #     {"$unwind": "$tipo_info"},
+    #     {"$project": {
+    #         "id_tipo": 1,
+    #         "tipo_name": "$tipo_info.name",
+    #         "count": 1,
+    #         "percentage": 1
+    #     }}
+    # ]
+
+    # result = list(collection.aggregate(pipeline))
+
+    total_ingredientes = collection.count_documents({})
+
+    if total_ingredientes == 0:
+        return {}
+    
+    pipeline = [
+        {"$unwind": "$tipos"},  # Expande o array de tipos
+        {"$group": {"_id": "$tipos", "count": {"$sum": 1}}},  # Conta ingredientes por tipo
+        {
+            "$project": {
+                "_id": 0,
+                "id_tipo": "$_id",
+                "percentagem": {"$multiply": [{"$divide": ["$count", total_ingredientes]}, 100]},
+            }
+        }
+    ]
+
+    resultados = list(collection.aggregate(pipeline))
+
+    return resultados

@@ -1,6 +1,6 @@
 from ..models import *
 from django.db import connection
-from estatisticas import operacoes as estatisticas
+from estatisticas import operacoes_recolha as estatisticas
 
 def mee_bd():
     with connection.cursor() as cursor:

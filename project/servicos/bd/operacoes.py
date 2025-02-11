@@ -1,6 +1,6 @@
 from django.db import connection
 from ..models import *
-from estatisticas import operacoes as estatisticas
+from estatisticas import operacoes_recolha as estatisticas
 
 
 # Mesas

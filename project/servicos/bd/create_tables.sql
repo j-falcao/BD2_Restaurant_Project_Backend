@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS pedidosprodutos ( -- trigger para impedir a criação
 	id_pedido_produto SERIAL PRIMARY KEY,
 	id_pedido INT NOT NULL REFERENCES pedidos(id_pedido) ON DELETE CASCADE,
 	id_produto INT NOT NULL REFERENCES produtos(id_produto) ON DELETE CASCADE,
-	id_estado_pedido_produto INT REFERENCES estadospedidosprodutos(id_estado_pedido_produto) ON DELETE CASCADE,
+	id_estado_pedido_produto INT NOT NULL REFERENCES estadospedidosprodutos(id_estado_pedido_produto) ON DELETE CASCADE,
 	quantidade INT NOT NULL CHECK (quantidade > 0),
 	id_cozinheiro INT REFERENCES utilizadores(id) ON DELETE CASCADE, -- podem existir pedidos que estejam a aguardar cozinheiro, então o cozinheiro pode ser nulo
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

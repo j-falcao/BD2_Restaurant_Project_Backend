@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS cargos (
 	id_cargo SERIAL PRIMARY KEY,
-	designacao VARCHAR(100) NOT NULL,
+	designacao VARCHAR(100) NOT NULL UNIQUE CHECK (designacao = 'Administrador' OR designacao = 'Garcom' OR designacao = 'Cozinheiro'),
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

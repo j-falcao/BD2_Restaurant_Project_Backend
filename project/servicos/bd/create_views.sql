@@ -2,21 +2,21 @@ CREATE OR REPLACE VIEW estadosmesas_view AS
 SELECT * FROM estadosmesas;
 
 CREATE OR REPLACE VIEW mesas_view AS 
-SELECT mesas.*, estadosmesas.designacao AS estado FROM mesas
+SELECT mesas.*, estadosmesas.designacao FROM mesas
 JOIN estadosmesas ON mesas.id_estado_mesa = estadosmesas.id_estado_mesa;
 
 CREATE OR REPLACE VIEW mesas_disponiveis_view AS 
-SELECT mesas.*, estadosmesas.designacao AS estado FROM mesas
+SELECT mesas.*, estadosmesas.designacao FROM mesas
 JOIN estadosmesas ON mesas.id_estado_mesa = estadosmesas.id_estado_mesa
 WHERE designacao = 'Disponivel';
 
 CREATE OR REPLACE VIEW mesas_ocupadas_view AS 
-SELECT mesas.*, estadosmesas.designacao AS estado FROM mesas
+SELECT mesas.*, estadosmesas.designacao FROM mesas
 JOIN estadosmesas ON mesas.id_estado_mesa = estadosmesas.id_estado_mesa
 WHERE designacao = 'Ocupada';
 
 CREATE OR REPLACE VIEW mesas_reservadas_view AS 
-SELECT mesas.*, estadosmesas.designacao AS estado FROM mesas
+SELECT mesas.*, estadosmesas.designacao FROM mesas
 JOIN estadosmesas ON mesas.id_estado_mesa = estadosmesas.id_estado_mesa
 WHERE designacao = 'Reservada';
 
@@ -27,12 +27,9 @@ SELECT * FROM estadosreservas;
 CREATE OR REPLACE VIEW reservas_view AS 
 SELECT 
     reservas.*, 
-    estadosreservas.designacao AS estado,  
-    utilizadores.first_name || ' ' || utilizadores.last_name AS nome_garcom, 
-    utilizadores.url_imagem
+    estadosreservas.designacao AS estado
 FROM reservas
-JOIN estadosreservas ON reservas.id_estado_reserva = estadosreservas.id_estado_reserva
-JOIN utilizadores ON reservas.id_garcom = utilizadores.id;
+JOIN estadosreservas ON reservas.id_estado_reserva = estadosreservas.id_estado_reserva;
 
 CREATE OR REPLACE VIEW reservas_confirmadas_view AS 
 SELECT reservas.*, estadosreservas.designacao FROM reservas
@@ -69,20 +66,22 @@ CREATE OR REPLACE VIEW pedidosprodutos_view AS
 SELECT 
     pedidosprodutos.*,
     estadospedidosprodutos.designacao AS estado,
-    utilizadores.id AS id_cozinheiro_pedidoproduto, 
-    utilizadores.first_name || ' ' || utilizadores.last_name AS nome_cozinheiro_pedidoproduto, 
-    utilizadores.url_imagem AS url_imagem_cozinheiro_pedidoproduto
+    produtos.nome AS nome_produto,
+    produtos.url_imagem AS url_imagem_produto,
+    produtos.preco,
+    utilizadores.first_name || ' ' || utilizadores.last_name AS nome_cozinheiro,
+    utilizadores.url_imagem as url_imagem_cozinheiro
 FROM pedidosprodutos
-JOIN estadospedidosprodutos ON pedidosprodutos.id_estado_pedido_produto = estadospedidosprodutos.id_estado_pedido_produto
-FULL OUTER JOIN utilizadores ON pedidosprodutos.id_cozinheiro = utilizadores.id;
+JOIN estadospedidosprodutos ON estadospedidosprodutos.id_estado_pedido_produto = pedidosprodutos.id_estado_pedido_produto
+JOIN produtos ON produtos.id_produto = pedidosprodutos.id_produto
+LEFT JOIN utilizadores ON utilizadores.id = pedidosprodutos.id_cozinheiro;
 
 CREATE OR REPLACE VIEW servicos_view AS
 SELECT 
     servicos.*, 
-    utilizadores.id AS id_garcom_servico,
-    utilizadores.first_name || ' ' || utilizadores.last_name AS nome_garcom_servico, 
-    utilizadores.url_imagem AS url_imagem_garcom_servico,
-    mesas.numero AS mesa_numero
+    utilizadores.first_name || ' ' || utilizadores.last_name AS nome_garcom, 
+    utilizadores.url_imagem as url_imagem_garcom,
+    mesas.numero AS numero_mesa
 FROM servicos
 JOIN utilizadores ON servicos.id_garcom = utilizadores.id
 JOIN mesas ON servicos.id_mesa = mesas.id_mesa;
@@ -101,10 +100,13 @@ BEGIN
                 jsonb_build_object(
                     'id_pedido_produto', pp.id_pedido_produto,
                     'id_produto', pp.id_produto,
+                    'nome_produto', pp.nome_produto,
+                    'url_imagem_produto', pp.url_imagem_produto,
+                    'preco', pp.preco,
                     'quantidade', pp.quantidade,
                     'estado', pp.estado,
-                    'nome_cozinheiro_pedidoproduto', pp.nome_cozinheiro_pedidoproduto,
-                    'url_imagem_cozinheiro_pedidoproduto', pp.url_imagem_cozinheiro_pedidoproduto
+                    'nome_cozinheiro', pp.nome_cozinheiro,
+                    'url_imagem_cozinheiro', pp.url_imagem_cozinheiro
                 )
             ) FILTER (WHERE pp.id_pedido_produto IS NOT NULL), '[]'::jsonb) AS pedidosprodutos
         FROM pedidos p
@@ -114,33 +116,31 @@ BEGIN
     ),
     servico_data AS (
         SELECT 
-            s.id_servico,
-            s.id_garcom,
-            u.first_name || ' ' || u.last_name AS nome_garcom_servico,
-            u.url_imagem AS url_imagem_garcom_servico,
-            s.id_mesa,
-            m.numero AS mesa_numero,
-            s.created_at AS servico_created_at,
+            sv.id_servico,
+            sv.id_garcom,
+            sv.nome_garcom,
+            sv.url_imagem_garcom,
+            sv.id_mesa,
+            sv.numero_mesa,
+            sv.created_at AS servico_created_at,
             COALESCE(jsonb_agg(
                 jsonb_build_object(
                     'id_pedido', pd.id_pedido,
                     'pedidosprodutos', pd.pedidosprodutos
                 )
             ) FILTER (WHERE pd.id_pedido IS NOT NULL), '[]'::jsonb) AS pedidos
-        FROM servicos s
-        JOIN utilizadores u ON s.id_garcom = u.id
-        JOIN mesas m ON s.id_mesa = m.id_mesa
-        LEFT JOIN pedidos_data pd ON s.id_servico = _id_servico_in
-        WHERE s.id_servico = _id_servico_in
-        GROUP BY s.id_servico, u.first_name, u.last_name, u.url_imagem, m.numero, s.created_at
+        FROM servicos_view sv
+        LEFT JOIN pedidos_data pd ON sv.id_servico = _id_servico_in
+        WHERE sv.id_servico = _id_servico_in
+        GROUP BY sv.id_servico, sv.id_garcom, sv.nome_garcom, sv.url_imagem_garcom, sv.id_mesa, sv.numero_mesa, sv.created_at
     )
     SELECT jsonb_build_object(
         'id_servico', sd.id_servico,
         'id_garcom', sd.id_garcom,
-        'nome_garcom_servico', sd.nome_garcom_servico,
-        'url_imagem_garcom_servico', sd.url_imagem_garcom_servico,
+        'nome_garcom', sd.nome_garcom,
+        'url_imagem_garcom', sd.url_imagem_garcom,
         'id_mesa', sd.id_mesa,
-        'mesa_numero', sd.mesa_numero,
+        'numero_mesa', sd.numero_mesa,
         'servico_created_at', sd.servico_created_at,
         'pedidos', sd.pedidos
     ) INTO servico_json
@@ -150,14 +150,11 @@ BEGIN
 END;
 $$;
 
-
-
-
 CREATE OR REPLACE PROCEDURE get_servicos_by_data(_data_inicio_in DATE, _data_fim_in DATE, OUT resultado JSON)
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    SELECT json_agg(row_to_json(servicos)) INTO resultado
+    SELECT json_agg(row_to_json(servicos_view)) INTO resultado
     FROM servicos_view
     WHERE created_at BETWEEN _data_inicio_in AND _data_fim_in;
 END;

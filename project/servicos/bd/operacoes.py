@@ -1,5 +1,6 @@
 from django.db import connection
 from ..models import *
+from estatisticas import operacoes as estatisticas
 
 
 # Mesas
@@ -37,6 +38,8 @@ def create_reservas(data):
             data['data_hora'],
             None
         ])
+
+        estatisticas.create_reserva(data)
         return cursor.fetchone()[0]
 
 def update_reservas(id_reserva, data):
@@ -74,6 +77,8 @@ def create_servicos(data):
             data['id_mesa'],
             None
         ])
+
+        estatisticas.create_servico(data)
         return cursor.fetchone()[0]
 
 def update_servicos(id_servico, data):
@@ -146,6 +151,7 @@ def confecionar_pedidosProdutos(id_pedido_produto):
             id_pedido_produto,
             None
         ])
+
         return cursor.fetchone()[0]
     
 def update_pedidosProdutos(id_pedido_produto, data):

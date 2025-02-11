@@ -1,5 +1,6 @@
 from ..models import *
 from django.db import connection
+from estatisticas import operacoes as estatisticas
 
 
 # Instrucoes
@@ -38,6 +39,8 @@ def create_receitas(receita):
             receita['id_produto'],
             None
         ])
+
+        estatisticas.create_receita(receita)
         return cursor.fetchone()[0]
 
 
@@ -194,6 +197,8 @@ def create_item(data):
             data['porcao'],
             None
         ])
+
+        estatisticas.create_item(data)
         return cursor.fetchone()[0]
     
 def update_item(id_item, data):
@@ -268,6 +273,8 @@ def create_menus(data):
             data['preco'],
             None
         ])
+
+        estatisticas.create_menu(data)
         return cursor.fetchone()[0]
     
 def update_menus(id_menu, data):

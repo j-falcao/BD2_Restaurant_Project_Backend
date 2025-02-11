@@ -210,12 +210,15 @@ AFTER UPDATE OF id_estado_pedido_produto ON pedidosprodutos
 FOR EACH ROW EXECUTE FUNCTION reduzir_stock_apos_preparacao();
 
 CREATE OR REPLACE FUNCTION auto_set_estadopedidoproduto_pendente() RETURNS TRIGGER AS $$
+DECLARE _new_id_estado_pedido_produto INT;
 BEGIN
-    IF NEW.id_cozinheiro IS NULL THEN
-        SELECT id_estado_pedido_produto INTO NEW.id_estado_pedido_produto
-        FROM estadospedidosprodutos 
-        WHERE designacao = 'Pendente';
-    END IF;
+
+    SELECT id_estado_pedido_produto INTO _new_id_estado_pedido_produto
+    FROM estadospedidosprodutos 
+    WHERE designacao = 'Pendente';
+
+    NEW.id_estado_pedido_produto = _new_id_estado_pedido_produto;
+
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;

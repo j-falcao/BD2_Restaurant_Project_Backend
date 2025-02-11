@@ -163,6 +163,9 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS("Seeding mesas"))
             self.seed_mesas(num_entries)
 
+            self.stdout.write(self.style.SUCCESS("Seeding estadospedidosprodutos"))
+            self.seed_estadospedidosprodutos()
+
             # self.stdout.write(self.style.SUCCESS("Seeding servicos/pedidos/pedidosprodutos"))
             # self.seed_servicos_pedidos_pedidosprodutos(num_entries)
 
@@ -538,6 +541,18 @@ class Command(BaseCommand):
         self.seed_generic_table(
             "menusdiassemana", ["id_menu", "id_dia_semana", "almoco", "jantar"], data
         )
+
+    def seed_estadospedidosprodutos(self):
+        data = [
+            "Pendente",
+            "Preparando",
+            "Pronto",
+        ]
+
+        with transaction.atomic(), connection.cursor() as cursor:
+            cursor.executemany(
+                "INSERT INTO estadospedidosprodutos (designacao) VALUES (%s)", [(estado,) for estado in data]
+            )
 
     def seed_servicos_pedidos_pedidosprodutos(self, num_entries):
         with transaction.atomic(), connection.cursor() as cursor:

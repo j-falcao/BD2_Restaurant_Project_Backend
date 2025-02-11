@@ -68,37 +68,9 @@ class Utilizadores(models.Model):
         return fetch_from_view("cozinheiros_view")
     
     @staticmethod
-    def fetch_all_superusers():
-        return fetch_from_view("superusers_view")
-    
-    @staticmethod
     def fetch_by_username(username):
         return fetch_from_view("utilizadores_view", {"username": username})[0]
     
     @staticmethod
     def fetch_utilizadores_by_cargo(id_cargo):
         return fetch_from_view("utilizadorescargos_view", {"id_cargo": id_cargo})
-
-    @staticmethod
-    def fetch_cargos_by_utilizador(id_utilizador):
-        return fetch_from_view("utilizadorescargos_view", {"id_utilizador": id_utilizador})
-
-
-# class UtilizadoresCargos(models.Model):
-#     id_utilizador_cargo = models.AutoField(primary_key=True)
-#     id_utilizador = models.ForeignKey(Utilizadores, on_delete=models.CASCADE, db_column='id_utilizador')
-#     id_cargo = models.ForeignKey(Cargos, on_delete=models.CASCADE, db_column='id_cargo')
-#     created_at = models.DateTimeField(auto_now_add=True, null=True)
-#     updated_at = models.DateTimeField(auto_now=True, null=True)
-
-#     class Meta:
-#         managed = False
-#         db_table = 'utilizadorescargos'
-
-#     def __str__(self):
-#         return f"{self.id_utilizador} - {self.id_cargo}"
-    
-#     @staticmethod
-#     def fetch_all():
-#         return fetch_from_view("utilizadorescargos_view")
-    

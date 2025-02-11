@@ -1,7 +1,7 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .bd import *
+from .operacoes import *
 
-@api_view(['GET'])
+@api_view(['POST'])
 def dashboard_view(request):
-    return Response(dashboard())
+    return Response(dashboard(request.data))

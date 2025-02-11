@@ -1,6 +1,7 @@
 from project.utils.db_utils import fetch_from_view
 from django.db import connection
 from ..models import *
+from estatisticas import operacoes as estatisticas
 
 # Ingredientes
 
@@ -17,6 +18,8 @@ def create_ingredientes(ingrediente):  # ✅
             ingrediente['preco'],
             None
         ])
+
+        estatisticas.create_ingrediente(ingrediente)
         return cursor.fetchone()[0]
 
 
@@ -54,6 +57,8 @@ def create_utensilios(utensilio):  # ✅
             utensilio['preco'],
             None
         ])
+
+        estatisticas.create_utensilio(utensilio)
         return cursor.fetchone()[0]
 
 
@@ -134,6 +139,8 @@ def create_ingredientesCarrinhos_atual(data):  # ✅
             data['quantidade'],
             None
         ])
+
+        estatisticas.create_ingredienteCarrinho(data)
         return cursor.fetchone()[0]
 
 
@@ -162,6 +169,8 @@ def create_utensiliosCarrinhos_atual(data):  # ✅
             data['quantidade'],
             None
         ])
+
+        estatisticas.create_utensilioCarrinho(data)
         return cursor.fetchone()[0]
 
 

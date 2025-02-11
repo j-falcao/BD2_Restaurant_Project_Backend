@@ -87,17 +87,17 @@ JOIN utilizadores ON servicos.id_garcom = utilizadores.id
 JOIN mesas ON servicos.id_mesa = mesas.id_mesa;
 
 CREATE OR REPLACE FUNCTION get_servicos_com_pedidos(_id_servico_in INT)
-RETURNS JSONB
+RETURNS JSON
 LANGUAGE plpgsql
 AS $$
 DECLARE
-    servico_json JSONB;
+    servico_json JSON;
 BEGIN
     WITH pedidos_data AS (
         SELECT 
             p.id_pedido,
-            COALESCE(jsonb_agg(
-                jsonb_build_object(
+            COALESCE(array_agg(
+                json_build_object(
                     'id_pedido_produto', pp.id_pedido_produto,
                     'id_produto', pp.id_produto,
                     'nome_produto', pp.nome_produto,
@@ -108,7 +108,7 @@ BEGIN
                     'nome_cozinheiro', pp.nome_cozinheiro,
                     'url_imagem_cozinheiro', pp.url_imagem_cozinheiro
                 )
-            ) FILTER (WHERE pp.id_pedido_produto IS NOT NULL), '[]'::jsonb) AS pedidosprodutos
+            ) FILTER (WHERE pp.id_pedido_produto IS NOT NULL), '{}') AS pedidosprodutos
         FROM pedidos p
         LEFT JOIN pedidosprodutos_view pp ON p.id_pedido = pp.id_pedido
         WHERE p.id_servico = _id_servico_in
@@ -123,32 +123,24 @@ BEGIN
             sv.id_mesa,
             sv.numero_mesa,
             sv.created_at AS servico_created_at,
-            COALESCE(jsonb_agg(
-                jsonb_build_object(
+            COALESCE(array_agg(
+                json_build_object(
                     'id_pedido', pd.id_pedido,
                     'pedidosprodutos', pd.pedidosprodutos
                 )
-            ) FILTER (WHERE pd.id_pedido IS NOT NULL), '[]'::jsonb) AS pedidos
+            ) FILTER (WHERE pd.id_pedido IS NOT NULL), '{}') AS pedidos
         FROM servicos_view sv
         LEFT JOIN pedidos_data pd ON sv.id_servico = _id_servico_in
         WHERE sv.id_servico = _id_servico_in
         GROUP BY sv.id_servico, sv.id_garcom, sv.nome_garcom, sv.url_imagem_garcom, sv.id_mesa, sv.numero_mesa, sv.created_at
     )
-    SELECT jsonb_build_object(
-        'id_servico', sd.id_servico,
-        'id_garcom', sd.id_garcom,
-        'nome_garcom', sd.nome_garcom,
-        'url_imagem_garcom', sd.url_imagem_garcom,
-        'id_mesa', sd.id_mesa,
-        'numero_mesa', sd.numero_mesa,
-        'servico_created_at', sd.servico_created_at,
-        'pedidos', sd.pedidos
-    ) INTO servico_json
+    SELECT row_to_json(sd) INTO servico_json
     FROM servico_data sd;
 
     RETURN servico_json;
 END;
 $$;
+
 
 CREATE OR REPLACE PROCEDURE get_servicos_by_data(_data_inicio_in DATE, _data_fim_in DATE, OUT resultado JSON)
 LANGUAGE plpgsql

@@ -199,7 +199,7 @@ class Command(BaseCommand):
             last_name = fake.last_name()
             is_superuser = _ == 0
             username = 'dev' if _ == 0 else fake.user_name()
-            url_imagem = fake.image_url()
+            url_imagem = fake.image_url(width=400, height=300)
             raw_password = 'password' if _ == 0 else fake.password()
             password_hash = hash_password(raw_password)  # Hash the password
             utilizadores_data.append((
@@ -243,7 +243,7 @@ class Command(BaseCommand):
         for _ in range(num_entries):
             id_fornecedor = fake.random_int(min=1, max=100)
             nome = fake.word()
-            url_imagem = fake.image_url()
+            url_imagem = fake.image_url(width=400, height=300)
             quantidade_stock = fake.random_int(min=1, max=1000)
             unidade_medida = fake.random_element(elements=['kg', 'g', 'ml', 'l', 'unidade'])
             limite_stock = fake.random_int(min=100, max=2000)
@@ -265,7 +265,7 @@ class Command(BaseCommand):
         for _ in range(num_entries):
             id_fornecedor = fake.random_int(min=1, max=100)
             nome = fake.word()
-            url_imagem = fake.image_url()
+            url_imagem = fake.image_url(width=400, height=300)
             quantidade_stock = fake.random_int(min=1, max=1000)
             unidade_medida = fake.random_element(elements=['kg', 'g', 'ml', 'l', 'unidade'])
             limite_stock = fake.random_int(min=100, max=2000)
@@ -341,7 +341,7 @@ class Command(BaseCommand):
             menu = not item
             
             nome = fake.word()
-            url_imagem = fake.image_url()
+            url_imagem = fake.image_url(width=400, height=300)
             preco = fake.random_number(digits=5, fix_len=True) / 100
 
             produtos_data.append((item, menu, nome, url_imagem, preco))

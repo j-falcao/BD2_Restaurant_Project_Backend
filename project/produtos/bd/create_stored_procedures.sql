@@ -196,12 +196,12 @@ END;
 $$;
 
 
-CREATE OR REPLACE PROCEDURE delete_itens(_id_item INT)
+CREATE OR REPLACE PROCEDURE delete_itens(_id_item INT, OUT _deleted_item JSON)
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    DELETE FROM produtos WHERE id_produto = _id_item; -- Delete produto
-    -- o item é apagado junto com o produto (CASCADE)
+    DELETE FROM produtos WHERE id_produto = _id_item
+    RETURNING row_to_json(produtos) INTO _deleted_item;
 END;
 $$;
 
@@ -227,12 +227,13 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE delete_itenstipos(id_item_tipo_in INT)
+CREATE OR REPLACE PROCEDURE delete_itenstipos(id_item_tipo_in INT, OUT _new_item_tipo JSON)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     DELETE FROM itenstipos
-    WHERE id_item_tipo = id_item_tipo_in;
+    WHERE id_item_tipo = id_item_tipo_in
+    RETURNING row_to_json(itenstipos) INTO _new_item_tipo;
 END;
 $$;
 
@@ -287,12 +288,13 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE delete_itenscategorias(id_item_categoria_in INT)
+CREATE OR REPLACE PROCEDURE delete_itenscategorias(id_item_categoria_in INT, OUT _new_item_categoria JSON)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     DELETE FROM itenscategorias
-    WHERE id_item_categoria = id_item_categoria_in;
+    WHERE id_item_categoria = id_item_categoria_in
+    RETURNING row_to_json(itenscategorias) INTO _new_item_categoria;
 END;
 $$;
 
@@ -347,12 +349,13 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE delete_itensopcoes(id_item_opcao_in INT)
+CREATE OR REPLACE PROCEDURE delete_itensopcoes(id_item_opcao_in INT, OUT _new_item_opcao JSON)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     DELETE FROM itensopcoes
-    WHERE id_item_opcao = id_item_opcao_in;
+    WHERE id_item_opcao = id_item_opcao_in
+    RETURNING row_to_json(itensopcoes) INTO _new_item_opcao;
 END;
 $$;
 
@@ -429,12 +432,13 @@ $$;
 -- END;
 -- $$;
 
-CREATE OR REPLACE PROCEDURE delete_itensmenus(id_item_menu_in INT)
+CREATE OR REPLACE PROCEDURE delete_itensmenus(id_item_menu_in INT, OUT _new_item_menu JSON)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     DELETE FROM itensmenus
-    WHERE id_item_menu = id_item_menu_in;
+    WHERE id_item_menu = id_item_menu_in
+    RETURNING row_to_json(itensmenus) INTO _new_item_menu;
 END;
 $$;
 

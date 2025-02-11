@@ -34,7 +34,9 @@ def update_ingredientes(id_ingrediente, ingrediente):
             ingrediente['preco'],
             None
         ])
-        return cursor.fetchone()[0]
+        ingrediente = cursor.fetchone()[0]
+        estatisticas.update_ingrediente(ingrediente)
+        return ingrediente
 
 
 def delete_ingredientes(id_ingrediente):
@@ -73,7 +75,9 @@ def update_utensilios(id_utensilio, utensilio):  # ✅
             utensilio['preco'],
             None
         ])
-        return cursor.fetchone()[0]
+        utensilio = cursor.fetchone()[0]
+        estatisticas.update_utensilio(utensilio)
+        return utensilio
 
 
 def delete_utensilios(id_utensilio):  # ✅

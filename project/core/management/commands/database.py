@@ -2,7 +2,6 @@ from datetime import datetime, timedelta
 import os
 from django.core.management.base import BaseCommand
 from faker import Faker
-from tqdm import tqdm
 from django.db import connection, transaction
 from autenticacao.utils import hash_password
 from produtos.models import *

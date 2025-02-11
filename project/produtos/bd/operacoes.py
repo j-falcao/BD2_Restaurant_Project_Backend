@@ -113,8 +113,7 @@ def update_utensiliosReceitas(id_utensilio_receita, data):
 
 def delete_utensiliosReceitas(id_utensilio_receita):
     with connection.cursor() as cursor:
-        cursor.execute('CALL delete_utensiliosreceitas(%s)',
-                       [id_utensilio_receita])
+        cursor.execute('CALL delete_utensiliosreceitas(%s)', [id_utensilio_receita])
 
 
 # Categorias
@@ -124,7 +123,9 @@ def create_categorias(data):
             data['designacao'],
             None
         ])
-        return cursor.fetchone()[0]
+        categoria = cursor.fetchone()[0]
+        estatisticas.create_categoria(categoria)
+        return categoria
 
 def update_categorias(id_categoria, data):
     with connection.cursor() as cursor:
@@ -133,11 +134,14 @@ def update_categorias(id_categoria, data):
             data['designacao'],
             None
         ])
-        return cursor.fetchone()[0]
+        categoria = cursor.fetchone()[0]
+        estatisticas.update_categoria(categoria)
+        return categoria
 
 def delete_categorias(id_categoria):
     with connection.cursor() as cursor:
         cursor.execute('CALL delete_categorias(%s)', [id_categoria])
+        estatisticas.delete_categoria(id_categoria)
 
 
 # Tipos
@@ -147,7 +151,9 @@ def create_tipos(data):
             data['designacao'],
             None
         ])
-        return cursor.fetchone()[0]
+        tipo = cursor.fetchone()[0]
+        estatisticas.create_tipo(tipo)
+        return tipo
 
 def update_tipos(id_tipo, data):
     with connection.cursor() as cursor:
@@ -156,11 +162,14 @@ def update_tipos(id_tipo, data):
             data['designacao'],
             None
         ])
-        return cursor.fetchone()[0]
+        tipo = cursor.fetchone()[0]
+        estatisticas.update_tipo(tipo)
+        return tipo
 
 def delete_tipos(id_tipo):
     with connection.cursor() as cursor:
         cursor.execute('CALL delete_tipos(%s)', [id_tipo])
+        estatisticas.delete_tipo(id_tipo)
 
 
 # Opções
@@ -170,7 +179,9 @@ def create_opcoes(data):
             data['designacao'],
             None
         ])
-        return cursor.fetchone()[0]
+        opcao = cursor.fetchone()[0]
+        estatisticas.create_opcao(opcao)
+        return opcao
     
 def update_opcoes(id_opcao, data):
     with connection.cursor() as cursor:    
@@ -179,11 +190,14 @@ def update_opcoes(id_opcao, data):
             data['designacao'],
             None
         ])
-        return cursor.fetchone()[0]
+        opcao = cursor.fetchone()[0]
+        estatisticas.update_opcao(opcao)
+        return opcao
     
 def delete_opcoes(id_opcao):
     with connection.cursor() as cursor:
         cursor.execute('CALL delete_opcoes(%s)', [id_opcao])
+        estatisticas.delete_opcao(id_opcao)
 
 
 # Itens
@@ -212,11 +226,14 @@ def update_item(id_item, data):
             data['porcao'],
             None
         ])
-        return cursor.fetchone()[0]
+        item = cursor.fetchone()[0]
+        estatisticas.update_item(item)
+        return item
     
 def delete_item(id_item):
     with connection.cursor() as cursor:
-        cursor.execute('CALL delete_itens(%s)', [id_item])
+        cursor.execute('CALL delete_itens(%s, %s)', [id_item, None])
+        estatisticas.delete_item(cursor.fetchone()[0])
 
 
 # Itens Opções
@@ -227,11 +244,14 @@ def create_itensOpcoes(id_item, data):
             data['id_opcao'],
             None
         ])
-        return cursor.fetchone()[0]
+        itemopcao = cursor.fetchone()[0]
+        estatisticas.create_itemopcao(itemopcao)
+        return itemopcao
     
 def delete_itensOpcoes(id_item_opcao):
     with connection.cursor() as cursor:
-        cursor.execute('CALL delete_itensopcoes(%s)', [id_item_opcao])
+        cursor.execute('CALL delete_itensopcoes(%s, %s)', [id_item_opcao, None])
+        estatisticas.delete_itemopcao(cursor.fetchone()[0])
 
 
 # Itens Categorias
@@ -242,11 +262,14 @@ def create_itensCategorias(id_item, data):
             data['id_categoria'],
             None
         ])
-        return cursor.fetchone()[0]
+        itemcategoria = cursor.fetchone()[0]
+        estatisticas.create_itemcategoria(itemcategoria)
+        return itemcategoria
     
 def delete_itensCategorias(id_item_categoria):
     with connection.cursor() as cursor:
-        cursor.execute('CALL delete_itenscategorias(%s)', [id_item_categoria])
+        cursor.execute('CALL delete_itenscategorias(%s, %s)', [id_item_categoria, None])
+        estatisticas.delete_itemcategoria(cursor.fetchone()[0])
 
 
 # Itens Tipos
@@ -257,12 +280,14 @@ def create_itensTipos(id_item, data):
             data['id_tipo'],
             None
         ])
-        return cursor.fetchone()[0]
+        itemtipo = cursor.fetchone()[0]
+        estatisticas.create_itemtipo(itemtipo)
+        return itemtipo
     
 def delete_itensTipos(id_item_tipo):
     with connection.cursor() as cursor:
-        cursor.execute('CALL delete_itenstipos(%s)', [id_item_tipo])
-
+        cursor.execute('CALL delete_itenstipos(%s, %s)', [id_item_tipo, None])
+        estatisticas.delete_itemtipo(cursor.fetchone()[0])
 
 # Menus
 def create_menus(data):
@@ -286,11 +311,14 @@ def update_menus(id_menu, data):
             data['preco'],
             None
         ])
-        return cursor.fetchone()[0]
+        menu = cursor.fetchone()[0]
+        estatisticas.update_menu(menu)
+        return menu
     
 def delete_menus(id_menu):
     with connection.cursor() as cursor:
         cursor.execute('CALL delete_menus(%s)', [id_menu])
+        estatisticas.delete_menu(cursor.fetchone()[0])
 
 
 # Itens Menus
@@ -307,7 +335,8 @@ def create_itensMenus(id_menu, data):
     
 def delete_itensMenus(id_item_menu):
     with connection.cursor() as cursor:
-        cursor.execute('CALL delete_itensmenus(%s)', [id_item_menu])
+        cursor.execute('CALL delete_itensmenus(%s, %s)', [id_item_menu, None])
+        estatisticas.delete_itemmenu(cursor.fetchone()[0])
 
 
 # Menus DiasSemana

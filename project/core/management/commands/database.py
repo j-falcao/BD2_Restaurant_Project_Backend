@@ -48,7 +48,7 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS("Revoking privileges..."))
         self._run_sql_file(os.getcwd() + '/core/bd/revoke_privileges.sql')
-        # self._run_sql_file(os.getcwd() + '/inventario/bd/revoke_privileges.sql')
+        self._run_sql_file(os.getcwd() + '/inventario/bd/revoke_privileges.sql')
         self.stdout.write(self.style.SUCCESS("Dropping triggers..."))
         self._run_sql_file(os.getcwd() + '/core/bd/drop_triggers_updated_at.sql')
         self._run_sql_file(os.getcwd() + '/inventario/bd/drop_triggers.sql')

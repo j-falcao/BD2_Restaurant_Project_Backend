@@ -13,13 +13,13 @@ def create_utensilio(utensilios_data):
     collection = database["inventario"]
     collection.insert_one({**utensilios_data})
 
-def update_ingrediente(id_ingrediente, quantidade):
+def update_ingrediente(ingrediente):
     collection = database["inventario"]
-    collection.update_one({"id_ingrediente": id_ingrediente}, {"$set": {"quantidade_stock": quantidade}})
+    collection.update_one({"id_ingrediente": ingrediente['id_ingrediente']}, {"$set": {"quantidade_stock": ingrediente['quantidade_stock']}})
 
-def update_utensilio(id_utensilio, quantidade):
+def update_utensilio(utensilio):
     collection = database["inventario"]
-    collection.update_one({"id_utensilio": id_utensilio}, {"$set": {"quantidade_stock": quantidade}})
+    collection.update_one({"id_utensilio": utensilio['id_utensilio']}, {"$set": {"quantidade_stock": utensilio['quantidade_stock']}})
 
 
 ## PRODUTOS

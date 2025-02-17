@@ -39,9 +39,7 @@ def create_receitas(receita):
             receita['id_produto'],
             None
         ])
-        receita = cursor.fetchone()[0]
-        estatisticas.create_receita(receita)
-        return receita
+        return cursor.fetchone()[0]
 
 
 def update_receitas(id_receita, receita):
@@ -124,7 +122,7 @@ def create_categorias(data):
             None
         ])
         categoria = cursor.fetchone()[0]
-        estatisticas.create_categoria(categoria)
+        estatisticas.create_categoria({**categoria})
         return categoria
 
 def update_categorias(id_categoria, data):
@@ -135,7 +133,7 @@ def update_categorias(id_categoria, data):
             None
         ])
         categoria = cursor.fetchone()[0]
-        estatisticas.update_categoria(categoria)
+        estatisticas.update_categoria({**categoria})
         return categoria
 
 def delete_categorias(id_categoria):
@@ -152,7 +150,7 @@ def create_tipos(data):
             None
         ])
         tipo = cursor.fetchone()[0]
-        estatisticas.create_tipo(tipo)
+        estatisticas.create_tipo({**tipo})
         return tipo
 
 def update_tipos(id_tipo, data):
@@ -163,7 +161,7 @@ def update_tipos(id_tipo, data):
             None
         ])
         tipo = cursor.fetchone()[0]
-        estatisticas.update_tipo(tipo)
+        estatisticas.update_tipo({**tipo})
         return tipo
 
 def delete_tipos(id_tipo):
@@ -180,7 +178,7 @@ def create_opcoes(data):
             None
         ])
         opcao = cursor.fetchone()[0]
-        estatisticas.create_opcao(opcao)
+        estatisticas.create_opcao({**opcao})
         return opcao
     
 def update_opcoes(id_opcao, data):
@@ -191,7 +189,7 @@ def update_opcoes(id_opcao, data):
             None
         ])
         opcao = cursor.fetchone()[0]
-        estatisticas.update_opcao(opcao)
+        estatisticas.update_opcao({**opcao})
         return opcao
     
 def delete_opcoes(id_opcao):
@@ -212,7 +210,7 @@ def create_item(data):
             None
         ])
         item = cursor.fetchone()[0]
-        estatisticas.create_item(item)
+        estatisticas.create_item({**item})
         return item
     
 def update_item(id_item, data):
@@ -227,7 +225,7 @@ def update_item(id_item, data):
             None
         ])
         item = cursor.fetchone()[0]
-        estatisticas.update_item(item)
+        estatisticas.update_item({**item})
         return item
     
 def delete_item(id_item):
@@ -245,7 +243,7 @@ def create_itensOpcoes(id_item, data):
             None
         ])
         itemopcao = cursor.fetchone()[0]
-        estatisticas.create_itemopcao(itemopcao)
+        estatisticas.create_itemopcao({**itemopcao})
         return itemopcao
     
 def delete_itensOpcoes(id_item_opcao):
@@ -263,7 +261,7 @@ def create_itensCategorias(id_item, data):
             None
         ])
         itemcategoria = cursor.fetchone()[0]
-        estatisticas.create_itemcategoria(itemcategoria)
+        estatisticas.create_itemcategoria({**itemcategoria})
         return itemcategoria
     
 def delete_itensCategorias(id_item_categoria):
@@ -281,7 +279,7 @@ def create_itensTipos(id_item, data):
             None
         ])
         itemtipo = cursor.fetchone()[0]
-        estatisticas.create_itemtipo(itemtipo)
+        estatisticas.create_itemtipo({**itemtipo})
         return itemtipo
     
 def delete_itensTipos(id_item_tipo):
@@ -299,7 +297,7 @@ def create_menus(data):
             None
         ])
         menu = cursor.fetchone()[0]
-        estatisticas.create_menu(menu)
+        estatisticas.create_menu({**menu})
         return menu
     
 def update_menus(id_menu, data):
@@ -312,7 +310,7 @@ def update_menus(id_menu, data):
             None
         ])
         menu = cursor.fetchone()[0]
-        estatisticas.update_menu(menu)
+        estatisticas.update_menu({**menu})
         return menu
     
 def delete_menus(id_menu):
@@ -329,7 +327,7 @@ def create_itensMenus(id_menu, data):
             None
         ])
         itemmenu = cursor.fetchone()[0]
-        estatisticas.create_itemmenu(itemmenu)
+        estatisticas.create_itemmenu({**itemmenu})
         return itemmenu
     
 def delete_itensMenus(id_item_menu):

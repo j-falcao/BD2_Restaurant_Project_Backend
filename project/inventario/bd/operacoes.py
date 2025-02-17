@@ -141,9 +141,7 @@ def create_ingredientesCarrinhos_atual(data):  # ✅
             data['quantidade'],
             None
         ])
-        ingredienteCarrinho = cursor.fetchone()[0]
-        estatisticas.create_ingredienteCarrinho(ingredienteCarrinho)
-        return ingredienteCarrinho
+        return cursor.fetchone()[0]
 
 
 def update_ingredientesCarrinhos_atual(id_ingrediente_carrinho, data):  # ✅
@@ -171,9 +169,7 @@ def create_utensiliosCarrinhos_atual(data):  # ✅
             data['quantidade'],
             None
         ])
-        utensilioCarrinho = cursor.fetchone()[0]
-        estatisticas.create_utensilioCarrinho(utensilioCarrinho)
-        return utensilioCarrinho
+        return cursor.fetchone()[0]
 
 
 def update_utensiliosCarrinhos_atual(id_utensilio_carrinho, data):  # ✅

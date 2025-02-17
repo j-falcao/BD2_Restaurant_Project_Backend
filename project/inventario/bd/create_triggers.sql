@@ -140,22 +140,15 @@ CREATE OR REPLACE FUNCTION auto_create_carrinho()
 RETURNS TRIGGER AS $$
 DECLARE _id_carrinho INT;
 BEGIN
-    SELECT id_carrinho 
-    INTO _id_carrinho 
-    FROM carrinhos 
-    WHERE data_compra IS NULL 
-    AND id_tipo_carrinho = OLD.id_tipo_carrinho;
+    INSERT INTO carrinhos(id_tipo_carrinho) 
+    VALUES (OLD.id_tipo_carrinho);
 
-    IF OLD.id_carrinho = _id_carrinho THEN
-        INSERT INTO carrinhos(id_tipo_carrinho) 
-        VALUES (OLD.id_tipo_carrinho);
-    END IF;
-    RETURN NEW;
+    RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER auto_create_carrinho_trigger_delete
-BEFORE DELETE ON carrinhos
+AFTER DELETE ON carrinhos
 FOR EACH ROW
 EXECUTE FUNCTION auto_create_carrinho();
 
